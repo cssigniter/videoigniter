@@ -1087,7 +1087,9 @@ class VideoIgniter {
 	}
 
 	public function register_widgets() {
-		$widgets = apply_filters( 'videoigniter_register_widgets', array() );
+		$widgets = apply_filters( 'videoigniter_register_widgets', array(
+			'VideoIgniter_Playlist_Widget' => $this->plugin_path() . '/widget/class-videoigniter-playlist-widget.php',
+		) );
 
 		foreach ( $widgets as $class => $file ) {
 			require_once( $file );
