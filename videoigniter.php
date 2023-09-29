@@ -163,6 +163,8 @@ class VideoIgniter {
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
 
+		require_once 'block/block.php';
+
 		do_action( 'videoigniter_init' );
 	}
 
@@ -183,6 +185,10 @@ class VideoIgniter {
 
 		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'filter_posts_columns' ) );
 		add_action( "manage_{$this->post_type}_posts_custom_column", array( $this, 'add_custom_columns' ), 10, 2 );
+
+		add_filter( 'block_categories_all', array( $this, 'block_categories' ), 10, 2 );
+
+		add_action( 'enqueue_block_assets', array( $this, 'enqueue_editor_assets' ) );
 
 		do_action( 'videoigniter_admin_init' );
 	}
@@ -209,6 +215,9 @@ class VideoIgniter {
 	 * @since NewVersion
 	 */
 	public function register_scripts() {
+		// TODO: Replace placeholders (here for the block to show up).
+		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/player/build/style.css', array(), $this->version );
+		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/player/build/app.js', array(), $this->version, true );
 
 		wp_register_style( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . '/assets/css/admin-styles.css', array(), $this->version );
 		wp_register_script( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . '/assets/js/videoigniter.js', array(), $this->version, true );
@@ -222,6 +231,36 @@ class VideoIgniter {
 		) );
 
 		wp_register_style( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . '/assets/css/admin/settings.css', array(), $this->version );
+
+		wp_localize_script( 'videoigniter', 'vi_front_scripts', array(
+			'multi_sound_disabled' => true,
+			'typography_disabled'  => get_theme_mod( 'videoigniter_disable_typography', '' ),
+			'statistics_enabled'   => (bool) get_option( 'videoigniter_stats_enabled' ),
+		) );
+
+		wp_register_script( 'videoigniter-block-editor', untrailingslashit( $this->plugin_url() ) . '/block/build/block.js', array(
+			'wp-components',
+			'wp-blocks',
+			'wp-element',
+			'wp-block-editor',
+			'wp-data',
+			'wp-date',
+			'wp-i18n',
+			'wp-compose',
+			'wp-keycodes',
+			'wp-html-entities',
+			'wp-server-side-render',
+			'videoigniter',
+		), $this->version, true );
+
+		wp_register_style( 'videoigniter-block-editor', $this->plugin_url() . 'block/build/block.css', array(
+			'wp-edit-blocks',
+			'videoigniter',
+		), $this->version );
+
+		wp_localize_script( 'videoigniter-block-editor', 'viColors', array(
+			'disableTypography'           => get_theme_mod( 'videoigniter_disable_typography', '' ),
+		) );
 	}
 
 	/**
@@ -254,6 +293,34 @@ class VideoIgniter {
 	}
 
 	/**
+	 * Enqueues editor scripts and styles.
+	 *
+	 * @since NewVersion
+	 */
+	public function enqueue_editor_assets( $hook ) {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		wp_enqueue_script( 'videoigniter-block-editor' );
+		wp_enqueue_style( 'videoigniter-block-editor' );
+	}
+
+	/**
+	 * Register VideoIgniter's block category
+	 *
+	 * @since NewVersion
+	 */
+	public function block_categories( $categories ) {
+		return array_merge( $categories, array(
+			array(
+				'slug'  => 'videoigniter',
+				'title' => __( 'VideoIgniter', 'videoigniter' ),
+			),
+		) );
+	}
+
+	/**
 	 * Post types registration.
 	 *
 	 * @since NewVersion
@@ -283,6 +350,7 @@ class VideoIgniter {
 			'capability_type' => 'post',
 			'hierarchical'    => false,
 			'has_archive'     => false,
+			'show_in_rest'    => true,
 			'supports'        => array( 'title' ),
 			'menu_icon'       => 'dashicons-video-alt3',
 		);
