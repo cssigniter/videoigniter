@@ -374,6 +374,7 @@ class VideoIgniter {
 			'capability_type' => 'post',
 			'hierarchical'    => false,
 			'has_archive'     => false,
+			'show_in_rest'    => true,
 			'supports'        => array( 'title' ),
 			'menu_icon'       => 'dashicons-video-alt3',
 		);

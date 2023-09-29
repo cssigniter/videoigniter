@@ -7,10 +7,6 @@ import ServerSideRender from 'wp.serverSideRender';
 
 import useUniqueId from './hooks/useUniqueId';
 import LoadingResponsePlaceholder from './components/LoadingResponsePlaceholder';
-import VideoIgniterPlaylistStyles from './styles';
-import BackgroundControl from './components/BackgroundControl';
-import PopoverColorControl from './components/PopOverColorControl/PopoverColorControl';
-import { videoIgniterColors } from './index';
 
 const VideoIgniterPlayerEdit = ({
   attributes,
@@ -68,8 +64,6 @@ const VideoIgniterPlayerEdit = ({
         id={`videoigniter-block-${uniqueId}`}
         className={className}
       >
-        <VideoIgniterPlaylistStyles attributes={attributes} />
-
         <ServerSideRender
           key={uniqueId}
           block="videoigniter/player"
@@ -98,30 +92,6 @@ const VideoIgniterPlayerEdit = ({
             ]}
             onChange={value => setAttributes({ playerId: value })}
           />
-        </PanelBody>
-
-        <PanelBody title={__('Player Appearance')}>
-          <BackgroundControl
-            attributes={attributes}
-            setAttributes={setAttributes}
-            attributeKey="backgroundImage"
-            label={__('Background Image')}
-          />
-
-          {videoIgniterColors.map(color => {
-            return (
-              <PopoverColorControl
-                label={color.label}
-                value={attributes[color.key] || window.viColors[color.key]}
-                defaultValue={window.viColors[color.key] || undefined}
-                onChange={value => {
-                  setAttributes({
-                    [color.key]: value,
-                  });
-                }}
-              />
-            );
-          })}
         </PanelBody>
       </InspectorControls>
     </Fragment>
