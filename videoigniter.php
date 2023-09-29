@@ -260,30 +260,6 @@ class VideoIgniter {
 
 		wp_localize_script( 'videoigniter-block-editor', 'viColors', array(
 			'disableTypography'           => get_theme_mod( 'videoigniter_disable_typography', '' ),
-			'backgroundColor'             => get_theme_mod( 'videoigniter_bg_color' ),
-			'bg_image'                    => get_theme_mod( 'videoigniter_bg_image' ),
-			'bg_image_repeat'             => get_theme_mod( 'videoigniter_bg_image_repeat' ),
-			'bg_image_position'           => get_theme_mod( 'videoigniter_bg_image_position' ),
-			'bg_image_cover'              => get_theme_mod( 'videoigniter_bg_image_cover' ),
-			'textColor'                   => get_theme_mod( 'videoigniter_text_color' ),
-			'accentColor'                 => get_theme_mod( 'videoigniter_accent_color' ),
-			'textOnAccentColor'           => get_theme_mod( 'videoigniter_text_on_accent_color' ),
-			'controlColor'                => get_theme_mod( 'videoigniter_control_color' ),
-			'playerTextColor'             => get_theme_mod( 'videoigniter_player_text_color' ),
-			'playerButtonBackgroundColor' => get_theme_mod( 'videoigniter_player_button_background_color' ),
-			'playerButtonTextColor'       => get_theme_mod( 'videoigniter_player_button_text_color' ),
-			'playerButtonActiveColor'     => get_theme_mod( 'videoigniter_player_button_active_background_color' ),
-			'playerButtonActiveTextColor' => get_theme_mod( 'videoigniter_player_button_active_text_color' ),
-			'trackBarColor'               => get_theme_mod( 'videoigniter_track_bar_color' ),
-			'progressBarColor'            => get_theme_mod( 'videoigniter_progress_bar_color' ),
-			'trackBackgroundColor'        => get_theme_mod( 'videoigniter_track_background_color' ),
-			'trackTextColor'              => get_theme_mod( 'videoigniter_track_text_color' ),
-			'activeTrackBackgroundColor'  => get_theme_mod( 'videoigniter_track_active_background_color' ),
-			'trackActiveTextColor'        => get_theme_mod( 'videoigniter_track_active_text_color' ),
-			'trackButtonBackgroundColor'  => get_theme_mod( 'videoigniter_track_button_background_color' ),
-			'trackButtonTextColor'        => get_theme_mod( 'videoigniter_track_button_text_color' ),
-			'lyricsModalBackgroundColor'  => get_theme_mod( 'videoigniter_lyrics_modal_background_color' ),
-			'lyricsModalTextColor'        => get_theme_mod( 'videoigniter_lyrics_modal_text_color' ),
 		) );
 	}
 
