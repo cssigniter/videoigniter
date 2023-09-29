@@ -179,6 +179,8 @@ class VideoIgniter {
 			return;
 		}
 
+		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-settings-page.php';
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
@@ -259,7 +261,7 @@ class VideoIgniter {
 		), $this->version );
 
 		wp_localize_script( 'videoigniter-block-editor', 'viColors', array(
-			'disableTypography'           => get_theme_mod( 'videoigniter_disable_typography', '' ),
+			'disableTypography' => get_theme_mod( 'videoigniter_disable_typography', '' ),
 		) );
 	}
 
@@ -287,9 +289,12 @@ class VideoIgniter {
 			wp_enqueue_script( 'videoigniter-admin' );
 		}
 
-//		if ( 'vi_playlist_page_videoigniter-upsell' === $screen->id ) {
-//			wp_enqueue_style( 'videoigniter-admin-settings' );
-//		}
+		if ( 'settings_page_videoigniter' === $screen->id ) {
+			wp_enqueue_style( 'wp-color-picker' );
+			wp_enqueue_script( 'videoigniter-admin-scripts', $this->plugin_url() . '/assets/js/admin.js', array(
+				'wp-color-picker',
+			), $this->version, true );
+		}
 	}
 
 	/**
