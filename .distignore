@@ -2,8 +2,6 @@
 
 # Project-specific
 *.scss
-player/src
-player/dev-tracks.json
 README.md
 
 # VCS

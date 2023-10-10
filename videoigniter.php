@@ -217,27 +217,46 @@ class VideoIgniter {
 	 * @since NewVersion
 	 */
 	public function register_scripts() {
+		wp_register_style( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/css/vendor/video-js.min.css', array(), $this->version );
+		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/assets/css/style.css', array( 'videojs' ), $this->version );
 		// TODO: Replace placeholders (here for the block to show up).
-		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/player/build/style.css', array(), $this->version );
-		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/player/build/app.js', array(), $this->version, true );
+		// TODO: Minify scripts and styles
+		// TODO: Load videojs plugins conditionally based on features
+		// TODO: Load core version of VJS and separately HLS and VTT if based on settings
+		wp_register_script( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/video.min.js', array(), $this->version, true );
+		wp_register_script( 'videojs-playlist', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist.min.js', array(), $this->version, true );
+		wp_register_script( 'videojs-playlist-ui', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist-ui.js', array(), $this->version, true );
+		wp_register_script( 'videojs-vimeo', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-vimeo.js', array(), $this->version, true );
+		wp_register_script( 'videojs-youtube', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-youtube.min.js', array(), $this->version, true );
+		wp_register_script( 'videojs-chapters', untrailingslashit( $this->plugin_url() ) . '/assets/js/chapters.js', array(), $this->version, true );
+		wp_register_script( 'videojs-overlays', untrailingslashit( $this->plugin_url() ) . '/assets/js/overlays.js', array(), $this->version, true );
+		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/assets/js/scripts.js', array(
+			'videojs',
+			'videojs-playlist',
+			'videojs-playlist-ui',
+			'videojs-vimeo',
+			'videojs-youtube',
+			'videojs-chapters',
+			'videojs-overlays',
+		), $this->version, true );
 
 		wp_register_style( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . '/assets/css/admin-styles.css', array(), $this->version );
 		wp_register_script( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . '/assets/js/videoigniter.js', array(), $this->version, true );
 
 		wp_localize_script( 'videoigniter-admin', 'vi_scripts', array(
 			'messages' => array(
-				'confirm_clear_tracks'     => esc_html__( 'Do you really want to remove all tracks? (This will not delete your video files).', 'videoigniter' ),
+				'confirm_clear_tracks'     => esc_html__( 'Do you really want to remove all videos? (This will not delete your video files).', 'videoigniter' ),
 				'media_title_upload'       => esc_html__( 'Select or upload video media', 'videoigniter' ),
-				'media_title_upload_cover' => esc_html__( 'Select a cover image', 'videoigniter' ),
+				'media_title_upload_cover' => esc_html__( 'Select a poster image', 'videoigniter' ),
 			),
 		) );
 
 		wp_register_style( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . '/assets/css/admin/settings.css', array(), $this->version );
 
 		wp_localize_script( 'videoigniter', 'vi_front_scripts', array(
-			'multi_sound_disabled' => true,
-			'typography_disabled'  => get_theme_mod( 'videoigniter_disable_typography', '' ),
-			'statistics_enabled'   => (bool) get_option( 'videoigniter_stats_enabled' ),
+			'multi_sound_disabled_TODO' => true,
+			'typography_disabled_TODO'  => get_theme_mod( 'videoigniter_disable_typography', '' ),
+			'statistics_enabled_TODO'   => (bool) get_option( 'videoigniter_stats_enabled' ),
 		) );
 
 		wp_register_script( 'videoigniter-block-editor', untrailingslashit( $this->plugin_url() ) . '/block/build/block.js', array(
@@ -370,7 +389,7 @@ class VideoIgniter {
 	 * @since NewVersion
 	 */
 	public function add_meta_boxes() {
-		add_meta_box( 'vi-meta-box-tracks', esc_html__( 'Tracks', 'videoigniter' ), array( $this, 'metabox_tracks' ), $this->post_type, 'normal', 'high' );
+		add_meta_box( 'vi-meta-box-tracks', esc_html__( 'Videos', 'videoigniter' ), array( $this, 'metabox_tracks' ), $this->post_type, 'normal', 'high' );
 		add_meta_box( 'vi-meta-box-settings', esc_html__( 'Settings', 'videoigniter' ), array( $this, 'metabox_settings' ), $this->post_type, 'normal', 'high' );
 		add_meta_box( 'vi-meta-box-shortcode', esc_html__( 'Shortcode', 'videoigniter' ), array( $this, 'metabox_shortcode' ), $this->post_type, 'side', 'default' );
 	}
@@ -510,9 +529,8 @@ class VideoIgniter {
 
 		$cover_id                = $track['cover_id'];
 		$title                   = $track['title'];
-		$artist                  = $track['artist'];
+		$description             = $track['description'];
 		$track_url               = $track['track_url'];
-		$buy_link                = $track['buy_link'];
 		$download_url            = $track['download_url'];
 		$download_uses_track_url = (int) $track['download_uses_track_url'];
 
@@ -593,34 +611,16 @@ class VideoIgniter {
 					</div>
 					<div class="vi-form-field">
 						<label
-							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-artist"
+							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-description"
 							class="screen-reader-text">
-							<?php esc_html_e( 'Artist', 'videoigniter' ); ?>
+							<?php esc_html_e( 'Description', 'videoigniter' ); ?>
 						</label>
-						<input
-							type="text"
-							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-artist"
-							class="vi-track-artist"
-							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][artist]"
-							placeholder="<?php esc_attr_e( 'Artist', 'videoigniter' ); ?>"
-							value="<?php echo esc_attr( $artist ); ?>"
-						/>
-					</div>
-
-					<div class="vi-form-field">
-						<label
-							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-buy_link"
-							class="screen-reader-text">
-							<?php esc_html_e( 'Buy link', 'videoigniter' ); ?>
-						</label>
-						<input
-							type="text"
-							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-buy_link"
-							class="vi-track-buy-link"
-							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][buy_link]"
-							placeholder="<?php esc_attr_e( 'Buy link', 'videoigniter' ); ?>"
-							value="<?php echo esc_url( $buy_link ); ?>"
-						/>
+						<textarea
+							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-description"
+							class="vi-track-description"
+							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][description]"
+							placeholder="<?php esc_attr_e( 'Description', 'videoigniter' ); ?>"
+						><?php echo esc_attr( $description ); ?></textarea>
 					</div>
 
 					<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_fields_column_1', $track, $uid ); ?>
@@ -651,7 +651,8 @@ class VideoIgniter {
 						</div>
 					</div>
 
-					<div class="vi-form-field">
+					<!-- TODO remove download functionality -->
+					<div class="vi-form-field" style="display: none;">
 						<label
 							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-download_url"
 							class="screen-reader-text">
@@ -676,7 +677,7 @@ class VideoIgniter {
 
 					<button type="button" class="button vi-remove-field">
 						<span class="dashicons dashicons-dismiss"></span>
-						<?php esc_html_e( 'Remove Track', 'videoigniter' ); ?>
+						<?php esc_html_e( 'Remove Video', 'videoigniter' ); ?>
 					</button>
 				</div>
 
@@ -691,7 +692,7 @@ class VideoIgniter {
 			<div class="vi-field-controls">
 				<button type="button" class="button vi-add-field vi-add-field-<?php echo esc_attr( $location ); ?>">
 					<span class="dashicons dashicons-plus-alt"></span>
-					<?php esc_html_e( 'Add Track', 'videoigniter' ); ?>
+					<?php esc_html_e( 'Add Video', 'videoigniter' ); ?>
 				</button>
 
 				<?php do_action( 'videoigniter_metabox_tracks_field_controls', $location, $post_id ); ?>
@@ -724,49 +725,39 @@ class VideoIgniter {
 	 * @param array $box
 	 */
 	public function metabox_settings( $object, $box ) {
-		$type                       = $this->get_post_meta( $object->ID, '_videoigniter_player_type', 'full' );
-		$numbers                    = $this->get_post_meta( $object->ID, '_videoigniter_show_numbers', 1 );
-		$numbers_reverse            = $this->get_post_meta( $object->ID, '_videoigniter_show_numbers_reverse', 0 );
-		$thumb                      = $this->get_post_meta( $object->ID, '_videoigniter_show_covers', 1 );
-		$active_thumb               = $this->get_post_meta( $object->ID, '_videoigniter_show_active_cover', 1 );
-		$artist                     = $this->get_post_meta( $object->ID, '_videoigniter_show_artist', 1 );
-		$buy_links                  = $this->get_post_meta( $object->ID, '_videoigniter_show_buy_links', 1 );
-		$buy_links_new_target       = $this->get_post_meta( $object->ID, '_videoigniter_buy_links_new_target', 1 );
-		$cycle_tracks               = $this->get_post_meta( $object->ID, '_videoigniter_cycle_tracks', 0 );
-		$track_listing              = $this->get_post_meta( $object->ID, '_videoigniter_show_track_listing', 1 );
-		$track_listing_allow_toggle = $this->get_post_meta( $object->ID, '_videoigniter_allow_track_listing_toggle', 1 );
-		$track_listing_allow_loop   = $this->get_post_meta( $object->ID, '_videoigniter_allow_track_listing_loop', 1 );
-		$credit                     = $this->get_post_meta( $object->ID, '_videoigniter_show_credit', 0 );
-		$limit_tracklisting_height  = $this->get_post_meta( $object->ID, '_videoigniter_limit_tracklisting_height', 1 );
-		$tracklisting_height        = $this->get_post_meta( $object->ID, '_videoigniter_tracklisting_height', 185 );
-		$volume                     = $this->get_post_meta( $object->ID, '_videoigniter_volume', 100 );
-		$max_width                  = $this->get_post_meta( $object->ID, '_videoigniter_max_width' );
+		$layout                 = $this->get_post_meta( $object->ID, '_videoigniter_playlist_layout', 'right' );
+		$sticky                 = $this->get_post_meta( $object->ID, '_videoigniter_sticky_enabled', 0 );
+		$show_fullscreen_toggle = $this->get_post_meta( $object->ID, '_videoigniter_show_fullscreen_toggle', 1 );
+		$show_playback_speed    = $this->get_post_meta( $object->ID, '_videoigniter_show_playback_speed', 0 );
+		$hover_preview_enabled  = $this->get_post_meta( $object->ID, '_videoigniter_hover_preview_enabled', 0 );
+		$volume                 = $this->get_post_meta( $object->ID, '_videoigniter_volume', 100 );
+		$skip_seconds           = $this->get_post_meta( $object->ID, '_videoigniter_skip_seconds', '0' );
 
 		wp_nonce_field( basename( __FILE__ ), $object->post_type . '_nonce' );
 		?>
 		<div class="vi-module vi-module-settings">
 			<div class="vi-form-field-group">
-				<h3 class="vi-form-field-group-title"><?php esc_html_e( 'Player &amp; Track listing', 'videoigniter' ); ?></h3>
+				<h3 class="vi-form-field-group-title"><?php esc_html_e( 'Player &amp; Video listing', 'videoigniter' ); ?></h3>
 
 				<div class="vi-form-field">
-					<div class="vi-player-type-message vi-info-box"></div>
-					<label for="_videoigniter_player_type">
-						<?php esc_html_e( 'Player Type', 'videoigniter' ); ?>
+					<div class="vi-playlist-layout-message vi-info-box"></div>
+					<label for="_videoigniter_playlist_layout">
+						<?php esc_html_e( 'Playlist layout', 'videoigniter' ); ?>
 					</label>
 
 					<select
-						class="widefat vi-form-select-player-type"
-						id="_videoigniter_player_type"
-						name="_videoigniter_player_type"
+						class="widefat vi-form-select-playlist-layout"
+						id="_videoigniter_playlist_layout"
+						name="_videoigniter_playlist_layout"
 					>
-						<?php foreach ( $this->get_player_types() as $player_key => $player_type ) : ?>
+						<?php foreach ( $this->get_playlist_layouts() as $player_key => $playlist_layout ) : ?>
 							<option
 								value="<?php echo esc_attr( $player_key ); ?>"
-								data-no-support="<?php echo esc_attr( implode( ', ', $player_type['no-support'] ) ); ?>"
-								data-info="<?php echo esc_attr( $player_type['info'] ); ?>"
-								<?php selected( $type, $player_key ); ?>
+								data-no-support="<?php echo esc_attr( implode( ', ', $playlist_layout['no-support'] ) ); ?>"
+								data-info="<?php echo esc_attr( $playlist_layout['info'] ); ?>"
+								<?php selected( $layout, $player_key ); ?>
 							>
-								<?php echo wp_kses( $player_type['label'], 'strip' ); ?>
+								<?php echo wp_kses( $playlist_layout['label'], 'strip' ); ?>
 							</option>
 						<?php endforeach; ?>
 					</select>
@@ -776,13 +767,13 @@ class VideoIgniter {
 					<input
 						type="checkbox"
 						class="vi-checkbox"
-						id="_videoigniter_show_track_listing"
-						name="_videoigniter_show_track_listing"
-						value="1" <?php checked( $track_listing, true ); ?>
+						id="_videoigniter_sticky_enabled"
+						name="_videoigniter_sticky_enabled"
+						value="1" <?php checked( $sticky, true ); ?>
 					/>
 
-					<label for="_videoigniter_show_track_listing">
-						<?php esc_html_e( 'Show track listing by default', 'videoigniter' ); ?>
+					<label for="_videoigniter_sticky_enabled">
+						<?php esc_html_e( 'Sticky player on scroll', 'videoigniter' ); ?>
 					</label>
 				</div>
 
@@ -790,13 +781,13 @@ class VideoIgniter {
 					<input
 						type="checkbox"
 						class="vi-checkbox"
-						id="_videoigniter_allow_track_listing_toggle"
-						name="_videoigniter_allow_track_listing_toggle"
-						value="1" <?php checked( $track_listing_allow_toggle, true ); ?>
+						id="_videoigniter_show_fullscreen_toggle"
+						name="_videoigniter_show_fullscreen_toggle"
+						value="1" <?php checked( $show_fullscreen_toggle, true ); ?>
 					/>
 
-					<label for="_videoigniter_allow_track_listing_toggle">
-						<?php esc_html_e( 'Show track listing visibility toggle button', 'videoigniter' ); ?>
+					<label for="_videoigniter_show_fullscreen_toggle">
+						<?php esc_html_e( 'Show fullscreen toggle', 'videoigniter' ); ?>
 					</label>
 				</div>
 
@@ -804,14 +795,53 @@ class VideoIgniter {
 					<input
 						type="checkbox"
 						class="vi-checkbox"
-						id="_videoigniter_show_numbers_revese"
-						name="_videoigniter_show_numbers_reverse"
-						value="1" <?php checked( $numbers_reverse, true ); ?>
+						id="_videoigniter_show_playback_speed"
+						name="_videoigniter_show_playback_speed"
+						value="1" <?php checked( $show_playback_speed, true ); ?>
 					/>
 
-					<label for="_videoigniter_show_numbers_revese">
-						<?php esc_html_e( 'Reverse track order', 'videoigniter' ); ?>
+					<label for="_videoigniter_show_playback_speed">
+						<?php esc_html_e( 'Show playback speed controls', 'videoigniter' ); ?>
 					</label>
+				</div>
+
+				<div class="vi-form-field">
+					<input
+						type="checkbox"
+						class="vi-checkbox"
+						id="_videoigniter_hover_preview_enabled"
+						name="_videoigniter_hover_preview_enabled"
+						value="1" <?php checked( $hover_preview_enabled, true ); ?>
+					/>
+
+					<label for="_videoigniter_hover_preview_enabled">
+						<?php esc_html_e( 'Enable hover preview', 'videoigniter' ); ?>
+					</label>
+					<p class="vi-field-help">
+						<?php esc_html_e( 'The main video will start playback on mute when the user hovers over it.', 'videoigniter' ); ?>
+					</p>
+				</div>
+
+				<div class="vi-form-field">
+					<label for="_videoigniter_skip_seconds">
+						<?php esc_html_e( 'Video skipping', 'videoigniter' ); ?>
+					</label>
+
+					<select
+						class="widefat vi-form-select-skip-seconds"
+						id="_videoigniter_skip_seconds"
+						name="_videoigniter_skip_seconds"
+					>
+						<?php foreach ( $this->get_playlist_skip_options() as $option_key => $skip_option ) : ?>
+							<option
+								value="<?php echo esc_attr( $option_key ); ?>"
+								data-info="<?php echo esc_attr( $skip_option['info'] ); ?>"
+								<?php selected( $skip_seconds, $option_key ); ?>
+							>
+								<?php echo wp_kses( $skip_option['label'], 'strip' ); ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
 				</div>
 
 				<div class="vi-form-field">
@@ -825,215 +855,25 @@ class VideoIgniter {
 						max="100"
 						step="10"
 						id="_videoigniter_volume"
-						class="vi-track-title"
+						class="vi-input"
 						name="_videoigniter_volume"
 						placeholder="<?php esc_attr_e( '0-100', 'videoigniter' ); ?>"
 						value="<?php echo esc_attr( $volume ); ?>"
 					/>
 
 					<p class="vi-field-help">
-						<?php esc_html_e( 'Enter a value between 0 and 100 in increments of 10', 'videoigniter' ); ?>
-					</p>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_limit_tracklisting_height"
-						name="_videoigniter_limit_tracklisting_height"
-						value="1" <?php checked( $limit_tracklisting_height, true ); ?>
-					/>
-
-					<label for="_videoigniter_limit_tracklisting_height">
-						<?php esc_html_e( 'Limit track listing height', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<label for="_videoigniter_tracklisting_height">
-						<?php esc_html_e( 'Track listing height', 'videoigniter' ); ?>
-					</label>
-
-					<input
-						type="number"
-						min="10"
-						step="5"
-						id="_videoigniter_tracklisting_height"
-						class="vi-track-title"
-						name="_videoigniter_tracklisting_height"
-						placeholder="<?php esc_attr_e( 'Track listing height', 'videoigniter' ); ?>"
-						value="<?php echo esc_attr( $tracklisting_height ); ?>"
-					/>
-
-					<p class="vi-field-help">
-						<?php esc_html_e( 'Set a number of pixels', 'videoigniter' ); ?>
-					</p>
-				</div>
-
-				<div class="vi-form-field">
-					<label for="_videoigniter_max_width">
-						<?php esc_html_e( 'Maximum player width', 'videoigniter' ); ?>
-					</label>
-
-					<input
-						type="number"
-						id="_videoigniter_max_width"
-						class="vi-track-title"
-						name="_videoigniter_max_width"
-						placeholder="<?php esc_attr_e( 'Automatic width', 'videoigniter' ); ?>"
-						value="<?php echo esc_attr( $max_width ); ?>"
-					/>
-
-					<p class="vi-field-help">
-						<?php esc_html_e( 'Set a number of pixels, or leave empty to automatically cover 100% of the available area (recommended).', 'videoigniter' ); ?>
+						<?php esc_html_e( 'Enter a value between 0 and 100 in increments of 10.', 'videoigniter' ); ?>
 					</p>
 				</div>
 
 				<?php do_action( 'videoigniter_metabox_settings_group_player_track_listing_fields', $object, $box ); ?>
 			</div>
 
-			<div class="vi-form-field-group">
-				<h3 class="vi-form-field-group-title"><?php esc_html_e( 'Tracks', 'videoigniter' ); ?></h3>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_show_numbers"
-						name="_videoigniter_show_numbers"
-						value="1" <?php checked( $numbers, true ); ?>
-					/>
-
-					<label for="_videoigniter_show_numbers">
-						<?php esc_html_e( 'Show track numbers in tracklist', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_show_covers"
-						name="_videoigniter_show_covers"
-						value="1" <?php checked( $thumb, true ); ?>
-					/>
-
-					<label for="_videoigniter_show_covers">
-						<?php esc_html_e( 'Show track covers in tracklist', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_show_active_cover"
-						name="_videoigniter_show_active_cover"
-						value="1" <?php checked( $active_thumb, true ); ?>
-					/>
-
-					<label for="_videoigniter_show_active_cover">
-						<?php esc_html_e( "Show active track's cover", 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_show_artist"
-						name="_videoigniter_show_artist"
-						value="1" <?php checked( $artist, true ); ?>
-					/>
-
-					<label for="_videoigniter_show_artist">
-						<?php esc_html_e( 'Show artist names', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_show_buy_links"
-						name="_videoigniter_show_buy_links"
-						value="1" <?php checked( $buy_links, true ); ?>
-					/>
-
-					<label for="_videoigniter_show_buy_links">
-						<?php esc_html_e( 'Show track extra buttons (buy link, download button etc)', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_buy_links_new_target"
-						name="_videoigniter_buy_links_new_target"
-						value="1" <?php checked( $buy_links_new_target, true ); ?>
-					/>
-
-					<label for="_videoigniter_buy_links_new_target">
-						<?php esc_html_e( 'Open buy links in new window', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<?php do_action( 'videoigniter_metabox_settings_group_tracks_fields', $object, $box ); ?>
-			</div>
-
-			<div class="vi-form-field-group">
-				<h3 class="vi-form-field-group-title"><?php esc_html_e( 'Track &amp; Track listing repeat', 'videoigniter' ); ?></h3>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_cycle_tracks"
-						name="_videoigniter_cycle_tracks"
-						value="1" <?php checked( $cycle_tracks, true ); ?>
-					/>
-
-					<label for="_videoigniter_cycle_tracks">
-						<?php esc_html_e( 'Repeat track listing enabled by default', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_allow_track_listing_loop"
-						name="_videoigniter_allow_track_listing_loop"
-						value="1" <?php checked( $track_listing_allow_loop, true ); ?>
-					/>
-
-					<label for="_videoigniter_allow_track_listing_loop">
-						<?php esc_html_e( 'Show track listing repeat toggle button', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<?php do_action( 'videoigniter_metabox_settings_group_player_track_track_listing_repeat_fields', $object, $box ); ?>
-			</div>
-
-			<div class="vi-form-field">
-				<input
-					type="checkbox"
-					class="vi-checkbox"
-					id="_videoigniter_show_credit"
-					name="_videoigniter_show_credit"
-					value="1" <?php checked( $credit, true ); ?>
-				/>
-
-				<label for="_videoigniter_show_credit">
-					<?php esc_html_e( 'Show "Powered by VideoIgniter" link', 'videoigniter' ); ?>
-				</label>
-
-				<p class="vi-field-help">
-					<?php esc_html_e( "We've put a great deal of effort into building this plugin. If you feel like it, let others know about it by enabling this option.", 'videoigniter' ); ?>
-				</p>
-			</div>
+			<?php
+				// TODO probably remove these actions -- check PRO version
+				do_action( 'videoigniter_metabox_settings_group_tracks_fields', $object, $box );
+				do_action( 'videoigniter_metabox_settings_group_player_track_track_listing_repeat_fields', $object, $box );
+			?>
 		</div>
 		<?php
 	}
@@ -1068,45 +908,70 @@ class VideoIgniter {
 	}
 
 	/**
-	 * Returns the available player types and their data.
+	 * Returns the available playlist layouts
 	 *
 	 * @version NewVersion
 	 * @since   NewVersion
 	 *
 	 * @return array
 	 */
-	public function get_player_types() {
-		// Each player type has a number of settings that it might not support
-		// E.g. "Simple Player" does not support track listing visibility, covers
-		// and others. Provide every setting that's not supported based on the `name`
+	public function get_playlist_layouts() {
+		// Each playlist layout has a number of settings that it might not support
+		// Provide every setting that's not supported based on the `name`
 		// attribute of each setting input (input, select, textarea), *without
 		// the _videoigniter_ prefix* in the `no-support` array.
 		// To allow support for every setting simply set `no-support` to an empty array.
 
-		$player_types = array(
-			'full'   => array(
-				'label'      => __( 'Full Player', 'videoigniter' ),
+		$playlist_layouts = array(
+			'right'   => array(
+				'label'      => __( 'Right', 'videoigniter' ),
 				'no-support' => array(),
 				'info'       => '',
 			),
-			'simple' => array(
-				'label'      => __( 'Simple Player', 'videoigniter' ),
-				'no-support' => array(
-					'show_track_listing',
-					'show_covers',
-					'show_active_cover',
-					'limit_tracklisting_height',
-					'tracklisting_height',
-					'allow_track_listing_loop',
-					'allow_track_listing_toggle',
-					'skip_amount',
-					'initial_track',
-				),
+			'left' => array(
+				'label'      => __( 'Left', 'videoigniter' ),
+				'no-support' => array(),
+				'info'       => '',
+			),
+			'bottom' => array(
+				'label'      => __( 'Bottom', 'videoigniter' ),
+				'no-support' => array(),
 				'info'       => '',
 			),
 		);
 
-		return apply_filters( 'videoigniter_player_types', $player_types );
+		return apply_filters( 'videoigniter_playlist_layouts', $playlist_layouts );
+	}
+
+	/**
+	 * Returns the available playlist skip options
+	 *
+	 * @version NewVersion
+	 * @since   NewVersion
+	 *
+	 * @return array
+	 */
+	public function get_playlist_skip_options() {
+		$skip_options = array(
+			'0'  => array(
+				'label' => __( 'Disabled', 'videoigniter' ),
+				'info'  => '',
+			),
+			'5'  => array(
+				'label' => __( '5 seconds', 'videoigniter' ),
+				'info'  => '',
+			),
+			'10' => array(
+				'label' => __( '10 seconds', 'videoigniter' ),
+				'info'  => '',
+			),
+			'30' => array(
+				'label' => __( '30 seconds', 'videoigniter' ),
+				'info'  => '',
+			),
+		);
+
+		return apply_filters( 'videoigniter_playlist_skip_options', $skip_options );
 	}
 
 	public function save_post( $post_id ) {
@@ -1118,24 +983,13 @@ class VideoIgniter {
 		if ( ! current_user_can( $post_type_obj->cap->edit_post, $post_id ) ) { return false; }
 
 		update_post_meta( $post_id, '_videoigniter_tracks', $this->sanitizer->metabox_playlist( $_POST['vi_playlist_tracks'], $post_id ) );
-
-		update_post_meta( $post_id, '_videoigniter_show_numbers', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_numbers'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_numbers_reverse', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_numbers_reverse'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_covers', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_covers'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_active_cover', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_active_cover'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_artist', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_artist'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_buy_links', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_buy_links'] ) );
-		update_post_meta( $post_id, '_videoigniter_buy_links_new_target', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_buy_links_new_target'] ) );
-		update_post_meta( $post_id, '_videoigniter_cycle_tracks', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_cycle_tracks'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_track_listing', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_track_listing'] ) );
-		update_post_meta( $post_id, '_videoigniter_allow_track_listing_toggle', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_allow_track_listing_toggle'] ) );
-		update_post_meta( $post_id, '_videoigniter_allow_track_listing_loop', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_allow_track_listing_loop'] ) );
-		update_post_meta( $post_id, '_videoigniter_player_type', $this->sanitizer->player_type( $_POST['_videoigniter_player_type'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_credit', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_credit'] ) );
-		update_post_meta( $post_id, '_videoigniter_limit_tracklisting_height', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_limit_tracklisting_height'] ) );
-		update_post_meta( $post_id, '_videoigniter_tracklisting_height', intval( $_POST['_videoigniter_tracklisting_height'] ) );
+		update_post_meta( $post_id, '_videoigniter_playlist_layout', $this->sanitizer->playlist_layout( $_POST['_videoigniter_playlist_layout'] ) );
+		update_post_meta( $post_id, '_videoigniter_sticky_enabled', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_sticky_enabled'] ) );
+		update_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_fullscreen_toggle'] ) );
+		update_post_meta( $post_id, '_videoigniter_show_playback_speed', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_playback_speed'] ) );
+		update_post_meta( $post_id, '_videoigniter_hover_preview_enabled', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_hover_preview_enabled'] ) );
 		update_post_meta( $post_id, '_videoigniter_volume', intval( $_POST['_videoigniter_volume'] ) );
-		update_post_meta( $post_id, '_videoigniter_max_width', $this->sanitizer->intval_or_empty( $_POST['_videoigniter_max_width'] ) );
+		update_post_meta( $post_id, '_videoigniter_skip_seconds', $this->sanitizer->playlist_skip_option( $_POST['_videoigniter_skip_seconds'] ) );
 
 		/**
 		 * @since NewVersion
@@ -1147,9 +1001,9 @@ class VideoIgniter {
 		return apply_filters( 'videoigniter_default_track_values', array(
 			'cover_id'                => '',
 			'title'                   => '',
-			'artist'                  => '',
+			'description'             => '',
 			'track_url'               => '',
-			'buy_link'                => '',
+			// TODO remove download_url functionality
 			'download_url'            => '',
 			'download_uses_track_url' => 0,
 		) );
@@ -1196,6 +1050,7 @@ class VideoIgniter {
 
 	/**
 	 * Returns a data attributes array for the given playlist.
+	 * TODO: Remove this functionality and the endpoint -- it is not needed.
 	 *
 	 * @version NewVersion
 	 * @since   NewVersion
@@ -1212,27 +1067,155 @@ class VideoIgniter {
 		}
 
 		$attrs = array(
-			'data-player-type'              => $this->get_post_meta( $post_id, '_videoigniter_player_type', 'full' ),
-			'data-tracks-url'               => add_query_arg( array( 'videoigniter_playlist_id' => $post_id ), home_url( '/' ) ),
-			'data-display-track-no'         => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_numbers', 1 ) ),
-			'data-reverse-track-order'      => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_numbers_reverse', 0 ) ),
-			'data-display-tracklist-covers' => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_covers', 1 ) ),
-			'data-display-active-cover'     => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_active_cover', 1 ) ),
-			'data-display-artist-names'     => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_artist', 1 ) ),
-			'data-display-buy-buttons'      => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_buy_links', 1 ) ),
-			'data-buy-buttons-target'       => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_buy_links_new_target', 1 ) ),
-			'data-cycle-tracks'             => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_cycle_tracks', 0 ) ),
-			'data-display-credits'          => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_credit', 1 ) ),
-			'data-display-tracklist'        => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_track_listing', 1 ) ),
-			'data-allow-tracklist-toggle'   => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_allow_track_listing_toggle', 1 ) ),
-			'data-allow-tracklist-loop'     => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_allow_track_listing_loop', 1 ) ),
-			'data-limit-tracklist-height'   => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_limit_tracklisting_height', 1 ) ),
-			'data-volume'                   => intval( $this->get_post_meta( $post_id, '_videoigniter_volume', 100 ) ),
-			'data-tracklist-height'         => intval( $this->get_post_meta( $post_id, '_videoigniter_tracklisting_height', 185 ) ),
-			'data-max-width'                => $this->get_post_meta( $post_id, '_videoigniter_max_width' ),
+			'data-playlist-layout'        => $this->get_post_meta( $post_id, '_videoigniter_playlist_layout', 'right' ),
+			'data-playlist'               => $this->get_playlist_json( $post_id ),
+			'data-sticky'                 => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_sticky_enabled', 1 ) ),
+			'data-show-fullscreen-toggle' => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', 1 ) ),
+			'data-show-playback-speed'    => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_playback_speed', 0 ) ),
+			'data-hover-preview-enabled'  => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_hover_preview_enabled', 0 ) ),
+			'data-volume'                 => intval( $this->get_post_meta( $post_id, '_videoigniter_volume', 100 ) ),
+			'data-skip-seconds'           => intval( $this->get_post_meta( $post_id, '_videoigniter_skip_seconds', '0' ) ),
 		);
 
 		return apply_filters( 'videoigniter_get_playlist_data_attributes_array', $attrs, $post_id );
+	}
+
+	// TOOD: Add php doc and review
+	public function is_youtube( $url ) {
+		$pattern = '/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/';
+		return preg_match($pattern, $url);
+	}
+
+	// TOOD: Add php doc and review
+	public function is_vimeo( $url ) {
+		$pattern = '/^(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/)?(\d+)(?:|\/\?[^\s]*)?$/';
+		return preg_match($pattern, $url);
+	}
+
+	// TODO: Add php doc and review
+	public function get_video_mime_type_from_url( $url ) {
+		// TODO add more mime types (HLS specifically)
+		$mime_types = array(
+			'mp4'  => 'video/mp4',
+			'm4v'  => 'video/x-m4v',
+			'mov'  => 'video/quicktime',
+			'wmv'  => 'video/x-ms-wmv',
+			'avi'  => 'video/x-msvideo',
+			'mpg'  => 'video/mpeg',
+			'mpeg' => 'video/mpeg',
+			'mkv'  => 'video/x-matroska',
+			'webm' => 'video/webm',
+			'ogv'  => 'video/ogg',
+			'flv'  => 'video/x-flv',
+			'3gp'  => 'video/3gpp',
+			'm3u8' => 'application/x-mpegURL',
+		);
+
+		if ( $this->is_youtube( $url ) ) {
+			return 'video/youtube';
+		}
+
+		if ( $this->is_vimeo( $url ) ) {
+			return 'video/vimeo';
+		}
+
+		// TODO Improve sanitization
+		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+			return '';
+		}
+
+		$url = filter_var( $url, FILTER_SANITIZE_URL );
+
+		$file_ext = pathinfo( parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+		$file_ext = strtolower( $file_ext );
+
+		if ( array_key_exists( $file_ext, $mime_types ) ) {
+			return $mime_types[ $file_ext ];
+		}
+
+		return '';
+	}
+
+	// TODO: Add php doc and review
+	public function get_playlist_json( $playlist_id ) {
+		if ( ! $this->is_playlist( $playlist_id ) ) {
+			return '';
+		}
+
+		$tracks = $this->get_post_meta( $playlist_id, '_videoigniter_tracks', array() );
+
+		if ( empty( $tracks ) ) {
+			$tracks = array();
+		}
+
+		$playlist = array();
+
+		foreach ( $tracks as $track ) {
+			$track            = wp_parse_args( $track, self::get_default_track_values() );
+			$track_poster_url = wp_get_attachment_image_src( intval( $track['cover_id'] ), 'videoigniter_cover' );
+
+			if ( ! empty( $track_poster_url[0] ) ) {
+				$track_poster_url = $track_poster_url[0];
+			} else {
+				$track_poster_url = '';
+			}
+
+			$playlist[] = array(
+				'sources'     => array(
+					array(
+						'src'  => $track['track_url'],
+						'type' => $this->get_video_mime_type_from_url( $track['track_url'] ),
+					),
+				),
+				'poster'      => $track_poster_url,
+				'thumbnail'   => $track_poster_url,
+				'name'        => $track['title'],
+				'description' => $track['description']
+			);
+		}
+
+		return json_encode( $playlist, JSON_PRETTY_PRINT );
+	}
+
+	// TODO: Add php doc and review
+	public function render_video_tracks( $playlist_id ) {
+		if ( ! $this->is_playlist( $playlist_id ) ) {
+			return '';
+		}
+
+		$tracks = $this->get_post_meta( $playlist_id, '_videoigniter_tracks', array() );
+
+		if ( empty( $tracks ) ) {
+			$tracks = array();
+		}
+
+		$main_track       = wp_parse_args( $tracks[0], self::get_default_track_values() );
+		$track_poster_url = wp_get_attachment_image_src( intval( $main_track['cover_id'] ), 'videoigniter_cover' );
+
+		if ( ! empty( $track_poster_url[0] ) ) {
+			$track_poster_url = $track_poster_url[0];
+		} else {
+			$track_poster_url = '';
+		}
+
+		ob_start();
+		?>
+		<video
+			class="video-js vjs-fluid vi-player"
+			controls
+			preload="auto"
+			poster="<?php echo esc_attr( $track_poster_url ); ?>"
+		>
+			<source
+				src="<?php echo esc_attr( $main_track['track_url'] ); ?>"
+				type="<?php echo $this->get_video_mime_type_from_url( $main_track['track_url'] ); ?>"
+			/>
+		</video>
+		<?php
+
+		$output = ob_get_clean();
+
+		return $output;
 	}
 
 	/**
@@ -1277,14 +1260,30 @@ class VideoIgniter {
 		}
 
 		$player_classes = array_merge( array(
-			'videoigniter-root',
+			'vi-player-wrap',
 		), explode( ' ', $class_name ) );
 
-		$output = sprintf( '<div id="videoigniter-%s" class="%s" %s></div>',
+		$track_markup    = $this->render_video_tracks( $id );
+		$tracks          = $this->get_post_meta( $id, '_videoigniter_tracks', array() );
+		$playlist_layout = $this->get_post_meta( $id, '_videoigniter_playlist_layout', 'right' );
+
+		$output = sprintf( '<div id="videoigniter-%s" class="%s" %s>%s</div>',
 			esc_attr( $id ),
 			esc_attr( implode( ' ', $player_classes ) ),
-			$data
+			$data,
+			$track_markup,
 		);
+
+		if ( count( $tracks ) > 1 ) {
+			// TODO maybe there's a cleaner way to add all these wrapper divs when we have a playlist and not a single video?
+			$output = sprintf( '<div id="videoigniter-%s" class="%s" %s><div class="vi-playlist vi-playlist-layout-%s"><div class="vi-playlist-main">%s</div><div class="vi-playlist-nav"><div class="vjs-playlist"></div></div></div></div>',
+				esc_attr( $id ),
+				esc_attr( implode( ' ', $player_classes ) ),
+				$data,
+				$playlist_layout,
+				$track_markup,
+			);
+		}
 
 		return $output;
 	}
@@ -1330,9 +1329,8 @@ class VideoIgniter {
 			$track_response = array();
 
 			$track_response['title']            = $track['title'];
-			$track_response['subtitle']         = $track['artist'];
+			$track_response['description']      = $track['description'];
 			$track_response['video']            = $track['track_url'];
-			$track_response['buyUrl']           = $track['buy_link'];
 			$track_response['downloadUrl']      = $track['download_uses_track_url'] ? $track['track_url'] : $track['download_url'];
 			$track_response['downloadFilename'] = $this->get_filename_from_url( $track_response['downloadUrl'] );
 

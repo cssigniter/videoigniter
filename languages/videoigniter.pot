@@ -128,7 +128,7 @@ msgid "Shuffle"
 msgstr ""
 
 #: videoigniter.php:246
-msgid "Do you really want to remove all tracks? (This will not delete your video files)."
+msgid "Do you really want to remove all videos? (This will not delete your video files)."
 msgstr ""
 
 #: videoigniter.php:247
@@ -136,7 +136,7 @@ msgid "Select or upload video media"
 msgstr ""
 
 #: videoigniter.php:248
-msgid "Select a cover image"
+msgid "Select a poster image"
 msgstr ""
 
 #: videoigniter.php:291
@@ -196,7 +196,7 @@ msgstr ""
 
 #: videoigniter.php:328
 #: videoigniter.php:854
-msgid "Tracks"
+msgid "Videos"
 msgstr ""
 
 #: videoigniter.php:329
@@ -275,11 +275,11 @@ msgid "Download URL"
 msgstr ""
 
 #: videoigniter.php:636
-msgid "Remove Track"
+msgid "Remove Video"
 msgstr ""
 
 #: videoigniter.php:651
-msgid "Add Track"
+msgid "Add Video"
 msgstr ""
 
 #: videoigniter.php:658
@@ -295,7 +295,7 @@ msgid "Collapse All"
 msgstr ""
 
 #: videoigniter.php:706
-msgid "Player &amp; Track listing"
+msgid "Player &amp; Video listing"
 msgstr ""
 
 #: videoigniter.php:711

@@ -12,24 +12,45 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class VideoIgniter_Sanitizer {
 	/**
-	 * Sanitizes the player type.
+	 * Sanitizes the playlist layout.
 	 *
 	 * @version NewVersion
 	 * @since   NewVersion
 	 *
-	 * @uses VideoIgniter->get_player_types()
+	 * @uses VideoIgniter->get_playlist_layouts()
 	 *
-	 * @param string $value Player type to sanitize.
+	 * @param string $value Playlist layout to sanitize.
 	 *
 	 * @return string
 	 */
-	public static function player_type( $value ) {
-		$choices = VideoIgniter()->get_player_types();
+	public static function playlist_layout( $value ) {
+		$choices = VideoIgniter()->get_playlist_layouts();
 		if ( array_key_exists( $value, $choices ) ) {
 			return $value;
 		}
 
-		return 'full';
+		return 'right';
+	}
+
+	/**
+	 * Sanitizes playlist skipping options.
+	 *
+	 * @version NewVersion
+	 * @since   NewVersion
+	 *
+	 * @uses VideoIgniter->get_playlist_skip_options()
+	 *
+	 * @param string $value Skipping value to sanitize.
+	 *
+	 * @return string
+	 */
+	public static function playlist_skip_option( $value ) {
+		$choices = VideoIgniter()->get_playlist_skip_options();
+		if ( array_key_exists( $value, $choices ) ) {
+			return $value;
+		}
+
+		return '0';
 	}
 
 	/**
@@ -82,9 +103,8 @@ class VideoIgniter_Sanitizer {
 
 		$sanitized_track['cover_id']                = intval( $track['cover_id'] );
 		$sanitized_track['title']                   = sanitize_text_field( $track['title'] );
-		$sanitized_track['artist']                  = sanitize_text_field( $track['artist'] );
+		$sanitized_track['description']             = sanitize_text_field( $track['description'] );
 		$sanitized_track['track_url']               = esc_url_raw( $track['track_url'] );
-		$sanitized_track['buy_link']                = esc_url_raw( $track['buy_link'] );
 		$sanitized_track['download_url']            = esc_url_raw( $track['download_url'] );
 		$sanitized_track['download_uses_track_url'] = ! empty( $track['download_uses_track_url'] ) ? 1 : 0;
 

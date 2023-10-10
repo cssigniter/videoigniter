@@ -1,0 +1,1119 @@
+/* VideoIgniter Player
+==================================== */
+.vi-player-wrap {
+  --vi-player-color-primary: #ff0000;
+  --vi-player-color-controls: #ffffff;
+  --vi-player-color-white: #ffffff;
+  --vi-player-color-black: #000000;
+  --vi-player-color-gray-1: #191919;
+  --vi-player-color-gray-2: #303030;
+
+  --vi-player-font-family: system-ui, sans-serif;
+  --vi-player-control-bar-height: 50px;
+  --vi-player-progress-bar-height: 4px;
+  --vi-player-control-icon-size: 24px;
+  --vi-player-border-radius: 4px;
+}
+
+/* VideoIgniter player default skin
+==================================== */
+.vi-player {
+  max-width: 100%;
+  font-family: var(--vi-player-font-family);
+  font-size: 13px;
+}
+
+.vi-player {
+  font-family: var(--vi-player-font-family);
+  font-weight: normal;
+  font-size: 13px;
+  position: relative;
+}
+
+/* Control bar */
+.vi-player .vjs-control-bar {
+  height: var(--vi-player-control-bar-height);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  z-index: 1;
+  width: calc(100% - 20px);
+  padding-left: 10px;
+  transition: opacity 0.25s ease;
+}
+
+.vi-player:not(.vjs-hover-preview-running):hover .vjs-control-bar,
+.vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-control-bar {
+  opacity: 1;
+}
+
+.vi-player.vjs-hover-preview-running {
+  cursor: pointer;
+}
+
+.vi-player .vjs-control-bar::after {
+  content: '';
+  position: absolute;
+  width: calc(100% + 20px);
+  height: calc(100% + var(--vi-player-control-bar-height) / 1.5);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  z-index: -1;
+  bottom: 0;
+  left: 0;
+}
+
+/* Layout spacer */
+.vi-player .vjs-custom-control-spacer {
+  display: block;
+  flex: auto;
+}
+
+/* Controls */
+.vi-player .vjs-big-play-button {
+  display: none;
+}
+
+.vi-player .vjs-control {
+  height: 100%;
+  width: 36px;
+}
+
+@media (min-width: 750px) {
+  .vi-player .vjs-control {
+    width: 42px;
+  }
+}
+
+/* Progress bar */
+.vi-player .vjs-progress-control {
+  position: absolute;
+  top: calc(-1 * var(--vi-player-progress-bar-height));
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+.vi-player .vjs-slider {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.vi-player .vjs-progress-holder::before {
+  content: '';
+  display: block;
+  width: 100%;
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  height: calc(100% + 15px);
+  cursor: pointer;
+}
+
+.vi-player .vjs-progress-control .vjs-progress-holder {
+  height: var(--vi-player-progress-bar-height);
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.vi-player .vjs-progress-control:hover .vjs-slider.vjs-progress-holder {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.vi-player .vjs-progress-control .vjs-progress-holder .vjs-play-progress {
+  background: var(--vi-player-color-primary);
+}
+
+.vi-player .vjs-progress-control .vjs-progress-holder .vjs-load-progress div {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.vi-player .vjs-progress-control:hover .vjs-progress-holder .vjs-load-progress div {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.vi-player .vjs-progress-control .vjs-load-progress {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.vi-player .vjs-progress-control:hover .vjs-slider {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.vi-player .vjs-progress-control .vjs-progress-holder .vjs-play-progress .vjs-svg-icon,
+.vi-player .vjs-progress-control:hover .vjs-progress-holder .vjs-play-progress .vjs-svg-icon {
+  top: -4px;
+  right: -8px;
+  width: 13px;
+  height: 13px;
+  pointer-events: none;
+  line-height: 0.15em;
+  font-size: 12px;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  transform: scale(0);
+}
+
+.vi-player .vjs-play-progress:before {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  font-size: 17px;
+  line-height: 0;
+  right: -6px;
+  top: -5px;
+  border-radius: 50%;
+  background: var(--vi-player-color-primary);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  transform: scale(0);
+  pointer-events: none;
+}
+
+.vi-player .vjs-progress-control:hover .vjs-play-progress::before,
+.vi-player .vjs-progress-control:hover .vjs-progress-holder .vjs-play-progress .vjs-svg-icon {
+  transform: scale(1);
+}
+
+.vi-player .vjs-play-progress .vjs-svg-icon svg {
+  fill: var(--vi-player-color-primary);
+  transition: opacity 0.18s ease;
+}
+
+.vi-player .vjs-progress-control:hover .vjs-svg-icon svg {
+  opacity: 1;
+}
+
+.vi-player .vjs-play-progress .vjs-time-tooltip {
+  display: none !important;
+}
+
+.vi-player .vjs-time-control.vjs-remaining-time {
+  display: none;
+}
+
+.vi-player .vjs-time-control {
+  display: block;
+}
+
+.vi-player .vjs-time-control.vjs-time-divider {
+  padding-left: 4px;
+  padding-right: 5px;
+  min-width: 0;
+  width: auto;
+}
+
+.vi-player .vjs-time-control.vjs-duration {
+  padding-left: 0;
+}
+
+/* Volume control */
+.vi-player .vjs-volume-panel .vjs-volume-control {
+  align-items: center !important;
+  height: 100% !important;
+}
+
+.vi-player .vjs-volume-panel.vjs-volume-panel-horizontal.vjs-hover,
+.vi-player .vjs-volume-panel.vjs-volume-panel-horizontal:active,
+.vi-player .vjs-volume-panel.vjs-volume-panel-horizontal.vjs-slider-active {
+  width: 110px;
+}
+
+/* Time control */
+.vi-player .vjs-time-control {
+  line-height: var(--vi-player-control-bar-height);
+  height: 100%;
+  width: auto;
+  padding-right: 0;
+}
+
+/* Playback speed control */
+.vi-player .vjs-playback-rate .vjs-playback-rate-value {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Buttons hover effect */
+.vi-player .vjs-button {
+  opacity: 0.85;
+  transition: opacity 0.18s ease;
+}
+
+.vi-player .vjs-button:hover {
+  opacity: 1;
+}
+
+/* Menus */
+.vi-player .vjs-menu-button-popup .vjs-menu {
+  width: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  height: auto;
+  bottom: 100%;
+  margin-bottom: -10px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.18s ease,
+    visibility 0s ease 0.35s;
+  display: block;
+}
+
+.vi-player .vjs-menu-button.vjs-hover .vjs-menu {
+  transition-delay: 0s, 0s;
+  visibility: visible;
+  opacity: 1;
+}
+
+.vi-player .vjs-menu .vjs-menu-content {
+  background-color: var(--vi-player-color-gray-1);
+  border-radius: var(--vi-player-border-radius);
+  font-family: var(--vi-player-font-family);
+  width: auto;
+  padding: 5px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  bottom: auto;
+}
+
+.vi-player .vjs-menu li {
+  font-size: 13px;
+  padding: 6px 25px 6px 30px;
+  margin: 1px 0;
+  display: block;
+  text-align: left;
+  position: relative;
+  white-space: nowrap;
+  text-transform: capitalize;
+  transition: background-color 0.18s ease;
+}
+
+.vi-player .vjs-menu li.vjs-menu-item:focus,
+.vi-player .vjs-menu li.vjs-menu-item:hover,
+.vi-player .js-focus-visible .vjs-menu li.vjs-menu-item:hover {
+  background-color: var(--vi-player-color-gray-2);
+}
+
+.vi-player .vjs-menu li.vjs-selected,
+.vi-player .vjs-menu li.vjs-selected:focus,
+.vi-player .vjs-menu li.vjs-selected:hover,
+.vi-player .js-focus-visible .vjs-menu li.vjs-selected:hover {
+  background-color: var(--vi-player-color-gray-2);
+  color: var(--vi-player-color-white);
+}
+
+.vi-player .vjs-menu li.vjs-selected::before {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23ffffff' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M5 12l5 5l10 -10' /%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px;
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.vi-player
+  .vjs-subs-caps-button
+  + .vjs-menu
+  .vjs-captions-menu-item
+  .vjs-menu-item-text
+  .vjs-icon-placeholder::before {
+  display: block;
+  width: 22px;
+  height: 16px;
+  background-size: 22px !important;
+  margin: 0 0 0 4px;
+  position: relative;
+  top: -1px;
+}
+
+/* Loading spinner */
+.vi-player .vjs-loading-spinner {
+  border: 0;
+  width: 50px;
+  height: 50px;
+}
+
+.vi-player .vjs-loading-spinner::before {
+  content: '';
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  border: 4px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  border-top-color: var(--vi-player-color-white);
+  transform: none;
+  animation: vjs-spinner-spin 1s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+.vi-player .vjs-loading-spinner::after {
+  display: none;
+}
+
+/* Modals */
+.vi-player .vjs-modal-dialog {
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+}
+
+/* Modal Settings */
+.vi-player .vjs-text-track-settings legend {
+  font-size: 16px;
+  padding: 0;
+  font-weight: bolder;
+}
+
+.vi-player .vjs-text-track-settings fieldset span {
+  padding: 0;
+  margin-right: 10px;
+}
+
+.vi-player .vjs-text-track-settings .vjs-label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.vi-player .vjs-text-track-settings select {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: var(--vi-player-border-radius);
+  background-clip: padding-box;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 15px) 50%,
+    calc(100% - 10px) 50%;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+  max-width: 100%;
+  font-family: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  padding: 5px 15px;
+  padding-right: 30px;
+  box-shadow: none;
+}
+
+.vi-player .vjs-track-settings-controls button {
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  padding: 8px 15px;
+  text-decoration: none;
+  background: var(--vi-player-color-white);
+  box-shadow: 0 0 0 1px var(--vi-player-color-white);
+  color: rgba(0, 0, 0, 0.8);
+  min-width: 80px;
+  height: auto;
+  font-size: 14px;
+  border-radius: var(--vi-player-border-radius);
+  font-weight: bolder;
+  word-break: break-word;
+  text-transform: none;
+}
+
+.vi-player .vjs-track-settings-controls button:hover {
+  box-shadow: 0 0 0 2px var(--vi-player-color-white);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.vi-player button.vjs-done-button {
+  background: var(--vi-player-color-primary);
+  box-shadow: 0 0 0 1px var(--vi-player-color-primary);
+  color: var(--vi-player-color-white);
+}
+
+.vi-player button.vjs-done-button:hover {
+  background: var(--vi-player-color-primary);
+  box-shadow: 0 0 0 2px var(--vi-player-color-primary);
+  color: var(--vi-player-color-white);
+}
+
+/* Errors */
+.vi-player.vjs-error .vjs-error-display .vjs-modal-dialog-content {
+  text-align: center;
+  font-size: 15px;
+  margin: 0 auto;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.vi-player.vjs-error .vjs-error-display .vjs-modal-dialog-content::before {
+  display: flex;
+  content: '';
+  background: url('../icons/alert.svg') center center / 100% no-repeat;
+  width: 42px;
+  height: 42px;
+  position: static;
+  margin: -20px auto 20px;
+}
+
+.vi-player.vjs-error .vjs-error-display:before {
+  display: none;
+}
+
+/* Icons */
+.vi-player .vjs-icon-placeholder::before {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vi-player .vjs-play-control.vjs-button .vjs-icon-placeholder::before {
+  content: '';
+  background: url('../icons/play.svg') center center / var(--vi-player-control-icon-size) no-repeat;
+}
+
+.vi-player .vjs-play-control.vjs-button.vjs-playing .vjs-icon-placeholder::before {
+  content: '';
+  background: url('../icons/pause.svg') center center / var(--vi-player-control-icon-size) no-repeat;
+}
+
+.vi-player .vjs-icon-volume-high:before,
+.vi-player .vjs-mute-control .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/volume.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-volume-mid:before,
+.vi-player .vjs-mute-control.vjs-vol-2 .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/volume-mid.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-volume-low:before,
+.vi-player .vjs-mute-control.vjs-vol-1 .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/volume-low.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-volume-mute:before,
+.vi-player .vjs-mute-control.vjs-vol-0 .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/volume-mute.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-picture-in-picture-enter:before,
+.vi-player .vjs-picture-in-picture-control .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/picture-in-picture.svg') center center /
+    var(--vi-player-control-icon-size) no-repeat;
+}
+
+.vi-player .vjs-icon-picture-in-picture-exit:before,
+.vi-player.vjs-picture-in-picture .vjs-picture-in-picture-control .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/picture-in-picture-off.svg') center center /
+    var(--vi-player-control-icon-size) no-repeat;
+}
+
+.vi-player .vjs-icon-fullscreen-enter:before,
+.vi-player .vjs-fullscreen-control .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/maximize.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-fullscreen-exit:before,
+.vi-player.vjs-fullscreen .vjs-fullscreen-control .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/minimize.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player
+  .vjs-subs-caps-button
+  + .vjs-menu
+  .vjs-captions-menu-item
+  .vjs-menu-item-text
+  .vjs-icon-placeholder:before,
+.vi-player .vjs-icon-captions:before,
+.vi-player:lang(en) .vjs-subs-caps-button .vjs-icon-placeholder:before,
+.vi-player:lang(fr-CA) .vjs-subs-caps-button .vjs-icon-placeholder:before,
+.vi-player .vjs-captions-button .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/captions.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-cancel:before,
+.vi-player .vjs-control.vjs-close-button .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/square-x.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-audio:before,
+.vi-player .vjs-audio-button .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/headphones.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player .vjs-icon-chapters:before,
+.vi-player .vjs-chapters-button .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/list.svg') center center / var(--vi-player-control-icon-size) no-repeat;
+}
+
+.vi-player .vjs-icon-replay:before,
+.vi-player .vjs-play-control.vjs-ended .vjs-icon-placeholder:before {
+  content: '';
+  background: url('../icons/replay.svg') center center / var(--vi-player-control-icon-size)
+    no-repeat;
+}
+
+.vi-player [class^="vjs-skip-forward"] .vjs-icon-placeholder::before,
+.vi-player [class^="vjs-skip-forward"]::before {
+  content: '';
+  background: url('../icons/skip-forward.svg') center center / var(--vi-player-control-icon-size)
+  no-repeat;
+}
+
+.vi-player [class^="vjs-skip-backward"] .vjs-icon-placeholder::before,
+.vi-player [class^="vjs-skip-backward"]::before {
+  content: '';
+  background: url('../icons/skip-backward.svg') center center / var(--vi-player-control-icon-size)
+  no-repeat;
+}
+
+/* Chapters / Timeline
+==================================== */
+.vi-player .vjs-chapter-timeline {
+  position: absolute;
+  bottom: -2px;
+  height: calc(100% + 4px);
+  background-color: transparent;
+  pointer-events: none;
+  transition: height 0.2s ease;
+}
+
+.vi-player .vjs-chapter-timeline::before {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 0;
+  height: calc(100% - 4px);
+  width: 4px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.vi-player .vjs-chapter-timeline.vjs-chapter-timeline-current {
+  background-color: var(--vi-player-color-white);
+}
+
+.vi-player .vjs-chapter-timeline-progress {
+  position: absolute;
+  width: 0;
+  height: 100%;
+  background: var(--vi-player-color-primary);
+  z-index: 1;
+  opacity: 0;
+}
+
+.vi-player .vjs-chapter-timeline.vjs-chapter-timeline-current .vjs-chapter-timeline-progress {
+  opacity: 1;
+}
+
+.vi-player .vjs-time-tooltip-chapter-title {
+  display: block;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+
+.vi-player .vjs-time-tooltip-with-chapter-title {
+  margin-top: -20px;
+}
+
+/* Branding
+==================================== */
+.vi-player .vjs-poster {
+  z-index: -1;
+}
+
+.vi-player .vjs-branding {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.25s ease 0s;
+  width: 36%;
+}
+
+.vi-player:not(.vjs-hover-preview-running):hover .vjs-branding,
+.vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-branding {
+  opacity: 1;
+}
+
+.vi-player .vjs-branding-top-left {
+  top: 15px;
+  left: 15px;
+}
+
+.vi-player .vjs-branding-top-right {
+  top: 15px;
+  right: 15px;
+}
+
+.vi-player .vjs-branding-bottom-left {
+  bottom: calc(var(--vi-player-control-bar-height) + 15px);
+  left: 15px;
+}
+
+.vi-player .vjs-branding-bottom-right {
+  bottom: calc(var(--vi-player-control-bar-height) + 15px);
+  right: 15px;
+}
+
+.vi-player.vjs-controls-disabled .vjs-branding-bottom-left,
+.vi-player.vjs-controls-disabled .vjs-branding-bottom-right {
+  bottom: 15px;
+}
+
+/* Playlist
+==================================== */
+.vi-playlist {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 5px;
+}
+
+.vi-playlist-main {
+  flex: none;
+}
+
+.vi-playlist-nav {
+  flex: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
+  padding-bottom: 2px;
+}
+
+.vi-playlist-nav::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.vi-playlist-nav::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.vi-playlist-nav::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 10px;
+}
+
+.vi-playlist .vjs-playlist-item-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  grid-gap: 5px;
+}
+
+.vi-playlist .vjs-playlist-item {
+  padding: 0;
+  margin: 0;
+  position: relative;
+  cursor: pointer;
+  background-color: var(--vi-player-color-black);
+  overflow: hidden;
+  flex: none;
+  width: 28%;
+}
+
+.vi-playlist .vjs-playlist-item::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  transition: background-color 0.2s ease;
+  z-index: 1;
+}
+
+.vi-playlist .vjs-playlist-item:hover::before {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.vi-playlist .vjs-playlist-item.vjs-selected::before {
+  background: rgba(0, 0, 0, 0);
+}
+
+.vi-playlist .vjs-playlist-item .vjs-playlist-thumbnail {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.vi-playlist .vjs-playlist-item .vjs-playlist-thumbnail::after {
+  content: '';
+  width: 0;
+  height: 0;
+  padding-bottom: 56.25%;
+}
+
+.vi-playlist .vjs-playlist-item .vjs-playlist-thumbnail::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+}
+
+.vi-playlist .vjs-playlist-item .vjs-playlist-thumbnail img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+}
+
+.vi-playlist .vjs-playlist-title-container {
+  font-size: 14px;
+  text-decoration: none;
+  font-style: normal;
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px;
+  width: 100%;
+}
+
+.vi-playlist .vjs-playlist-name {
+  color: var(--vi-player-color-white);
+  text-decoration: none;
+  font-style: normal;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  line-height: 1.35;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.vi-playlist .vjs-playlist-item.vjs-selected .vjs-playlist-name,
+.vi-playlist .vjs-playlist-item:hover .vjs-playlist-name {
+  opacity: 1;
+}
+
+.vi-playlist .vjs-playlist-name[title='Untitled Video'] {
+  display: none;
+}
+
+.vi-playlist .vjs-playlist-duration {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  padding: 3px 6px 4px;
+  color: var(--vi-player-color-white);
+  font-size: 10px;
+  text-transform: uppercase;
+  line-height: 1;
+  border-radius: var(--vi-player-border-radius);
+  font-weight: bolder;
+  margin-bottom: 4px;
+  background-color: var(--vi-player-color-gray-2);
+}
+
+.vi-playlist .vjs-up-next-text {
+  position: relative;
+  padding: 3px 6px 4px;
+  color: var(--vi-player-color-white);
+  font-size: 10px;
+  text-transform: uppercase;
+  line-height: 1;
+  border-radius: var(--vi-player-border-radius);
+  display: none;
+  font-weight: bolder;
+  margin-bottom: 4px;
+  background-color: var(--vi-player-color-gray-2);
+}
+
+/* TODO decide if we keep this, i think only when auto play is on */
+.vi-playlist .vjs-up-next .vjs-up-next-text {
+  /*display: block;*/
+}
+
+.vi-playlist .vjs-playlist-now-playing-text {
+  display: none;
+}
+
+.vi-playlist .vjs-playlist-ad-overlay {
+  display: none;
+}
+
+@media (min-width: 750px) {
+  .vi-playlist .vjs-playlist-item {
+    width: 22%;
+  }
+
+  .vi-playlist .vjs-playlist-name {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 990px) {
+  .vi-playlist.vi-playlist-layout-left,
+  .vi-playlist.vi-playlist-layout-right {
+    display: grid;
+    grid-template-columns: 8fr 2fr;
+    grid-gap: 5px;
+  }
+
+  .vi-playlist-layout-left .vi-playlist-nav,
+  .vi-playlist-layout-right .vi-playlist-nav {
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 100%;
+    height: 0;
+    padding-bottom: 0;
+    overscroll-behavior: none;
+  }
+
+  .vi-playlist-layout-left .vjs-playlist-item-list,
+  .vi-playlist-layout-right .vjs-playlist-item-list {
+    flex-direction: column;
+  }
+
+  .vi-playlist-layout-left .vjs-playlist-item,
+  .vi-playlist-layout-right .vjs-playlist-item {
+    width: 100%;
+  }
+
+  .vi-playlist.vi-playlist-layout-left {
+    grid-template-columns: 2fr 8fr;
+  }
+
+  .vi-playlist.vi-playlist-layout-left .vi-playlist-nav {
+    order: -1;
+  }
+}
+
+/* Overlays
+==================================== */
+.vi-player .vjs-overlay {
+  position: absolute;
+  z-index: 1;
+  max-width: 100%;
+  width: 30em;
+  background-color: var(--vi-player-color-white);
+  color: var(--vi-player-color-gray-2);
+  line-height: normal;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    bottom 0.2s ease;
+  padding: 1em;
+  border-radius: var(--vi-player-border-radius);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.vi-player.vjs-layout-small .vjs-overlay,
+.vi-player.vjs-layout-x-small .vjs-overlay,
+.vi-player.vjs-layout-tiny .vjs-overlay {
+  font-size: 9px;
+  padding: 0.5em;
+}
+
+.vi-player .vjs-overlay-inner {
+  display: flex;
+  align-items: flex-start;
+  grid-gap: 10px;
+  text-decoration: none;
+  color: currentColor;
+}
+
+.vi-player .vjs-overlay.vjs-overlay-visible {
+  opacity: 0.75;
+  visibility: visible;
+}
+
+.vi-player .vjs-overlay.vjs-overlay-visible:hover {
+  opacity: 1 !important;
+  visibility: visible;
+}
+
+.vi-player:not(.vjs-hover-preview-running):hover .vjs-overlay.vjs-overlay-visible,
+.vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-overlay.vjs-overlay-visible {
+  opacity: 0.95;
+  visibility: visible;
+}
+
+.vi-player .vjs-overlay-top-left {
+  top: 15px;
+  left: 15px;
+}
+
+.vi-player .vjs-overlay-top-right {
+  top: 15px;
+  right: 15px;
+}
+
+.vi-player .vjs-overlay-bottom-left {
+  bottom: calc(var(--vi-player-control-bar-height) + 15px);
+  left: 15px;
+}
+
+.vi-player .vjs-overlay-bottom-right {
+  bottom: calc(var(--vi-player-control-bar-height) + 15px);
+  right: 15px;
+}
+
+.vi-player:not(:hover) .vjs-overlay-bottom-left,
+.vi-player:not(:hover) .vjs-overlay-bottom-right {
+  bottom: 15px;
+}
+
+.vi-player .vjs-overlay-image-wrap {
+  flex: none;
+  width: 8em;
+  height: auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--vi-player-border-radius);
+  overflow: hidden;
+}
+
+.vi-player.vjs-layout-small .vjs-overlay-image-wrap,
+.vi-player.vjs-layout-x-small .vjs-overlay-image-wrap,
+.vi-player.vjs-layout-tiny .vjs-overlay-image-wrap {
+  width: 6em;
+}
+
+.vi-player .vjs-overlay-title {
+  font-weight: bolder;
+  font-size: 1.4em;
+  margin: 0 0 0.3em;
+}
+
+.vi-player .vjs-overlay-text {
+  font-size: 1.3em;
+  margin: 0;
+}
+
+.vi-player .vjs-overlay-dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  font-size: 16px;
+  padding: 0.5em;
+  color: currentColor;
+  line-height: 1;
+  z-index: 10;
+  cursor: pointer;
+}
+
+.vi-player .vjs-overlay-dismiss::before {
+  content: '\00d7';
+}
+
+/* Sticky player
+==================================== */
+@keyframes vi-fade-in-up {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (min-width: 990px) {
+  .vjs-stuck {
+    background-color: var(--vi-player-color-black);
+  }
+
+  .vjs-stuck .vjs-sticky-parent {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 360px;
+    transform: translateY(100%);
+    animation: vi-fade-in-up 0.25s ease forwards;
+    z-index: 201;
+  }
+
+  .vjs-stuck
+    .vjs-control-bar
+    > .vjs-control:not(
+      .vjs-progress-control,
+      .vjs-play-control,
+      .vjs-volume-panel,
+      .vjs-fullscreen-control
+    ),
+  .vjs-stuck .vjs-time-control,
+  .vjs-stuck .vjs-branding,
+  .vjs-stuck .vjs-overlay {
+    display: none;
+  }
+}
+
+/* Responsive
+==================================== */
+.vi-player.vjs-layout-x-small .vjs-progress-control,
+.vi-player.vjs-layout-tiny .vjs-progress-control {
+  display: block;
+}
+
+.vi-player.vjs-layout-small,
+.vi-player.vjs-layout-x-small,
+.vi-player.vjs-layout-tiny {
+  --vi-player-control-bar-height: 42px;
+}
