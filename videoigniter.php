@@ -982,7 +982,7 @@ class VideoIgniter {
 								id="vi_playlist_tracks-{uid}-overlays_position"
 								name="position"
 							>
-								<?php foreach ( $this->get_track_overlay_positions() as $position_key => $position ) : ?>
+								<?php foreach ( self::get_track_overlay_positions() as $position_key => $position ) : ?>
 									<option
 										value="<?php echo esc_attr( $position_key ); ?>"
 										data-info="<?php echo esc_attr( $position['info'] ); ?>"
@@ -1271,7 +1271,7 @@ class VideoIgniter {
 	 *
 	 * @return array
 	 */
-	public function get_track_overlay_positions() {
+	public static function get_track_overlay_positions() {
 		$overlay_positions = array(
 			'top-left'     => array(
 				'label' => __( 'Top left', 'videoigniter' ),
