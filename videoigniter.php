@@ -538,14 +538,8 @@ class VideoIgniter {
 		$subtitles    = $track['subtitles'];
 		$overlays     = $track['overlays'];
 
-		$cover_url = wp_get_attachment_image_src( intval( $cover_id ), 'thumbnail' );
-		if ( ! empty( $cover_url[0] ) ) {
-			$cover_url  = $cover_url[0];
-			$cover_data = wp_prepare_attachment_for_js( intval( $cover_id ) );
-		} else {
-			$cover_url  = '';
-			$cover_data = '';
-		}
+		$cover_url  = (string) wp_get_attachment_image_url( (int) $cover_id, 'thumbnail' );
+		$cover_data = $cover_url ? wp_prepare_attachment_for_js( (int) $cover_id ) : '';
 
 		$uid = uniqid();
 
@@ -701,7 +695,8 @@ class VideoIgniter {
 					>
 						<div class="vi-repeatable-fields-content">
 							<?php foreach ( $subtitles as $subtitle ) : ?>
-								<vi-subtitles-field data-data='<?php echo json_encode( $subtitle ); ?>'></vi-subtitles-field>
+								<?php $subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() ); ?>
+								<vi-subtitles-field data-data="<?php echo esc_attr( wp_json_encode( $subtitle ) ); ?>"></vi-subtitles-field>
 							<?php endforeach; ?>
 						</div>
 
@@ -724,28 +719,12 @@ class VideoIgniter {
 						data-name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][overlays]"
 					>
 						<div class="vi-repeatable-fields-content">
-							<?php
-								foreach ( $overlays as $overlay ) :
-									$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
-
-									if ( ! empty( $overlay_image_url[0] ) ) {
-										$overlay_image_url = $overlay_image_url[0];
-									} else {
-										$overlay_image_url = '';
-									}
-
-									$overlay = array(
-										'title'      => $overlay['title'],
-										'text'       => $overlay['text'],
-										'url'        => $overlay['url'],
-										'start_time' => $overlay['start_time'],
-										'end_time'   => $overlay['end_time'],
-										'image_id'   => $overlay['image_id'],
-										'image_url'  => $overlay_image_url,
-										'position'   => $overlay['position'],
-									);
-							?>
-								<vi-overlays-field data-data='<?php echo json_encode( $overlay ); ?>'></vi-overlays-field>
+							<?php foreach ( $overlays as $overlay ) : ?>
+								<?php
+									$overlay = wp_parse_args( $overlay, self::get_default_track_overlay_values() );
+									$overlay['image_url'] = (string) wp_get_attachment_image_url( (int) $overlay['image_id'], 'thumbnail' );
+								?>
+								<vi-overlays-field data-data="<?php echo esc_attr( wp_json_encode( $overlay ) ); ?>"></vi-overlays-field>
 							<?php endforeach; ?>
 						</div>
 
@@ -1344,27 +1323,8 @@ class VideoIgniter {
 			'description'  => '',
 			'track_url'    => '',
 			'chapters_url' => '',
-			'subtitles'    => '{}',
-			'overlays'     => '{}',
-			// TODO anastis: this should be uncommented below i guess
-//			'subtitles' => array(
-//				array(
-//					'url'     => '',
-//					'label'   => '',
-//					'srclang' => '',
-//				)
-//			),
-//			'overlays' => array(
-//				array(
-//					'url'        => '',
-//					'title'      => '',
-//					'text'       => '',
-//					'image_id'   => '',
-//					'start_time' => '',
-//					'end_time'   => '',
-//					'position'   => 'top-left'
-//				),
-//			)
+			'subtitles'    => array(),
+			'overlays'     => array(),
 		) );
 	}
 
@@ -1535,13 +1495,7 @@ class VideoIgniter {
 
 		foreach ( $tracks as $track ) {
 			$track            = wp_parse_args( $track, self::get_default_track_values() );
-			$track_poster_url = wp_get_attachment_image_src( intval( $track['cover_id'] ), 'videoigniter_cover' );
-
-			if ( ! empty( $track_poster_url[0] ) ) {
-				$track_poster_url = $track_poster_url[0];
-			} else {
-				$track_poster_url = '';
-			}
+			$track_poster_url = (string) wp_get_attachment_image_url( (int) $track['cover_id'], 'videoigniter_cover' );
 
 			$text_tracks = array();
 
@@ -1554,9 +1508,11 @@ class VideoIgniter {
 				);
 			}
 
-			if ( ! empty ( $track['subtitles'] ) ) {
+			if ( ! empty( $track['subtitles'] ) ) {
 				$subtitles = $track['subtitles'];
 				foreach ( $subtitles as $subtitle ) {
+					$subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
+
 					$text_tracks[] = array(
 						'kind'    => 'subtitles',
 						'label'   => $subtitle['label'],
@@ -1568,16 +1524,10 @@ class VideoIgniter {
 
 			$overlay_array = array();
 
-			if ( ! empty ( $track['overlays'] ) ) {
+			if ( ! empty( $track['overlays'] ) ) {
 				$overlays = $track['overlays'];
 				foreach ( $overlays as $overlay ) {
-					$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
-
-					if ( ! empty( $overlay_image_url[0] ) ) {
-						$overlay_image_url = $overlay_image_url[0];
-					} else {
-						$overlay_image_url = '';
-					}
+					$overlay = wp_parse_args( $overlay, self::get_default_track_overlay_values() );
 
 					$overlay_array[] = array(
 						'title'     => $overlay['title'],
@@ -1585,7 +1535,7 @@ class VideoIgniter {
 						'url'       => $overlay['url'],
 						'startTime' => $overlay['start_time'],
 						'endTime'   => $overlay['end_time'],
-						'imageUrl'  => $overlay_image_url,
+						'imageUrl'  => (string) wp_get_attachment_image_url( (int) $overlay['image_id'], 'thumbnail' ),
 						'position'  => $overlay['position'],
 					);
 				}
@@ -1607,7 +1557,7 @@ class VideoIgniter {
 			);
 		}
 
-		return json_encode( $playlist, JSON_PRETTY_PRINT );
+		return wp_json_encode( $playlist, JSON_PRETTY_PRINT );
 	}
 
 	// TODO: Add php doc and review
@@ -1623,26 +1573,16 @@ class VideoIgniter {
 		}
 
 		$main_track       = wp_parse_args( $tracks[0], self::get_default_track_values() );
-		$track_poster_url = wp_get_attachment_image_src( intval( $main_track['cover_id'] ), 'videoigniter_cover' );
+		$track_poster_url = (string) wp_get_attachment_image_url( (int) $main_track['cover_id'], 'videoigniter_cover' );
 
-		if ( ! empty( $track_poster_url[0] ) ) {
-			$track_poster_url = $track_poster_url[0];
-		} else {
-			$track_poster_url = '';
-		}
+		$subtitles = ! empty( $main_track['subtitles'] ) ? $main_track['subtitles'] : array();
 
 		$overlay_array = array();
 
-		if ( ! empty ( $main_track['overlays'] ) ) {
+		if ( ! empty( $main_track['overlays'] ) ) {
 			$overlays = $main_track['overlays'];
 			foreach ( $overlays as $overlay ) {
-				$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
-
-				if ( ! empty( $overlay_image_url[0] ) ) {
-					$overlay_image_url = $overlay_image_url[0];
-				} else {
-					$overlay_image_url = '';
-				}
+				$overlay = wp_parse_args( $overlay, self::get_default_track_overlay_values() );
 
 				$overlay_array[] = array(
 					'title'     => $overlay['title'],
@@ -1650,7 +1590,7 @@ class VideoIgniter {
 					'url'       => $overlay['url'],
 					'startTime' => $overlay['start_time'],
 					'endTime'   => $overlay['end_time'],
-					'imageUrl'  => $overlay_image_url,
+					'imageUrl'  => (string) wp_get_attachment_image_url( (int) $overlay['image_id'], 'thumbnail' ),
 					'position'  => $overlay['position'],
 				);
 			}
@@ -1663,28 +1603,25 @@ class VideoIgniter {
 			controls
 			preload="auto"
 			poster="<?php echo esc_attr( $track_poster_url ); ?>"
-			data-overlays='<?php echo json_encode( $overlay_array ); ?>'
+			data-overlays="<?php echo esc_attr( wp_json_encode( $overlay_array ) ); ?>"
 		>
 			<source
 				src="<?php echo esc_attr( $main_track['track_url'] ); ?>"
-				type="<?php echo $this->get_video_mime_type_from_url( $main_track['track_url'] ); ?>"
+				type="<?php echo esc_attr( $this->get_video_mime_type_from_url( $main_track['track_url'] ) ); ?>"
 			/>
 			<?php if ( ! empty( $main_track['chapters_url'] ) ) : ?>
 				<track kind="chapters" src="<?php echo esc_url( $main_track['chapters_url'] ); ?>" />
 			<?php endif; ?>
 
-			<?php
-				if ( ! empty( $main_track['subtitles'] ) ) :
-					$subtitles = $main_track['subtitles'];
-					foreach ( $subtitles as $subtitle ):
-						?>
-						<track
-							kind="subtitles"
-							src="<?php echo esc_url( $subtitle['url'] ); ?>"
-							srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
-							label="<?php echo esc_attr( $subtitle['label'] ); ?>"
-						/>
-					<?php endforeach; endif; ?>
+			<?php foreach ( $subtitles as $subtitle ) : ?>
+				<?php $subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() ); ?>
+				<track
+					kind="subtitles"
+					src="<?php echo esc_url( $subtitle['url'] ); ?>"
+					srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
+					label="<?php echo esc_attr( $subtitle['label'] ); ?>"
+				/>
+			<?php endforeach; ?>
 		</video>
 		<?php
 
