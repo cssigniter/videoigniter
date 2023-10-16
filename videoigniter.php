@@ -1301,14 +1301,14 @@ class VideoIgniter {
 		$post_type_obj = get_post_type_object( $this->post_type );
 		if ( ! current_user_can( $post_type_obj->cap->edit_post, $post_id ) ) { return false; }
 
-		update_post_meta( $post_id, '_videoigniter_tracks', $this->sanitizer->metabox_playlist( $_POST['vi_playlist_tracks'], $post_id ) );
-		update_post_meta( $post_id, '_videoigniter_playlist_layout', $this->sanitizer->playlist_layout( $_POST['_videoigniter_playlist_layout'] ) );
-		update_post_meta( $post_id, '_videoigniter_sticky_enabled', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_sticky_enabled'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_fullscreen_toggle'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_playback_speed', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_show_playback_speed'] ) );
-		update_post_meta( $post_id, '_videoigniter_hover_preview_enabled', $this->sanitizer->checkbox_ref( $_POST['_videoigniter_hover_preview_enabled'] ) );
-		update_post_meta( $post_id, '_videoigniter_volume', intval( $_POST['_videoigniter_volume'] ) );
-		update_post_meta( $post_id, '_videoigniter_skip_seconds', $this->sanitizer->playlist_skip_option( $_POST['_videoigniter_skip_seconds'] ) );
+		update_post_meta( $post_id, '_videoigniter_tracks', $this->sanitizer::metabox_playlist( $_POST['vi_playlist_tracks'], $post_id ) );
+		update_post_meta( $post_id, '_videoigniter_playlist_layout', $this->sanitizer::playlist_layout( $_POST['_videoigniter_playlist_layout'] ) );
+		update_post_meta( $post_id, '_videoigniter_sticky_enabled', $this->sanitizer::checkbox_ref( $_POST['_videoigniter_sticky_enabled'] ) );
+		update_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', $this->sanitizer::checkbox_ref( $_POST['_videoigniter_show_fullscreen_toggle'] ) );
+		update_post_meta( $post_id, '_videoigniter_show_playback_speed', $this->sanitizer::checkbox_ref( $_POST['_videoigniter_show_playback_speed'] ) );
+		update_post_meta( $post_id, '_videoigniter_hover_preview_enabled', $this->sanitizer::checkbox_ref( $_POST['_videoigniter_hover_preview_enabled'] ) );
+		update_post_meta( $post_id, '_videoigniter_volume', (int) $_POST['_videoigniter_volume'] );
+		update_post_meta( $post_id, '_videoigniter_skip_seconds', $this->sanitizer::playlist_skip_option( $_POST['_videoigniter_skip_seconds'] ) );
 
 		/**
 		 * @since NewVersion
@@ -1659,7 +1659,7 @@ class VideoIgniter {
 
 		$params = apply_filters( 'videoigniter_shortcode_data_attributes_array', $this->get_playlist_data_attributes_array( $id ), $id, $post );
 		$params = array_filter( $params, array( $this->sanitizer, 'array_filter_empty_null' ) );
-		$params = $this->sanitizer->html_data_attributes_array( $params );
+		$params = $this->sanitizer::html_data_attributes_array( $params );
 
 		// Returning a truthy value from the filter, will short-circuit execution of the shortcode.
 		if ( false !== apply_filters( 'videoigniter_shortcode_shortcircuit', false, $id, $post, $params ) ) {
@@ -1683,7 +1683,7 @@ class VideoIgniter {
 			esc_attr( $id ),
 			esc_attr( implode( ' ', $player_classes ) ),
 			$data,
-			$track_markup,
+			$track_markup
 		);
 
 		if ( count( $tracks ) > 1 ) {
@@ -1693,7 +1693,7 @@ class VideoIgniter {
 				esc_attr( implode( ' ', $player_classes ) ),
 				$data,
 				$playlist_layout,
-				$track_markup,
+				$track_markup
 			);
 		}
 
