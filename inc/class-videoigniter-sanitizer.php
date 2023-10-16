@@ -101,14 +101,14 @@ class VideoIgniter_Sanitizer {
 
 		$sanitized_track = array();
 
-		$sanitized_track['cover_id']                = intval( $track['cover_id'] );
-		$sanitized_track['title']                   = sanitize_text_field( $track['title'] );
-		$sanitized_track['description']             = sanitize_text_field( $track['description'] );
-		$sanitized_track['track_url']               = esc_url_raw( $track['track_url'] );
-		$sanitized_track['download_url']            = esc_url_raw( $track['download_url'] );
-		$sanitized_track['download_uses_track_url'] = ! empty( $track['download_uses_track_url'] ) ? 1 : 0;
-
-		$sanitized_track = array_map( 'trim', $sanitized_track );
+		$sanitized_track['cover_id']     = intval( $track['cover_id'] );
+		$sanitized_track['title']        = sanitize_text_field( $track['title'] );
+		$sanitized_track['description']  = sanitize_text_field( $track['description'] );
+		$sanitized_track['track_url']    = esc_url_raw( $track['track_url'] );
+		$sanitized_track['chapters_url'] = esc_url_raw( $track['chapters_url'] );
+		// TODO anastis sanitize subtitles here somehow // json_decode here
+		$sanitized_track['subtitles'] = $track['subtitles'];
+		$sanitized_track['overlays']  = $track['overlays'];
 
 		$tmp = array_filter( $sanitized_track );
 		if ( empty( $tmp ) ) {

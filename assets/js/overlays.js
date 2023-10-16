@@ -11,15 +11,15 @@ class Overlay extends videojs.getComponent('Component') {
   }
 
   createEl() {
-    const { link, title, text, imageUrl, position = 'top-left' } = this.options();
+    const { url, title, text, imageUrl, position = 'top-left' } = this.options();
     const mainEl = videojs.dom.createEl('div', {
       className: `vjs-overlay vjs-overlay-${position}`,
     });
-    const innerEl = videojs.dom.createEl(link ? 'a' : 'div', {
+    const innerEl = videojs.dom.createEl(url ? 'a' : 'div', {
       className: 'vjs-overlay-inner',
-      href: link || undefined,
-      target: link ? '_blank' : undefined,
-      rel: link ? 'noopener' : undefined,
+      href: url || undefined,
+      target: url ? '_blank' : undefined,
+      rel: url ? 'noopener' : undefined,
     });
     const contentEl = videojs.dom.createEl('div', {
       className: 'vjs-overlay-content',
@@ -76,12 +76,21 @@ class Overlay extends videojs.getComponent('Component') {
     this.hide();
     this.dismissed = true;
   }
+
+  remove() {
+    this.el().remove();
+  }
 }
 
 videojs.registerComponent('Overlay', Overlay);
 
 function overlays(overlays) {
   const player = this;
+
+  // Remove possible existing overlays
+  player.children()
+    .filter(child => child.name?.() === 'Overlay')
+    .forEach(child => child.remove());
 
   const overlayComponents = overlays.map(overlay => {
     return player.addChild('Overlay', overlay);

@@ -16,6 +16,7 @@ $info-box-text-color: #948832 !default;
 $base-pad: 15px !default;
 $transition-time: .18s !default;
 $border-color: $lighter-grey !default;
+$border-radius-base: 2px !default;
 
 .sr-only {
 	@include sr-only;
@@ -28,7 +29,7 @@ $border-color: $lighter-grey !default;
 	box-sizing: border-box;
 }
 
-[class^="vi-col"] {
+[class^="vi-col-"] {
 	float: left;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -223,6 +224,7 @@ $border-color: $lighter-grey !default;
 	margin-bottom: $base-pad;
 	border: 1px solid $medium-grey;
 	box-shadow: 1px 1px 2px rgba(black, .07);
+	border-radius: $border-radius-base;
 
 	&:last-child {
 		margin-bottom: 0;
@@ -239,6 +241,8 @@ $border-color: $lighter-grey !default;
 	@include clearfix;
 	padding: $base-pad;
 	background-color: $white;
+	display: flex;
+	flex-direction: column;
 }
 
 .vi-field-container-links {
@@ -294,23 +298,19 @@ $border-color: $lighter-grey !default;
 	float: right;
 }
 
+.vi-field-image,
 .vi-field-cover {
-	float: left;
 	width: 100px;
 	height: 100px;
-	margin-right: $base-pad;
-	background-color: $light-grey;
-	border: 1px solid $dark-grey;
+	background-color: $lighter-grey;
+	border: 1px solid $light-grey;
+	border-radius: $border-radius-base;
 }
 
-.vi-field-split {
-	float: left;
-	width: calc(50% - 71px);
-	margin-right: $base-pad;
-
-	&:nth-child(2n + 1) {
-		margin-right: 0;
-	}
+.vi-field-track-fields {
+	display: grid;
+	grid-column-gap: 15px;
+	grid-template-columns: 100px 1fr 1fr;
 }
 
 //
@@ -414,9 +414,10 @@ $border-color: $lighter-grey !default;
 }
 
 .vi-remove-field {
-	float: right;
+	align-self: flex-end;
 }
 
+.vi-field-image-upload,
 .vi-field-upload-cover {
 	display: block;
 	position: relative;
@@ -432,11 +433,14 @@ $border-color: $lighter-grey !default;
 	}
 }
 
+.vi-field-image-has-value,
 .vi-has-cover {
+	.vi-field-image-upload-dismiss,
 	.vi-remove-cover {
 		display: block;
 	}
 
+	.vi-field-image-placeholder,
 	.vi-field-cover-placeholder {
 		display: none;
 	}
@@ -446,6 +450,7 @@ $border-color: $lighter-grey !default;
 	}
 }
 
+.vi-field-image-placeholder,
 .vi-field-cover-placeholder {
 	text-align: center;
 	font-style: normal;
@@ -456,8 +461,10 @@ $border-color: $lighter-grey !default;
 	&::before {
 		@include dashicon($icon: "\f128");
 		display: block;
+		margin-bottom: 5px;
 	}
 
+	.vi-field-image-loading &,
 	.vi-track-loading & {
 		&::before {
 			content: "\f463";
@@ -466,6 +473,7 @@ $border-color: $lighter-grey !default;
 	}
 }
 
+.vi-field-image-upload-dismiss,
 .vi-remove-cover {
 	color: $white;
 	background-color: $red;
@@ -640,4 +648,61 @@ $border-color: $lighter-grey !default;
 			width: 100%;
 		}
 	}
+}
+
+// New repeatable fields
+.vi-repeatable-field-wrap {
+	border: 1px solid $border-color;
+	border-radius: $border-radius-base;
+	margin-top: 15px;
+	clear: both;
+}
+
+.vi-repeatable-field-heading {
+	margin: 0;
+	padding: 10px 18px;
+	background: $lighter-grey;
+}
+
+.vi-repeatable-field {
+	border-top: 1px solid $border-color;
+	border-bottom: 1px solid $border-color;
+	padding: 15px;
+}
+
+.vi-repeatable-field-content {
+	display: grid;
+	grid-column-gap: 15px;
+	grid-template-columns: 1fr 1fr;
+}
+
+.vi-repeatable-fields-footer {
+	display: flex;
+	justify-content: flex-start;
+	padding: 10px 15px;
+}
+
+button.vi-fields-add-button,
+button.vi-fields-remove-button {
+	display: flex !important;
+	align-items: center;
+}
+
+button.vi-fields-remove-button {
+	margin-left: auto !important;
+}
+
+button.vi-fields-remove-button .dashicons {
+	color: $red;
+}
+
+// Overlay fields overrides
+vi-overlays-field .vi-repeatable-field-content {
+	grid-template-columns: 100px 1fr;
+}
+
+.vi-overlay-template-form-fields {
+	display: grid;
+	grid-column-gap: 15px;
+	grid-template-columns: 1fr 1fr;
 }

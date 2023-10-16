@@ -43,7 +43,7 @@
   clear: both;
 }
 
-[class^="vi-col"] {
+[class^="vi-col-"] {
   float: left;
   padding-left: 15px;
   padding-right: 15px;
@@ -221,6 +221,7 @@
   margin-bottom: 15px;
   border: 1px solid #d7d7d7;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.07);
+  border-radius: 2px;
 }
 
 .vi-field-repeatable:last-child {
@@ -234,6 +235,8 @@
 .vi-field-container {
   padding: 15px;
   background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
 }
 
 .vi-field-container::after {
@@ -300,23 +303,19 @@
   float: right;
 }
 
+.vi-field-image,
 .vi-field-cover {
-  float: left;
   width: 100px;
   height: 100px;
-  margin-right: 15px;
-  background-color: #eeeeee;
-  border: 1px solid #cccccc;
+  background-color: #f1f1f1;
+  border: 1px solid #eeeeee;
+  border-radius: 2px;
 }
 
-.vi-field-split {
-  float: left;
-  width: calc(50% - 71px);
-  margin-right: 15px;
-}
-
-.vi-field-split:nth-child(2n + 1) {
-  margin-right: 0;
+.vi-field-track-fields {
+  display: grid;
+  grid-column-gap: 15px;
+  grid-template-columns: 100px 1fr 1fr;
 }
 
 .vi-container .button .dashicons,
@@ -409,9 +408,10 @@
 }
 
 .vi-remove-field {
-  float: right;
+  align-self: flex-end;
 }
 
+.vi-field-image-upload,
 .vi-field-upload-cover {
   display: block;
   position: relative;
@@ -422,23 +422,32 @@
   overflow: hidden;
 }
 
+.vi-field-image-upload img,
 .vi-field-upload-cover img {
   max-width: 100%;
   display: none;
 }
 
+.vi-field-image-has-value .vi-field-image-upload-dismiss,
+.vi-field-image-has-value .vi-remove-cover,
+.vi-has-cover .vi-field-image-upload-dismiss,
 .vi-has-cover .vi-remove-cover {
   display: block;
 }
 
+.vi-field-image-has-value .vi-field-image-placeholder,
+.vi-field-image-has-value .vi-field-cover-placeholder,
+.vi-has-cover .vi-field-image-placeholder,
 .vi-has-cover .vi-field-cover-placeholder {
   display: none;
 }
 
+.vi-field-image-has-value img,
 .vi-has-cover img {
   display: inline-block;
 }
 
+.vi-field-image-placeholder,
 .vi-field-cover-placeholder {
   text-align: center;
   font-style: normal;
@@ -447,6 +456,7 @@
   padding-top: 28px;
 }
 
+.vi-field-image-placeholder::before,
 .vi-field-cover-placeholder::before {
   content: "";
   display: inline-block;
@@ -456,13 +466,20 @@
   -moz-osx-font-smoothing: grayscale;
   text-decoration: none !important;
   display: block;
+  margin-bottom: 5px;
 }
 
-.vi-track-loading .vi-field-cover-placeholder::before {
+.vi-field-image-loading .vi-field-image-placeholder::before,
+.vi-track-loading .vi-field-image-placeholder::before,
+.vi-field-image-loading
+.vi-field-cover-placeholder::before,
+.vi-track-loading
+.vi-field-cover-placeholder::before {
   content: "\f463";
   animation: rotation 1.2s infinite linear;
 }
 
+.vi-field-image-upload-dismiss,
 .vi-remove-cover {
   color: #ffffff;
   background-color: #ff0000;
@@ -479,10 +496,12 @@
   text-align: center;
 }
 
+.vi-field-image-upload-dismiss:hover,
 .vi-remove-cover:hover {
   opacity: 1;
 }
 
+.vi-field-image-upload-dismiss .dashicons,
 .vi-remove-cover .dashicons {
   font-size: 16px;
   width: 100%;
@@ -534,6 +553,61 @@
   padding: 10px 10px 8px;
   font-weight: bold;
   background: #f1f1f1;
+}
+
+.vi-repeatable-field-wrap {
+  border: 1px solid #f1f1f1;
+  border-radius: 2px;
+  margin-top: 15px;
+  clear: both;
+}
+
+.vi-repeatable-field-heading {
+  margin: 0;
+  padding: 10px 18px;
+  background: #f1f1f1;
+}
+
+.vi-repeatable-field {
+  border-top: 1px solid #f1f1f1;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 15px;
+}
+
+.vi-repeatable-field-content {
+  display: grid;
+  grid-column-gap: 15px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.vi-repeatable-fields-footer {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px 15px;
+}
+
+button.vi-fields-add-button,
+button.vi-fields-remove-button {
+  display: flex !important;
+  align-items: center;
+}
+
+button.vi-fields-remove-button {
+  margin-left: auto !important;
+}
+
+button.vi-fields-remove-button .dashicons {
+  color: #ff0000;
+}
+
+vi-overlays-field .vi-repeatable-field-content {
+  grid-template-columns: 100px 1fr;
+}
+
+.vi-overlay-template-form-fields {
+  display: grid;
+  grid-column-gap: 15px;
+  grid-template-columns: 1fr 1fr;
 }
 
 @media (max-width: 1100px) {

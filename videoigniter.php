@@ -158,7 +158,6 @@ class VideoIgniter {
 	protected function init() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_action( 'init', array( $this, 'register_scripts' ) );
-		add_action( 'init', array( $this, 'register_playlist_endpoint' ) );
 		add_action( 'init', array( $this, 'register_image_sizes' ) );
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
@@ -190,6 +189,9 @@ class VideoIgniter {
 
 		add_filter( 'block_categories_all', array( $this, 'block_categories' ), 10, 2 );
 
+		add_filter( 'wp_check_filetype_and_ext', array( $this, 'register_file_extensions' ), 10, 4 );
+		add_filter( 'upload_mimes', array( $this, 'register_mime_times' ) );
+
 		add_action( 'enqueue_block_assets', array( $this, 'enqueue_editor_assets' ) );
 
 		do_action( 'videoigniter_admin_init' );
@@ -206,7 +208,6 @@ class VideoIgniter {
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'template_redirect', array( $this, 'handle_playlist_endpoint' ) );
 
 		do_action( 'videoigniter_frontend_init' );
 	}
@@ -248,6 +249,7 @@ class VideoIgniter {
 				'confirm_clear_tracks'     => esc_html__( 'Do you really want to remove all videos? (This will not delete your video files).', 'videoigniter' ),
 				'media_title_upload'       => esc_html__( 'Select or upload video media', 'videoigniter' ),
 				'media_title_upload_cover' => esc_html__( 'Select a poster image', 'videoigniter' ),
+				'media_title_upload_file'  => esc_html__( 'Select a file', 'videoigniter' ),
 			),
 		) );
 
@@ -431,6 +433,7 @@ class VideoIgniter {
 		</div>
 
 		<?php $this->metabox_tracks_footer(); ?>
+		<?php $this->metabox_tracks_field_templates(); ?>
 
 		<?php
 	}
@@ -527,12 +530,15 @@ class VideoIgniter {
 	protected function metabox_tracks_repeatable_track_field( $track = array() ) {
 		$track = wp_parse_args( $track, self::get_default_track_values() );
 
-		$cover_id                = $track['cover_id'];
-		$title                   = $track['title'];
-		$description             = $track['description'];
-		$track_url               = $track['track_url'];
-		$download_url            = $track['download_url'];
-		$download_uses_track_url = (int) $track['download_uses_track_url'];
+		$cover_id     = $track['cover_id'];
+		$title        = $track['title'];
+		$description  = $track['description'];
+		$track_url    = $track['track_url'];
+		$chapters_url = $track['chapters_url'];
+
+		// TODO anastis change this, info should stored decoded in the first place.
+		$subtitles = json_decode( $track['subtitles'], true );
+		$overlays  = json_decode( $track['overlays'], true );
 
 		$cover_url = wp_get_attachment_image_src( intval( $cover_id ), 'thumbnail' );
 		if ( ! empty( $cover_url[0] ) ) {
@@ -563,124 +569,197 @@ class VideoIgniter {
 			</div>
 
 			<div class="vi-field-container">
-				<div class="vi-field-cover">
-					<a href="#" class="vi-field-upload-cover <?php echo ! empty( $cover_url ) ? 'vi-has-cover' : ''; ?>">
-						<span class="vi-remove-cover">
-							<span class="screen-reader-text">
-								<?php esc_html_e( 'Remove Cover Image', 'videoigniter' ); ?>
+				<div class="vi-field-track-fields">
+					<div class="vi-field-cover">
+						<a href="#" class="vi-field-upload-cover <?php echo ! empty( $cover_url ) ? 'vi-has-cover' : ''; ?>">
+							<span class="vi-remove-cover">
+								<span class="screen-reader-text">
+									<?php esc_html_e( 'Remove Cover Image', 'videoigniter' ); ?>
+								</span>
+								<span class="dashicons dashicons-no-alt"></span>
 							</span>
-							<span class="dashicons dashicons-no-alt"></span>
-						</span>
 
-						<?php if ( ! empty( $cover_url ) ) : ?>
-							<img src="<?php echo esc_url( $cover_url ); ?>" alt="<?php echo esc_attr( $cover_data['alt'] ); ?>">
-						<?php else : ?>
-							<img src="#" alt="">
-						<?php endif; ?>
+							<?php if ( ! empty( $cover_url ) ) : ?>
+								<img src="<?php echo esc_url( $cover_url ); ?>" alt="<?php echo esc_attr( $cover_data['alt'] ); ?>">
+							<?php else : ?>
+								<img src="#" alt="">
+							<?php endif; ?>
 
-						<div class="vi-field-cover-placeholder">
-							<span class="vi-cover-prompt">
-								<?php esc_html_e( 'Upload Cover', 'videoigniter' ); ?>
-							</span>
-						</div>
-					</a>
+							<div class="vi-field-cover-placeholder">
+								<span class="vi-cover-prompt">
+									<?php esc_html_e( 'Upload Poster', 'videoigniter' ); ?>
+								</span>
+							</div>
+						</a>
 
-					<input
-						type="hidden"
-						id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-cover_id"
-						name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][cover_id]"
-						value="<?php echo esc_attr( $cover_id ); ?>"
-					/>
-				</div>
-
-				<div class="vi-field-split">
-					<div class="vi-form-field">
-						<label
-							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-title"
-							class="screen-reader-text">
-							<?php esc_html_e( 'Title', 'videoigniter' ); ?>
-						</label>
 						<input
-							type="text"
-							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-title"
-							class="vi-track-title"
-							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][title]"
-							placeholder="<?php esc_attr_e( 'Title', 'videoigniter' ); ?>"
-							value="<?php echo esc_attr( $title ); ?>"
+							type="hidden"
+							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-cover_id"
+							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][cover_id]"
+							value="<?php echo esc_attr( $cover_id ); ?>"
 						/>
 					</div>
-					<div class="vi-form-field">
-						<label
-							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-description"
-							class="screen-reader-text">
-							<?php esc_html_e( 'Description', 'videoigniter' ); ?>
-						</label>
-						<textarea
-							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-description"
-							class="vi-track-description"
-							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][description]"
-							placeholder="<?php esc_attr_e( 'Description', 'videoigniter' ); ?>"
-						><?php echo esc_attr( $description ); ?></textarea>
-					</div>
 
-					<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_fields_column_1', $track, $uid ); ?>
-				</div>
-
-				<div class="vi-field-split">
-					<div class="vi-form-field">
-						<label
-							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-track_url"
-							class="screen-reader-text">
-							<?php esc_html_e( 'Video file or stream', 'videoigniter' ); ?>
-						</label>
-
-						<div class="vi-form-field-addon">
+					<div class="vi-field-split">
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-title"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Title', 'videoigniter' ); ?>
+							</label>
 							<input
 								type="text"
-								id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-track_url"
-								class="vi-track-url"
-								name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][track_url]"
-								placeholder="<?php esc_attr_e( 'Video file or stream', 'videoigniter' ); ?>"
-								value="<?php echo esc_url( $track_url ); ?>"
+								id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-title"
+								class="vi-track-title"
+								name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][title]"
+								placeholder="<?php esc_attr_e( 'Title', 'videoigniter' ); ?>"
+								value="<?php echo esc_attr( $title ); ?>"
 							/>
-							<button type="button" class="button vi-upload">
-								<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
-							</button>
-
-							<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_field_after_track_upload_button' ); ?>
 						</div>
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-description"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Description', 'videoigniter' ); ?>
+							</label>
+							<textarea
+								id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-description"
+								class="vi-track-description"
+								name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][description]"
+								placeholder="<?php esc_attr_e( 'Description', 'videoigniter' ); ?>"
+							><?php echo esc_attr( $description ); ?></textarea>
+						</div>
+
+						<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_fields_column_1', $track, $uid ); ?>
 					</div>
 
-					<!-- TODO remove download functionality -->
-					<div class="vi-form-field" style="display: none;">
-						<label
-							for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-download_url"
-							class="screen-reader-text">
-							<?php esc_html_e( 'Download URL', 'videoigniter' ); ?>
-						</label>
-						<input
-							type="text"
-							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-download_url"
-							class="vi-track-download-url"
-							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][download_url]"
-							placeholder="<?php esc_attr_e( 'Download URL', 'videoigniter' ); ?>"
-							value="<?php echo esc_url( $download_url ); ?>"
-							<?php if ( $download_uses_track_url ) : ?>
-								disabled
-							<?php endif; ?>
-						/>
+					<div class="vi-field-split">
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-track_url"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Video file or stream', 'videoigniter' ); ?>
+							</label>
 
-						<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_field_after_download_url_button', $track, $uid ); ?>
+							<div class="vi-form-field-addon">
+								<input
+									type="text"
+									id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-track_url"
+									class="vi-track-url"
+									name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][track_url]"
+									placeholder="<?php esc_attr_e( 'Video file or stream', 'videoigniter' ); ?>"
+									value="<?php echo esc_url( $track_url ); ?>"
+								/>
+								<button type="button" class="button vi-track-url-upload">
+									<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
+								</button>
+
+								<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_field_after_track_upload_button' ); ?>
+							</div>
+						</div>
+
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-chapters_url"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Chapters File', 'videoigniter' ); ?>
+							</label>
+
+							<div class="vi-form-field-addon">
+								<input
+									type="text"
+									id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-chapters_url"
+									class="vi-chapters-url"
+									name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][chapters_url]"
+									placeholder="<?php esc_attr_e( 'Chapters File', 'videoigniter' ); ?>"
+									value="<?php echo esc_url( $chapters_url ); ?>"
+									data-mime-type="text/vtt"
+								/>
+								<button type="button" class="button vi-upload">
+									<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
+								</button>
+
+								<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_field_after_chapters_upload_button' ); ?>
+							</div>
+						</div>
+
+						<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_fields_column_2', $track, $uid ); ?>
 					</div>
-
-					<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_fields_column_2', $track, $uid ); ?>
-
-					<button type="button" class="button vi-remove-field">
-						<span class="dashicons dashicons-dismiss"></span>
-						<?php esc_html_e( 'Remove Video', 'videoigniter' ); ?>
-					</button>
 				</div>
 
+				<button type="button" class="button vi-remove-field">
+					<span class="dashicons dashicons-dismiss"></span>
+					<?php esc_html_e( 'Remove Video', 'videoigniter' ); ?>
+				</button>
+
+				<div class="vi-repeatable-field-wrap">
+					<h4 class="vi-repeatable-field-heading">
+						<?php esc_html_e( 'Subtitles', 'videoigniter' ); ?>
+					</h4>
+
+					<vi-repeatable-fields
+						data-component="vi-subtitles-field"
+						data-name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][subtitles]"
+					>
+						<div class="vi-repeatable-fields-content">
+							<?php foreach ( $subtitles as $subtitle ) : ?>
+								<vi-subtitles-field data-data='<?php echo json_encode( $subtitle ); ?>'></vi-subtitles-field>
+							<?php endforeach; ?>
+						</div>
+
+						<div class="vi-repeatable-fields-footer">
+							<button type="button" class="button button-small vi-fields-add-button">
+								<span class="dashicons dashicons-plus-alt"></span>
+								<?php esc_html_e( 'Add subtitle', 'videoigniter' ); ?>
+							</button>
+						</div>
+					</vi-repeatable-fields>
+				</div>
+
+				<div class="vi-repeatable-field-wrap">
+					<h4 class="vi-repeatable-field-heading">
+						<?php esc_html_e( 'Overlays', 'videoigniter' ); ?>
+					</h4>
+
+					<vi-repeatable-fields
+						data-component="vi-overlays-field"
+						data-name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][overlays]"
+					>
+						<div class="vi-repeatable-fields-content">
+							<?php
+								$overlays = json_decode( $track['overlays'], true );
+								foreach ( $overlays as $overlay ) :
+									$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
+
+									if ( ! empty( $overlay_image_url[0] ) ) {
+										$overlay_image_url = $overlay_image_url[0];
+									} else {
+										$overlay_image_url = '';
+									}
+
+									$overlay = array(
+										'title'      => $overlay['title'],
+										'text'       => $overlay['text'],
+										'url'        => $overlay['url'],
+										'start_time' => $overlay['start_time'],
+										'end_time'   => $overlay['end_time'],
+										'image_id'   => $overlay['image_id'],
+										'image_url'  => $overlay_image_url,
+										'position'   => $overlay['position'],
+									);
+							?>
+								<vi-overlays-field data-data='<?php echo json_encode( $overlay ); ?>'></vi-overlays-field>
+							<?php endforeach; ?>
+						</div>
+
+						<div class="vi-repeatable-fields-footer">
+							<button type="button" class="button button-small vi-fields-add-button">
+								<span class="dashicons dashicons-plus-alt"></span>
+								<?php esc_html_e( 'Add overlay', 'videoigniter' ); ?>
+							</button>
+						</div>
+					</vi-repeatable-fields>
+				</div>
 			</div>
 		</div>
 		<?php
@@ -712,6 +791,219 @@ class VideoIgniter {
 				</a>
 			</div>
 		</div>
+		<?php
+	}
+
+	// TODO add PHP doc / review
+	// TODO add proper IDs on elements
+	protected function metabox_tracks_field_templates () {
+		?>
+		<template id="subtitles-repeatable-field-template">
+			<div class="vi-repeatable-field">
+				<div class="vi-repeatable-field-content">
+					<div class="vi-form-field">
+						<label
+							for="vi_playlist_tracks-{uid}-subtitles_url"
+							class="screen-reader-text">
+							<?php esc_html_e( 'Subtitles File', 'videoigniter' ); ?>
+						</label>
+
+						<div class="vi-form-field-addon">
+							<input
+								type="text"
+								id="vi_playlist_tracks-{uid}-subtitles_url"
+								class="vi-subtitles-url"
+								name="url"
+								placeholder="<?php esc_attr_e( 'Subtitles File', 'videoigniter' ); ?>"
+								value=""
+								data-mime-type="text/vtt"
+							/>
+							<button type="button" class="button vi-upload">
+								<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
+							</button>
+						</div>
+					</div>
+
+					<div class="vi-form-field">
+						<label
+							for="vi_playlist_tracks-{uid}-subtitles_srclang"
+							class="screen-reader-text">
+							<?php esc_html_e( 'Source Language', 'videoigniter' ); ?>
+						</label>
+						<input
+							type="text"
+							id="vi_playlist_tracks-{uid}-subtitles_srclang"
+							class="vi-track-subtitles-srclang"
+							name="srclang"
+							placeholder="<?php esc_attr_e( 'Source Language', 'videoigniter' ); ?>"
+							value=""
+						/>
+					</div>
+
+					<div class="vi-form-field">
+						<label
+							for="vi_playlist_tracks-{uid}-subtitles_label"
+							class="screen-reader-text">
+							<?php esc_html_e( 'Label', 'videoigniter' ); ?>
+						</label>
+						<input
+							type="text"
+							id="vi_playlist_tracks-{uid}-subtitles_label"
+							class="vi-track-subtitles-label"
+							name="label"
+							placeholder="<?php esc_attr_e( 'Label', 'videoigniter' ); ?>"
+							value=""
+						/>
+					</div>
+				</div>
+
+				<button type="button" class="button button-small vi-fields-remove-button">
+					<span class="dashicons dashicons-dismiss"></span>
+					<?php esc_html_e( 'Remove subtitle', 'videoigniter' ); ?>
+				</button>
+			</div>
+		</template>
+
+		<template id="overlays-repeatable-field-template">
+			<div class="vi-repeatable-field">
+				<div class="vi-repeatable-field-content">
+					<div class="vi-field-image">
+						<a href="#" class="vi-field-image-upload">
+							<span class="vi-field-image-upload-dismiss">
+								<span class="screen-reader-text">
+									<?php esc_html_e( 'Remove Image', 'videoigniter' ); ?>
+								</span>
+								<span class="dashicons dashicons-no-alt"></span>
+							</span>
+
+							<img src="" alt="">
+
+							<div class="vi-field-image-placeholder">
+								<span class="vi-field-image-placeholder-label">
+									<?php esc_html_e( 'Upload Image', 'videoigniter' ); ?>
+								</span>
+							</div>
+						</a>
+
+						<input
+							type="hidden"
+							id="vi_playlist_tracks-{uid}-overlay_image_id"
+							name="image_id"
+							value=""
+						/>
+					</div>
+
+					<div class="vi-overlay-template-form-fields">
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-{uid}-overlays_title"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Title', 'videoigniter' ); ?>
+							</label>
+							<input
+								type="text"
+								id="vi_playlist_tracks-{uid}-overlays_title"
+								class="vi-track-overlays-title"
+								name="title"
+								placeholder="<?php esc_attr_e( 'Title', 'videoigniter' ); ?>"
+								value=""
+							/>
+						</div>
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-{uid}-overlays_text"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Description', 'videoigniter' ); ?>
+							</label>
+							<input
+								type="text"
+								id="vi_playlist_tracks-{uid}-overlays_text"
+								class="vi-track-overlays-text"
+								name="text"
+								placeholder="<?php esc_attr_e( 'Description', 'videoigniter' ); ?>"
+								value=""
+							/>
+						</div>
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-{uid}-overlays_start_time"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Start Time (seconds)', 'videoigniter' ); ?>
+							</label>
+							<input
+								type="number"
+								id="vi_playlist_tracks-{uid}-overlays_start_time"
+								class="vi-track-overlays-start-time"
+								name="start_time"
+								min="0"
+								step="1"
+								placeholder="<?php esc_attr_e( 'Start Time (seconds)', 'videoigniter' ); ?>"
+								value=""
+							/>
+						</div>
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-{uid}-overlays_end_time"
+								class="screen-reader-text">
+								<?php esc_html_e( 'End Time (seconds)', 'videoigniter' ); ?>
+							</label>
+							<input
+								type="number"
+								id="vi_playlist_tracks-{uid}-overlays_end_time"
+								class="vi-track-overlays-end-time"
+								name="end_time"
+								min="0"
+								step="1"
+								placeholder="<?php esc_attr_e( 'End Time (seconds)', 'videoigniter' ); ?>"
+								value=""
+							/>
+						</div>
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-{uid}-overlays_url"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Link URL', 'videoigniter' ); ?>
+							</label>
+							<input
+								type="text"
+								id="vi_playlist_tracks-{uid}-overlays_url"
+								class="vi-track-overlays-url"
+								name="url"
+								placeholder="<?php esc_attr_e( 'Link URL', 'videoigniter' ); ?>"
+								value=""
+							/>
+						</div>
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-{uid}-overlays_position"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Overlay position', 'videoigniter' ); ?>
+							</label>
+
+							<select
+								class="widefat"
+								id="vi_playlist_tracks-{uid}-overlays_position"
+								name="position"
+							>
+								<?php foreach ( $this->get_track_overlay_positions() as $position_key => $position ) : ?>
+									<option
+										value="<?php echo esc_attr( $position_key ); ?>"
+										data-info="<?php echo esc_attr( $position['info'] ); ?>"
+									>
+										<?php echo wp_kses( $position['label'], 'strip' ); ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<button type="button" class="button button-small vi-fields-remove-button">
+					<span class="dashicons dashicons-dismiss"></span>
+					<?php esc_html_e( 'Remove overlay', 'videoigniter' ); ?>
+				</button>
+			</div>
+		</template>
 		<?php
 	}
 
@@ -974,6 +1266,57 @@ class VideoIgniter {
 		return apply_filters( 'videoigniter_playlist_skip_options', $skip_options );
 	}
 
+	/**
+	 * Returns the available overlay positions
+	 *
+	 * @version NewVersion
+	 * @since   NewVersion
+	 *
+	 * @return array
+	 */
+	public function get_track_overlay_positions() {
+		$overlay_positions = array(
+			'top-left'     => array(
+				'label' => __( 'Top left', 'videoigniter' ),
+				'info'  => '',
+			),
+			'top-center'     => array(
+				'label' => __( 'Top center', 'videoigniter' ),
+				'info'  => '',
+			),
+			'top-right'    => array(
+				'label' => __( 'Top right', 'videoigniter' ),
+				'info'  => '',
+			),
+			'middle-left'     => array(
+				'label' => __( 'Middle left', 'videoigniter' ),
+				'info'  => '',
+			),
+			'middle-center'     => array(
+				'label' => __( 'Middle center', 'videoigniter' ),
+				'info'  => '',
+			),
+			'middle-right'    => array(
+				'label' => __( 'Middle right', 'videoigniter' ),
+				'info'  => '',
+			),
+			'bottom-left'  => array(
+				'label' => __( 'Bottom left', 'videoigniter' ),
+				'info'  => '',
+			),
+			'bottom-center'  => array(
+				'label' => __( 'Bottom center', 'videoigniter' ),
+				'info'  => '',
+			),
+			'bottom-right' => array(
+				'label' => __( 'Bottom Right', 'videoigniter' ),
+				'info'  => '',
+			),
+		);
+
+		return apply_filters( 'videoigniter_track_overlay_positions', $overlay_positions );
+	}
+
 	public function save_post( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return false; }
 		if ( isset( $_POST['post_view'] ) && 'list' === $_POST['post_view'] ) { return false; }
@@ -999,17 +1342,37 @@ class VideoIgniter {
 
 	public static function get_default_track_values() {
 		return apply_filters( 'videoigniter_default_track_values', array(
-			'cover_id'                => '',
-			'title'                   => '',
-			'description'             => '',
-			'track_url'               => '',
-			// TODO remove download_url functionality
-			'download_url'            => '',
-			'download_uses_track_url' => 0,
+			'cover_id'     => '',
+			'title'        => '',
+			'description'  => '',
+			'track_url'    => '',
+			'chapters_url' => '',
+			'subtitles'    => '{}',
+			'overlays'     => '{}',
+			// TODO anastis: this should be uncommented below i guess
+//			'subtitles' => array(
+//				array(
+//					'url'     => '',
+//					'label'   => '',
+//					'srclang' => '',
+//				)
+//			),
+//			'overlays' => array(
+//				array(
+//					'url'        => '',
+//					'title'      => '',
+//					'text'       => '',
+//					'image_id'   => '',
+//					'start_time' => '',
+//					'end_time'   => '',
+//					'position'   => 'top-left'
+//				),
+//			)
 		) );
 	}
 
 	public function register_image_sizes() {
+		// TODO: Change this to something bigger
 		add_image_size( 'videoigniter_cover', 560, 560, true );
 	}
 
@@ -1111,6 +1474,13 @@ class VideoIgniter {
 			'm3u8' => 'application/x-mpegURL',
 		);
 
+		// TODO Improve sanitization
+		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+			return '';
+		}
+
+		$url = filter_var( $url, FILTER_SANITIZE_URL );
+
 		if ( $this->is_youtube( $url ) ) {
 			return 'video/youtube';
 		}
@@ -1118,13 +1488,6 @@ class VideoIgniter {
 		if ( $this->is_vimeo( $url ) ) {
 			return 'video/vimeo';
 		}
-
-		// TODO Improve sanitization
-		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
-			return '';
-		}
-
-		$url = filter_var( $url, FILTER_SANITIZE_URL );
 
 		$file_ext = pathinfo( parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
 		$file_ext = strtolower( $file_ext );
@@ -1160,6 +1523,56 @@ class VideoIgniter {
 				$track_poster_url = '';
 			}
 
+			$text_tracks = array();
+
+			if ( ! empty( $track['chapters_url'] ) ) {
+				$text_tracks[] = array(
+					'kind'    => 'chapters',
+					'label'   => '',
+					'src'     => $track['chapters_url'],
+					'default' => true,
+				);
+			}
+
+			if ( ! empty ( $track['subtitles'] ) ) {
+				// TODO anastis remove json_decode here it should be saved as decoded
+				$subtitles = json_decode( $track['subtitles'], true );
+				foreach ( $subtitles as $subtitle ) {
+					$text_tracks[] = array(
+						'kind'    => 'subtitles',
+						'label'   => $subtitle['label'],
+						'src'     => $subtitle['url'],
+						'srclang' => $subtitle['label'],
+					);
+				}
+			}
+
+			$overlay_array = array();
+
+			if ( ! empty ( $track['overlays'] ) ) {
+				// TODO anastis remove json_decode here it should be saved as decoded
+				$overlays = json_decode( $track['overlays'], true );
+				foreach ( $overlays as $overlay ) {
+					$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
+
+					if ( ! empty( $overlay_image_url[0] ) ) {
+						$overlay_image_url = $overlay_image_url[0];
+					} else {
+						$overlay_image_url = '';
+					}
+
+					$overlay_array[] = array(
+						'title'     => $overlay['title'],
+						'text'      => $overlay['text'],
+						'url'       => $overlay['url'],
+						'startTime' => $overlay['start_time'],
+						'endTime'   => $overlay['end_time'],
+						'imageUrl'  => $overlay_image_url,
+						'position'  => $overlay['position'],
+					);
+				}
+			}
+
 			$playlist[] = array(
 				'sources'     => array(
 					array(
@@ -1170,7 +1583,9 @@ class VideoIgniter {
 				'poster'      => $track_poster_url,
 				'thumbnail'   => $track_poster_url,
 				'name'        => $track['title'],
-				'description' => $track['description']
+				'description' => $track['description'],
+				'textTracks'  => $text_tracks,
+				'overlays'    => $overlay_array,
 			);
 		}
 
@@ -1198,6 +1613,32 @@ class VideoIgniter {
 			$track_poster_url = '';
 		}
 
+		$overlay_array = array();
+
+		if ( ! empty ( $main_track['overlays'] ) ) {
+			// TODO anastis remove json_decode here it should be saved as decoded
+			$overlays = json_decode( $main_track['overlays'], true );
+			foreach ( $overlays as $overlay ) {
+				$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
+
+				if ( ! empty( $overlay_image_url[0] ) ) {
+					$overlay_image_url = $overlay_image_url[0];
+				} else {
+					$overlay_image_url = '';
+				}
+
+				$overlay_array[] = array(
+					'title'     => $overlay['title'],
+					'text'      => $overlay['text'],
+					'url'       => $overlay['url'],
+					'startTime' => $overlay['start_time'],
+					'endTime'   => $overlay['end_time'],
+					'imageUrl'  => $overlay_image_url,
+					'position'  => $overlay['position'],
+				);
+			}
+		}
+
 		ob_start();
 		?>
 		<video
@@ -1205,11 +1646,29 @@ class VideoIgniter {
 			controls
 			preload="auto"
 			poster="<?php echo esc_attr( $track_poster_url ); ?>"
+			data-overlays='<?php echo json_encode( $overlay_array ); ?>'
 		>
 			<source
 				src="<?php echo esc_attr( $main_track['track_url'] ); ?>"
 				type="<?php echo $this->get_video_mime_type_from_url( $main_track['track_url'] ); ?>"
 			/>
+			<?php if ( ! empty( $main_track['chapters_url'] ) ) : ?>
+				<track kind="chapters" src="<?php echo esc_url( $main_track['chapters_url'] ); ?>" />
+			<?php endif; ?>
+
+			<?php
+				if ( ! empty( $main_track['subtitles'] ) ) :
+					// TODO anastis change this, info should stored decoded in the first place.
+					$subtitles = json_decode( $main_track['subtitles'], true );
+					foreach ( $subtitles as $subtitle ):
+						?>
+						<track
+							kind="subtitles"
+							src="<?php echo esc_url( $subtitle['url'] ); ?>"
+							srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
+							label="<?php echo esc_attr( $subtitle['label'] ); ?>"
+						/>
+					<?php endforeach; endif; ?>
 		</video>
 		<?php
 
@@ -1296,65 +1755,6 @@ class VideoIgniter {
 		return 'false';
 	}
 
-	public function register_playlist_endpoint() {
-		add_rewrite_tag( '%videoigniter_playlist_id%', '([0-9]+)' );
-		add_rewrite_rule( '^videoigniter/playlist/([0-9]+)/?', 'index.php?videoigniter_playlist_id=$matches[1]', 'bottom' );
-	}
-
-	public function handle_playlist_endpoint() {
-		global $wp_query;
-
-		$playlist_id = $wp_query->get( 'videoigniter_playlist_id' );
-
-		if ( empty( $playlist_id ) ) {
-			return;
-		}
-
-		$playlist_id = intval( $playlist_id );
-		$post        = get_post( $playlist_id );
-
-		if ( empty( $post ) || $post->post_type !== $this->post_type ) {
-			wp_send_json_error( __( "ID doesn't match a playlist", 'videoigniter' ) );
-		}
-
-		$response = array();
-		$tracks   = $this->get_post_meta( $playlist_id, '_videoigniter_tracks', array() );
-
-		if ( empty( $tracks ) ) {
-			$tracks = array();
-		}
-
-		foreach ( $tracks as $track ) {
-			$track          = wp_parse_args( $track, self::get_default_track_values() );
-			$track_response = array();
-
-			$track_response['title']            = $track['title'];
-			$track_response['description']      = $track['description'];
-			$track_response['video']            = $track['track_url'];
-			$track_response['downloadUrl']      = $track['download_uses_track_url'] ? $track['track_url'] : $track['download_url'];
-			$track_response['downloadFilename'] = $this->get_filename_from_url( $track_response['downloadUrl'] );
-
-			if ( ! $track_response['downloadFilename'] ) {
-				$track_response['downloadFilename'] = $track_response['downloadUrl'];
-			}
-
-			$cover_url = wp_get_attachment_image_src( intval( $track['cover_id'] ), 'videoigniter_cover' );
-			if ( ! empty( $cover_url[0] ) ) {
-				$cover_url = $cover_url[0];
-			} else {
-				$cover_url = '';
-			}
-
-			$track_response['cover'] = $cover_url;
-
-			$track_response = apply_filters( 'videoigniter_playlist_endpoint_track', $track_response, $track, $playlist_id, $post );
-
-			$response[] = $track_response;
-		}
-
-		wp_send_json( $response );
-	}
-
 	public function filter_posts_columns( $columns ) {
 		$date = $columns['date'];
 		unset( $columns['date'] );
@@ -1390,6 +1790,21 @@ class VideoIgniter {
 		) );
 
 		return $q->posts;
+	}
+
+	public function register_file_extensions( $types, $file, $filename, $mimes ) {
+		if ( false !== strpos( $filename, '.vtt' ) ) {
+			$types['ext']  = 'vtt';
+			$types['type'] = 'text/vtt';
+		}
+
+		return $types;
+	}
+
+	function register_mime_times( $mimes ) {
+		$mimes['vtt'] = 'text/vtt';
+
+		return $mimes;
 	}
 
 	public function get_post_meta( $post_id, $key, $default = '' ) {

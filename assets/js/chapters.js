@@ -62,6 +62,10 @@ function chaptersTimeline() {
     });
     const cues = chapters?.[0]?.cues;
 
+    if (!cues) {
+      return;
+    }
+
     for (let i = 0; i < cues.length; i++) {
       const cue = cues[i];
       if (time >= cue.startTime && time <= cue.endTime) {
@@ -112,6 +116,10 @@ function chaptersTimeline() {
     const chapters = getChapters();
     const cues = chapters?.[0]?.cues;
     const chapterTimelines = progressControl.el().querySelectorAll('.vjs-chapter-timeline');
+
+    if (!cues) {
+      return;
+    }
 
     [].forEach.call(cues, (cue, index) => {
       const chapterTimeline = chapterTimelines[index];
@@ -177,8 +185,17 @@ function chaptersTimeline() {
     const chapters = getChapters();
     const cues = chapters?.[0]?.cues;
 
+    if (!cues) {
+      return;
+    }
+
     const seekBar = player.getChild('controlBar').getChild('progressControl').getChild('seekBar');
     const duration = player.duration();
+
+    // Remove all previous chapter timelines
+    seekBar.el().querySelectorAll('.vjs-chapter-timeline').forEach(el => {
+      el.remove();
+    });
 
     [].forEach.call(cues, cue => {
       const startTimePercentage = (cue.startTime / duration) * 100;
@@ -195,7 +212,10 @@ function chaptersTimeline() {
   };
 
   player.on('loadedmetadata', () => {
-    renderChapterTimelines();
+    // TODO: Address this, we should detect when text tracks are available.
+    setTimeout(() => {
+      renderChapterTimelines();
+    }, 500);
 
     const progressControl = player.getChild('controlBar').getChild('progressControl');
     progressControl.on('mousemove', chapterTimelineHighlight);

@@ -43,6 +43,8 @@ addEventListener('DOMContentLoaded', () => {
     player.volume(initialVolume);
 
     // Initialize plugins
+    player.chaptersTimeline();
+
     if (hoverPreviewEnabled) {
       player.hoverPreview();
     }
@@ -51,9 +53,19 @@ addEventListener('DOMContentLoaded', () => {
       player.stickyPlayer();
     }
 
+    const overlays = JSON.parse(video.dataset.overlays);
+    if (overlays?.length > 0) {
+      player.overlays(overlays);
+    }
+
     if (playlist?.length > 1) {
       player.playlist(playlist);
       player.playlistUi();
+
+      player.on('playlistitem', () => {
+        const currentItem = playlist[player.playlist.currentItem()];
+        player.overlays(currentItem.overlays ?? []);
+      });
     }
   });
 });

@@ -20,9 +20,11 @@ jQuery(function ($) {
 			$removeAllTracksButton: $(".vi-remove-all-fields"),
 			$batchUploadButton: $(".vi-add-field-batch"),
 			$trackDownloadUsesTrackUrlButton: $(".vi-use-track-url-download"),
-			videoUploadButtonClassName: ".vi-upload",
+			videoUploadButtonClassName: ".vi-track-url-upload",
 			coverUploadButtonClassName: ".vi-field-upload-cover",
 			coverRemoveClassName: ".vi-remove-cover",
+			imageUploadButtonClassName: ".vi-field-image-upload",
+			imageRemoveClassName: ".vi-field-image-upload-dismiss",
 			fieldTitleClassName: ".vi-field-title",
 			trackTitleClassName: ".vi-track-title",
 			trackDescriptionClassName: ".vi-track-description",
@@ -30,9 +32,12 @@ jQuery(function ($) {
 			trackUrlClassName: ".vi-track-url",
 			trackDownloadUrlClassName: ".vi-track-download-url",
 			trackDownloadUsesTrackUrlClassName: ".vi-track-download-uses-track-url",
+			trackGenericUploadButton: ".vi-upload",
 			hasCoverClass: "vi-has-cover",
+			hasImageValueClass: "vi-field-image-has-value",
 			fieldHeadClassName: ".vi-field-head",
 			fieldCollapsedClass: "vi-collapsed",
+			customElements: 'vi-subtitles-field,vi-overlays-field',
 			$expandAllButton: $(".vi-fields-expand-all"),
 			$collapseAllButton: $(".vi-fields-collapse-all"),
 			$shortcodeInputField: $("#vi_shortcode")
@@ -119,8 +124,14 @@ jQuery(function ($) {
 				.not(":button")
 				.each(function () {
 					var $this = $(this);
-					$this.attr("id", $this.attr("id").replace(fieldHash, newHash));
-					$this.attr("name", $this.attr("name").replace(fieldHash, newHash));
+					if ($this.attr("id")) {
+						$this.attr("id", $this.attr("id").replace(fieldHash, newHash));
+					}
+
+					if ($this.attr("name")) {
+						$this.attr("name", $this.attr("name").replace(fieldHash, newHash));
+					}
+
 					$this.val("");
 				});
 			$field.find("label").each(function () {
@@ -128,6 +139,11 @@ jQuery(function ($) {
 				$this.attr("for", $this.attr("for").replace(fieldHash, newHash));
 			});
 			$field.find(el.fieldTitleClassName).text("");
+			$field.find(el.customElements).remove();
+			$field.find('vi-repeatable-fields').each(function () {
+				var $this = $(this);
+				$this.attr('data-name', $this.data('name').replace(fieldHash, newHash));
+			})
 			expandField($field);
 			resetCoverImage($field);
 		}
@@ -411,6 +427,22 @@ jQuery(function ($) {
 			});
 		});
 
+		/* General file uploads */
+		el.$trackContainer.on("click", el.trackGenericUploadButton, function () {
+			var $this = $(this);
+			var $input = $this.siblings('input');
+			var mime_type = $input.data('mime-type');
+
+			wpMediaInit({
+				handler: "vi-upload",
+				title: vi_scripts.messages.media_title_upload_file,
+				type: mime_type || undefined,
+				onMediaSelect: function (media) {
+					$input.val(media.url)
+				}
+			});
+		});
+
 		/**
 		 * Cover image upload
 		 *
@@ -443,6 +475,64 @@ jQuery(function ($) {
 			.on("click", el.coverRemoveClassName, function (e) {
 				var $this = $(this);
 				resetCoverImage($this.parents(el.trackFieldClassName));
+				e.stopPropagation();
+				e.preventDefault();
+			});
+
+		/**
+		 * Generic image upload
+		 *
+		 * Element `imageUploadButtonClassName` *must* have
+		 * an `img` and `imageRemoveClassName` elements
+		 * as children
+		 *
+		 * TODO Refactor "Cover image upload" to reuse this generic component
+		 */
+		el.$trackContainer
+			.on("click", el.imageUploadButtonClassName, function (e) {
+				var $this = $(this);
+
+				wpMediaInit({
+					handler: "vi-cover",
+					title: vi_scripts.messages.media_title_upload_cover,
+					type: "image",
+					onMediaSelect: function (media) {
+						const url = media.sizes.thumbnail
+												? media.sizes.thumbnail.url
+												: media.sizes.full.url;
+
+						if (!media || !url || !media.id) {
+							return;
+						}
+
+						$this
+							.find("img")
+							.attr("src", url)
+							.attr("alt", media.alt || "");
+
+						$this
+							.addClass(el.hasCoverClass)
+							.siblings("input")
+							.val(media.id);
+					}
+				});
+
+				e.preventDefault();
+			})
+			/* Remove Image */
+			.on("click", el.imageRemoveClassName, function (e) {
+				var $this = $(this);
+				const $parent = $this.closest(`.${el.hasImageValueClass}`);
+
+				$parent
+					.removeClass(el.hasImageValueClass)
+					.find("img")
+					.attr("src", "")
+					.attr("alt", "");
+				$parent
+					.find("input")
+					.val("");
+
 				e.stopPropagation();
 				e.preventDefault();
 			});
@@ -555,4 +645,151 @@ jQuery(function ($) {
 	if (!window.VideoIgniter) {
 		window.VideoIgniter = VideoIgniter;
 	}
+});
+
+// Repeatable fields
+// TODO: Move to a better place
+class VideoIgniterRepeatableFields extends HTMLElement {
+	constructor() {
+		super();
+	}
+
+	connectedCallback() {
+		this.component = this.dataset.component;
+		this.dataName = this.dataset.name;
+		this.container = this.querySelector('.vi-repeatable-fields-content');
+
+		this.addEventListener('click', (event) => {
+			if (event.target.classList.contains('vi-fields-add-button')) {
+				this.addField();
+			}
+		});
+
+		this.createDataInput();
+	}
+
+	addField() {
+		const newField = document.createElement(this.component);
+		this.container.appendChild(newField);
+	}
+
+	createDataInput() {
+		const input = document.createElement('input');
+		input.type = 'hidden';
+		input.name = this.dataName;
+		this.appendChild(input);
+		this.input = input;
+	}
+
+	serializeData() {
+		const childFields = this.container.querySelectorAll(this.component);
+
+		const data = [...childFields].map(field => {
+			// TODO Support all input types here like checkboxes, radios, etc.
+			const inputs = [...field.querySelectorAll('input, textarea, select')].filter(input => input !== this.input);
+
+			return [...inputs].reduce((acc, input) => {
+				acc[input.getAttribute('name')] = input.value;
+				return acc;
+			}, {});
+		});
+
+		this.input.value = JSON.stringify(data);
+	}
+}
+
+customElements.define('vi-repeatable-fields', VideoIgniterRepeatableFields);
+
+class VideoIgniterRepeatableField extends HTMLElement {
+	constructor() {
+		super();
+
+		try {
+			this.data = JSON.parse(this.dataset.data);
+		} catch {
+			this.data = null;
+		}
+	}
+
+	connectedCallback() {
+		const templateContent = document.getElementById(this.getTemplateId()).content;
+		this.appendChild(document.importNode(templateContent, true));
+		this.populateData();
+
+		this.querySelector('.vi-fields-remove-button').addEventListener('click', () => {
+			this.remove();
+		});
+	}
+
+	getTemplateId() {
+		return '';
+	}
+
+	populateData() {
+		if (!this.data) {
+			return;
+		}
+
+		const inputs = this.querySelectorAll('input, textarea, select');
+		inputs.forEach(input => {
+			const value = this.data[input.getAttribute('name')];
+
+			if (value != null) {
+				input.value = value;
+			}
+		});
+	}
+}
+
+class VideoIgniterSubtitlesField extends VideoIgniterRepeatableField {
+	constructor() {
+		super();
+	}
+
+	getTemplateId() {
+		return 'subtitles-repeatable-field-template';
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+	}
+}
+
+customElements.define('vi-subtitles-field', VideoIgniterSubtitlesField);
+
+class VideoIgniterOverlaysField extends VideoIgniterRepeatableField {
+	constructor() {
+		super();
+	}
+
+	getTemplateId() {
+		return 'overlays-repeatable-field-template';
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+	}
+
+	populateData() {
+		super.populateData();
+		if (!this.data) {
+			return;
+		}
+
+		if (this.data.image_url) {
+			const imageField = this.querySelector('.vi-field-image');
+			imageField.querySelector('img').src = this.data.image_url;
+			imageField.classList.add('vi-field-image-has-value')
+		}
+	}
+}
+
+customElements.define('vi-overlays-field', VideoIgniterOverlaysField);
+
+const form = document.querySelector('form[name="post"]');
+form.addEventListener('submit', (event) => {
+	event.preventDefault();
+	const repeatables = form.querySelectorAll('vi-repeatable-fields');
+	repeatables.forEach(repeatable => repeatable.serializeData());
+	form.submit();
 });
