@@ -17,6 +17,8 @@ addEventListener('DOMContentLoaded', () => {
     const initialVolume = (parseInt(main.dataset.volume, 10) ?? 100) / 100;
     const skipSeconds = parseInt(main.dataset.skipSeconds, 10) ?? 0;
     const playlist = JSON.parse(main.dataset.playlist);
+    const title = main.querySelector('video').dataset.title;
+    const description = main.querySelector('video').dataset.description;
 
     const player = videojs(video, {
       playbackRates: playbackSpeedEnabled ? [0.5, 1, 1.5, 2] : undefined,
@@ -29,6 +31,7 @@ addEventListener('DOMContentLoaded', () => {
           backward: skipSeconds,
         },
       },
+      titleBar: true,
       breakpoints: {
         tiny: 300,
         xsmall: 400,
@@ -39,6 +42,13 @@ addEventListener('DOMContentLoaded', () => {
         huge: 900
       },
     });
+
+    if (title || description) {
+      player.titleBar.update({
+        title: title || '',
+        description: description || '',
+      })
+    }
 
     player.volume(initialVolume);
 
@@ -65,6 +75,13 @@ addEventListener('DOMContentLoaded', () => {
       player.on('playlistitem', () => {
         const currentItem = playlist[player.playlist.currentItem()];
         player.overlays(currentItem.overlays ?? []);
+
+        if (currentItem.name || currentItem.description) {
+          player.titleBar.update({
+            title: currentItem.name || '',
+            description: currentItem.description ?? '',
+          });
+        }
       });
     }
   });

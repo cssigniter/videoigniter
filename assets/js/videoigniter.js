@@ -511,7 +511,7 @@ jQuery(function ($) {
 							.attr("alt", media.alt || "");
 
 						$this
-							.addClass(el.hasCoverClass)
+							.addClass(el.hasImageValueClass)
 							.siblings("input")
 							.val(media.id);
 					}

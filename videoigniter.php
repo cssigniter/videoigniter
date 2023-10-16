@@ -1604,6 +1604,8 @@ class VideoIgniter {
 			preload="auto"
 			poster="<?php echo esc_attr( $track_poster_url ); ?>"
 			data-overlays="<?php echo esc_attr( wp_json_encode( $overlay_array ) ); ?>"
+			data-title="<?php echo esc_attr( $main_track['title'] ); ?>"
+			data-description="<?php echo esc_attr( $main_track['description'] ); ?>"
 		>
 			<source
 				src="<?php echo esc_attr( $main_track['track_url'] ); ?>"
