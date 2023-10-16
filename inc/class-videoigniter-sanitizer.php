@@ -101,21 +101,145 @@ class VideoIgniter_Sanitizer {
 
 		$sanitized_track = array();
 
-		$sanitized_track['cover_id']     = intval( $track['cover_id'] );
+		$sanitized_track['cover_id']     = (int) $track['cover_id'];
 		$sanitized_track['title']        = sanitize_text_field( $track['title'] );
 		$sanitized_track['description']  = sanitize_text_field( $track['description'] );
 		$sanitized_track['track_url']    = esc_url_raw( $track['track_url'] );
 		$sanitized_track['chapters_url'] = esc_url_raw( $track['chapters_url'] );
-		// TODO anastis sanitize subtitles here somehow // json_decode here
-		$sanitized_track['subtitles'] = $track['subtitles'];
-		$sanitized_track['overlays']  = $track['overlays'];
 
+		$subtitles = is_array( $track['subtitles'] ) ? $track['subtitles'] : json_decode( wp_unslash( $track['subtitles'] ), true );
+		$subtitles = ! is_null( $subtitles ) ? $subtitles : array();
+		$overlays  = is_array( $track['overlays'] ) ? $track['overlays'] : json_decode( wp_unslash( $track['overlays'] ), true );
+		$overlays  = ! is_null( $overlays ) ? $overlays : array();
+
+		$sanitized_track['subtitles'] = self::track_subtitles( $subtitles );
+		$sanitized_track['overlays']  = self::track_overlays( $overlays );
+
+		// TODO anastis: Check if this works now that we have nested arrays (subtitles/overlays).
 		$tmp = array_filter( $sanitized_track );
 		if ( empty( $tmp ) ) {
 			$sanitized_track = false;
 		}
 
 		return apply_filters( 'videoigniter_sanitize_playlist_track', $sanitized_track, $track, $post_id, $track_uid );
+	}
+
+	/**
+	 * Sanitizes a playlist's track subtitle entries.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $subtitles Subtitle entries to sanitize.
+	 *
+	 * @return array|false Array if at least one field is completed, false otherwise.
+	 */
+	public static function track_subtitles( $subtitles ) {
+		$sanitized_array = array();
+
+		if ( empty( $subtitles ) ) {
+			return $sanitized_array;
+		}
+
+		foreach ( $subtitles as $subtitle ) {
+			$sanitized = self::track_subtitle( $subtitle );
+			if ( false !== $sanitized ) {
+				$sanitized_array[] = $sanitized;
+			}
+		}
+
+		return $sanitized_array;
+	}
+
+	/**
+	 * Sanitizes a single playlist's track subtitle entry.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $subtitle Subtitle entry to sanitize.
+	 *
+	 * @return array|false Array if at least one field is completed, false otherwise.
+	 */
+	public static function track_subtitle( $subtitle ) {
+		$subtitle = wp_parse_args( $subtitle, VideoIgniter::get_default_track_subtitle_values() );
+
+		$sanitized = array();
+
+		$sanitized['url']     = esc_url_raw( $subtitle['url'] );
+		$sanitized['srclang'] = sanitize_text_field( $subtitle['srclang'] );
+		$sanitized['label']   = sanitize_text_field( $subtitle['label'] );
+
+		$tmp = array_filter( $sanitized );
+		if ( empty( $tmp ) ) {
+			$sanitized = false;
+		}
+
+		return $sanitized;
+	}
+
+	/**
+	 * Sanitizes a playlist's track overlay entries.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $overlays Overlay entries to sanitize.
+	 *
+	 * @return array|false Array if at least one field is completed, false otherwise.
+	 */
+	public static function track_overlays( $overlays ) {
+		$sanitized_array = array();
+
+		if ( empty( $overlays ) ) {
+			return $sanitized_array;
+		}
+
+		foreach ( $overlays as $overlay ) {
+			$sanitized = self::track_overlay( $overlay );
+			if ( false !== $sanitized ) {
+				$sanitized_array[] = $sanitized;
+			}
+		}
+
+		return $sanitized_array;
+	}
+
+	/**
+	 * Sanitizes a single playlist's track overlay entry.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $overlay Subtitle entry to sanitize.
+	 *
+	 * @return array|false Array if at least one field is completed, false otherwise.
+	 */
+	public static function track_overlay( $overlay ) {
+		$overlay = wp_parse_args( $overlay, VideoIgniter::get_default_track_overlay_values() );
+
+		$sanitized = array();
+
+		$sanitized['url']        = esc_url_raw( $overlay['url'] );
+		$sanitized['title']      = sanitize_text_field( $overlay['title'] );
+		$sanitized['text']       = wp_kses( $overlay['text'], wp_kses_allowed_html() );
+		$sanitized['image_id']   = self::intval_or_empty( $overlay['image_id'] );
+		$sanitized['start_time'] = self::intval_or_empty( $overlay['start_time'] );
+		$sanitized['end_time']   = self::intval_or_empty( $overlay['end_time'] );
+		$sanitized['position']   = in_array( $overlay['position'], array(
+			'top-left',
+			'top-center',
+			'top-right',
+			'middle-left',
+			'middle-center',
+			'middle-right',
+			'bottom-left',
+			'bottom-center',
+			'bottom-right',
+		) ) ? $overlay['position'] : 'top-left';
+
+		$tmp = array_filter( $sanitized );
+		if ( empty( $tmp ) ) {
+			$sanitized = false;
+		}
+
+		return $sanitized;
 	}
 
 	/**

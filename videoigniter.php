@@ -535,10 +535,8 @@ class VideoIgniter {
 		$description  = $track['description'];
 		$track_url    = $track['track_url'];
 		$chapters_url = $track['chapters_url'];
-
-		// TODO anastis change this, info should stored decoded in the first place.
-		$subtitles = json_decode( $track['subtitles'], true );
-		$overlays  = json_decode( $track['overlays'], true );
+		$subtitles    = $track['subtitles'];
+		$overlays     = $track['overlays'];
 
 		$cover_url = wp_get_attachment_image_src( intval( $cover_id ), 'thumbnail' );
 		if ( ! empty( $cover_url[0] ) ) {
@@ -727,7 +725,6 @@ class VideoIgniter {
 					>
 						<div class="vi-repeatable-fields-content">
 							<?php
-								$overlays = json_decode( $track['overlays'], true );
 								foreach ( $overlays as $overlay ) :
 									$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
 
@@ -1371,6 +1368,26 @@ class VideoIgniter {
 		) );
 	}
 
+	public static function get_default_track_subtitle_values() {
+		return apply_filters( 'videoigniter_default_track_subtitle_values', array(
+			'url'     => '',
+			'label'   => '',
+			'srclang' => '',
+		) );
+	}
+
+	public static function get_default_track_overlay_values() {
+		return apply_filters( 'videoigniter_default_track_overlay_values', array(
+			'url'        => '',
+			'title'      => '',
+			'text'       => '',
+			'image_id'   => '',
+			'start_time' => '',
+			'end_time'   => '',
+			'position'   => 'top-left',
+		) );
+	}
+
 	public function register_image_sizes() {
 		// TODO: Change this to something bigger
 		add_image_size( 'videoigniter_cover', 560, 560, true );
@@ -1457,7 +1474,10 @@ class VideoIgniter {
 
 	// TODO: Add php doc and review
 	public function get_video_mime_type_from_url( $url ) {
+		// TODO: Replace function with wp_check_filetype() ? Why do we need this one?
 		// TODO add more mime types (HLS specifically)
+		// TODO: Check wp_get_mime_types() for more mime types.
+		// TODO: Note that avi and m4v have different mime types.
 		$mime_types = array(
 			'mp4'  => 'video/mp4',
 			'm4v'  => 'video/x-m4v',
@@ -1535,8 +1555,7 @@ class VideoIgniter {
 			}
 
 			if ( ! empty ( $track['subtitles'] ) ) {
-				// TODO anastis remove json_decode here it should be saved as decoded
-				$subtitles = json_decode( $track['subtitles'], true );
+				$subtitles = $track['subtitles'];
 				foreach ( $subtitles as $subtitle ) {
 					$text_tracks[] = array(
 						'kind'    => 'subtitles',
@@ -1550,8 +1569,7 @@ class VideoIgniter {
 			$overlay_array = array();
 
 			if ( ! empty ( $track['overlays'] ) ) {
-				// TODO anastis remove json_decode here it should be saved as decoded
-				$overlays = json_decode( $track['overlays'], true );
+				$overlays = $track['overlays'];
 				foreach ( $overlays as $overlay ) {
 					$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
 
@@ -1616,8 +1634,7 @@ class VideoIgniter {
 		$overlay_array = array();
 
 		if ( ! empty ( $main_track['overlays'] ) ) {
-			// TODO anastis remove json_decode here it should be saved as decoded
-			$overlays = json_decode( $main_track['overlays'], true );
+			$overlays = $main_track['overlays'];
 			foreach ( $overlays as $overlay ) {
 				$overlay_image_url = wp_get_attachment_image_src( intval( $overlay['image_id'] ), 'thumbnail' );
 
@@ -1658,8 +1675,7 @@ class VideoIgniter {
 
 			<?php
 				if ( ! empty( $main_track['subtitles'] ) ) :
-					// TODO anastis change this, info should stored decoded in the first place.
-					$subtitles = json_decode( $main_track['subtitles'], true );
+					$subtitles = $main_track['subtitles'];
 					foreach ( $subtitles as $subtitle ):
 						?>
 						<track

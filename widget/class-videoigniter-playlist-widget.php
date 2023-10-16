@@ -143,8 +143,15 @@ if ( ! class_exists( 'VideoIgniter_Playlist_Widget' ) ):
 			);
 
 			$r = wp_parse_args( $args, $defaults );
-			// TODO: @anastis: should we replace this since WP highly discourages its usage?
-			extract( $r, EXTR_SKIP );
+
+			$depth                 = $r['depth'];
+			$echo                  = $r['echo'];
+			$id                    = $r['id'];
+			$class                 = $r['class'];
+			$show_option_none      = $r['show_option_none'];
+			$show_option_no_change = $r['show_option_no_change'];
+			$option_none_value     = $r['option_none_value'];
+			$select_even_if_empty  = $r['select_even_if_empty'];
 
 			$hierarchical_post_types = get_post_types( array( 'hierarchical' => true ) );
 			if ( in_array( $r['post_type'], $hierarchical_post_types, true ) ) {
@@ -176,8 +183,17 @@ if ( ! class_exists( 'VideoIgniter_Playlist_Widget' ) ):
 			$output = apply_filters( 'videoigniter_playlist_widget_dropdown_posts', $output, $name, $r );
 
 			if ( $echo ) {
-				// TODO @anastis: since this is filterable shouldn't we escape it?
-				echo $output;
+				echo wp_kses( $output, array(
+					'select' => array(
+						'class' => true,
+						'id'    => true,
+						'name'  => true,
+					),
+					'option' => array(
+						'value'    => true,
+						'selected' => true,
+					),
+				) );
 			}
 
 			return $output;
