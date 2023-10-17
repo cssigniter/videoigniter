@@ -115,7 +115,6 @@ class VideoIgniter_Sanitizer {
 		$sanitized_track['subtitles'] = self::track_subtitles( $subtitles );
 		$sanitized_track['overlays']  = self::track_overlays( $overlays );
 
-		// TODO anastis: Check if this works now that we have nested arrays (subtitles/overlays).
 		$tmp = array_filter( $sanitized_track );
 		if ( empty( $tmp ) ) {
 			$sanitized_track = false;
