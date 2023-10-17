@@ -303,6 +303,9 @@ class VideoIgniter {
 	 */
 	public function enqueue_admin_scripts( $hook ) {
 		$screen = get_current_screen();
+		if ( is_null( $screen ) ) {
+			return;
+		}
 
 		if ( 'post' === $screen->base && $screen->post_type === $this->post_type ) {
 			wp_enqueue_media();
@@ -310,7 +313,7 @@ class VideoIgniter {
 			wp_enqueue_script( 'videoigniter-admin' );
 		}
 
-		if ( 'settings_page_videoigniter' === $screen->id ) {
+		if ( 'vi_playlist_page_vi_settings' === $hook ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'videoigniter-admin-scripts', $this->plugin_url() . '/assets/js/admin.js', array(
 				'wp-color-picker',

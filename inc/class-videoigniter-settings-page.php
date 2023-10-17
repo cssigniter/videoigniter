@@ -15,7 +15,7 @@ class VideoIgniter_Settings {
 	}
 
 	public function add_admin_menu() {
-		add_options_page( esc_html__( 'VideoIgniter Settings', 'videoigniter' ), esc_html__( 'VideoIgniter', 'videoigniter' ), 'manage_options', 'videoigniter', array( $this, 'options_page' ) );
+		add_submenu_page( 'edit.php?post_type=vi_playlist', esc_html__( 'VideoIgniter Settings', 'videoigniter' ), esc_html__( 'Settings', 'videoigniter' ), 'manage_options', 'vi_settings', array( $this, 'options_page' ) );
 	}
 
 	public function settings_sanitize( $settings ) {
