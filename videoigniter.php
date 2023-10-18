@@ -315,7 +315,9 @@ class VideoIgniter {
 
 		if ( 'vi_playlist_page_vi_settings' === $hook ) {
 			wp_enqueue_style( 'wp-color-picker' );
-			wp_enqueue_script( 'videoigniter-admin-scripts', $this->plugin_url() . '/assets/js/admin.js', array(
+			wp_enqueue_style( 'videoigniter-settings-styles', $this->plugin_url() . '/assets/css/admin/settings.css', array(), $this->version );
+			wp_enqueue_media();
+			wp_enqueue_script( 'videoigniter-settings-scripts', $this->plugin_url() . '/assets/js/settings.js', array(
 				'wp-color-picker',
 			), $this->version, true );
 		}
@@ -1416,15 +1418,21 @@ class VideoIgniter {
 			return array();
 		}
 
+		$settings = get_option( 'videoigniter_settings' );
+		$branding_image_id = $settings['branding-image-id'];
+		$branding_image_src = $branding_image_id ? wp_get_attachment_image_src( $branding_image_id, 'full' )[0] : '';
+
 		$attrs = array(
-			'data-playlist-layout'        => $this->get_post_meta( $post_id, '_videoigniter_playlist_layout', 'right' ),
-			'data-playlist'               => $this->get_playlist_json( $post_id ),
-			'data-sticky'                 => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_sticky_enabled', 1 ) ),
-			'data-show-fullscreen-toggle' => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', 1 ) ),
-			'data-show-playback-speed'    => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_playback_speed', 0 ) ),
-			'data-hover-preview-enabled'  => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_hover_preview_enabled', 0 ) ),
-			'data-volume'                 => intval( $this->get_post_meta( $post_id, '_videoigniter_volume', 100 ) ),
-			'data-skip-seconds'           => intval( $this->get_post_meta( $post_id, '_videoigniter_skip_seconds', '0' ) ),
+			'data-playlist-layout'         => $this->get_post_meta( $post_id, '_videoigniter_playlist_layout', 'right' ),
+			'data-playlist'                => $this->get_playlist_json( $post_id ),
+			'data-sticky'                  => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_sticky_enabled', 1 ) ),
+			'data-show-fullscreen-toggle'  => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', 1 ) ),
+			'data-show-playback-speed'     => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_playback_speed', 0 ) ),
+			'data-hover-preview-enabled'   => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_hover_preview_enabled', 0 ) ),
+			'data-volume'                  => intval( $this->get_post_meta( $post_id, '_videoigniter_volume', 100 ) ),
+			'data-skip-seconds'            => intval( $this->get_post_meta( $post_id, '_videoigniter_skip_seconds', '0' ) ),
+			'data-branding-image'          => esc_url( $branding_image_src ),
+			'data-branding-image-position' => esc_attr( $settings['branding-image-position'] ),
 		);
 
 		return apply_filters( 'videoigniter_get_playlist_data_attributes_array', $attrs, $post_id );
@@ -1606,8 +1614,17 @@ class VideoIgniter {
 			}
 		}
 
+		// TODO anastis move these somewhere else perhaps?
+		$settings = get_option( 'videoigniter_settings' );
+
 		ob_start();
+		// TODO anastis move the style to a better place globally and only load it one time?
 		?>
+		<style>
+			.vi-player-wrap {
+				--vi-player-color-primary: <?php echo $settings['accent-color'] ?>;
+			}
+		</style>
 		<video
 			class="video-js vjs-fluid vi-player"
 			controls

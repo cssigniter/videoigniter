@@ -17,6 +17,8 @@ addEventListener('DOMContentLoaded', () => {
     const initialVolume = (parseInt(main.dataset.volume, 10) ?? 100) / 100;
     const skipSeconds = parseInt(main.dataset.skipSeconds, 10) ?? 0;
     const playlist = JSON.parse(main.dataset.playlist);
+    const brandingImage = main.dataset.brandingImage;
+    const brandingImagePosition = main.dataset.brandingImagePosition;
 
     const title = video.dataset.title;
     const description = video.dataset.description;
@@ -67,6 +69,13 @@ addEventListener('DOMContentLoaded', () => {
 
     if (overlays?.length > 0) {
       player.overlays(overlays);
+    }
+
+    if (brandingImage) {
+      player.branding({
+        imageUrl: brandingImage,
+        position: brandingImagePosition,
+      });
     }
 
     if (playlist?.length > 1) {
