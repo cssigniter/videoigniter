@@ -298,8 +298,7 @@ $border-radius-base: 2px !default;
 	float: right;
 }
 
-.vi-field-image,
-.vi-field-cover {
+.vi-field-image {
 	width: 100px;
 	height: 100px;
 	background-color: $lighter-grey;
@@ -417,8 +416,7 @@ $border-radius-base: 2px !default;
 	align-self: flex-end;
 }
 
-.vi-field-image-upload,
-.vi-field-upload-cover {
+.vi-field-image-upload {
 	display: block;
 	position: relative;
 	width: 100px;
@@ -430,18 +428,19 @@ $border-radius-base: 2px !default;
 	img {
 		max-width: 100%;
 		display: none;
+		position: absolute;
+		object-fit: cover;
+		width: 100%;
+		height: 100%;
 	}
 }
 
-.vi-field-image-has-value,
-.vi-has-cover {
-	.vi-field-image-upload-dismiss,
-	.vi-remove-cover {
+.vi-field-image-has-value {
+	.vi-field-image-upload-dismiss {
 		display: block;
 	}
 
-	.vi-field-image-placeholder,
-	.vi-field-cover-placeholder {
+	.vi-field-image-placeholder {
 		display: none;
 	}
 
@@ -450,8 +449,7 @@ $border-radius-base: 2px !default;
 	}
 }
 
-.vi-field-image-placeholder,
-.vi-field-cover-placeholder {
+.vi-field-image-placeholder {
 	text-align: center;
 	font-style: normal;
 	font-size: .9em;
@@ -473,8 +471,7 @@ $border-radius-base: 2px !default;
 	}
 }
 
-.vi-field-image-upload-dismiss,
-.vi-remove-cover {
+.vi-field-image-upload-dismiss {
 	color: $white;
 	background-color: $red;
 	width: 16px;
@@ -488,6 +485,7 @@ $border-radius-base: 2px !default;
 	transition: opacity $transition-time ease-in;
 	display: none;
 	text-align: center;
+	z-index: 2;
 
 	&:hover {
 		opacity: 1;
@@ -589,10 +587,6 @@ $border-radius-base: 2px !default;
 	.vi-field-split {
 		float: none;
 		width: 100%;
-	}
-
-	.vi-field-cover {
-		margin-bottom: $base-pad;
 	}
 
 	.vi-footer {

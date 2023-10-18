@@ -21,10 +21,6 @@ jQuery(function ($) {
 			$batchUploadButton: $(".vi-add-field-batch"),
 			$trackDownloadUsesTrackUrlButton: $(".vi-use-track-url-download"),
 			videoUploadButtonClassName: ".vi-track-url-upload",
-			coverUploadButtonClassName: ".vi-field-upload-cover",
-			coverRemoveClassName: ".vi-remove-cover",
-			imageUploadButtonClassName: ".vi-field-image-upload",
-			imageRemoveClassName: ".vi-field-image-upload-dismiss",
 			fieldTitleClassName: ".vi-field-title",
 			trackTitleClassName: ".vi-track-title",
 			trackDescriptionClassName: ".vi-track-description",
@@ -32,9 +28,6 @@ jQuery(function ($) {
 			trackUrlClassName: ".vi-track-url",
 			trackDownloadUrlClassName: ".vi-track-download-url",
 			trackDownloadUsesTrackUrlClassName: ".vi-track-download-uses-track-url",
-			trackGenericUploadButton: ".vi-upload",
-			hasCoverClass: "vi-has-cover",
-			hasImageValueClass: "vi-field-image-has-value",
 			fieldHeadClassName: ".vi-field-head",
 			fieldCollapsedClass: "vi-collapsed",
 			customElements: 'vi-subtitles-field,vi-overlays-field',
@@ -93,17 +86,8 @@ jQuery(function ($) {
 		 * @param {Object} $field - the remove button jQuery object
 		 */
 		function resetCoverImage($field) {
-			var $coverWrap = $field.find("." + el.hasCoverClass);
-
-			$coverWrap
-				.removeClass(el.hasCoverClass)
-				.find("img")
-				.attr("src", "")
-				.attr("alt", "");
-			$coverWrap
-				.parent()
-				.find("input")
-				.val("");
+			const imageField = $field.find('vi-image-field').get(0);
+			imageField.clear();
 		}
 
 		/**
@@ -234,88 +218,6 @@ jQuery(function ($) {
 		}
 
 		/**
-		 * Sets a cover image for the field
-		 *
-		 * @param $field - The field's jQuery object
-		 * @param {Object} cover - Cover object
-		 * @param {number} cover.id - Image ID
-		 * @param {string} cover.url - Image URL
-		 * @param {string} [cover.alt] - Image alt text
-		 */
-		function setTrackFieldCover($field, cover) {
-			var $coverField = $field.find(el.coverUploadButtonClassName);
-
-			if (!cover || !cover.url || !cover.id) {
-				return;
-			}
-
-			$coverField
-				.find("img")
-				.attr("src", cover.url)
-				.attr("alt", cover.alt || "");
-
-			$coverField
-				.addClass(el.hasCoverClass)
-				.siblings("input")
-				.val(cover.id);
-		}
-
-		/**
-		 * Initializes the WordPress Media Manager
-		 *
-		 * @param {Object} opts - Options object
-		 * @param {string} opts.handler - Handler identifier of the media frame,
-		 * this allows multiple media manager frames with different functionalities
-		 * @param {string} [opts.type] - Filter media manager by type (video, image etc)
-		 * @param {string} [opts.title=Select Media] - Title of the media manager frame
-		 * @param {boolean} [opts.multiple=false] - Accept multiple selections
-		 * @param {Function} [opts.onMediaSelect] - Do something after media selection
-		 */
-		function wpMediaInit(opts) {
-			if (!opts.handler) {
-				throw new Error("Missing `handler` option");
-			}
-
-			/* eslint-disable */
-			var multiple = opts.multiple || false;
-			var title = opts.title || "Select media";
-			var mediaManager = wp.media.frames[opts.handler];
-			/* eslint-enable */
-
-			if (mediaManager) {
-				mediaManager.open();
-				return;
-			}
-
-			mediaManager = wp.media({
-				title: title,
-				multiple: multiple,
-				library: {
-					type: opts.type
-				}
-			});
-
-			mediaManager.open();
-
-			mediaManager.on("select", function () {
-				var attachments;
-				var attachmentModels = mediaManager.state().get("selection");
-
-				if (multiple) {
-					attachments = attachmentModels.map(function (attachment) {
-						return attachment.toJSON();
-					});
-				} else {
-					attachments = attachmentModels.first().toJSON();
-				}
-
-				if (opts.onMediaSelect && typeof opts.onMediaSelect === "function") {
-					opts.onMediaSelect(attachments);
-				}
-			});
-		}
-
-		/**
 		 * Collapsible bindings
 		 */
 		el.$trackContainer.on("click", el.fieldHeadClassName, function (e) {
@@ -427,116 +329,6 @@ jQuery(function ($) {
 			});
 		});
 
-		/* General file uploads */
-		el.$trackContainer.on("click", el.trackGenericUploadButton, function () {
-			var $this = $(this);
-			var $input = $this.siblings('input');
-			var mime_type = $input.data('mime-type');
-
-			wpMediaInit({
-				handler: "vi-upload",
-				title: vi_scripts.messages.media_title_upload_file,
-				type: mime_type || undefined,
-				onMediaSelect: function (media) {
-					$input.val(media.url)
-				}
-			});
-		});
-
-		/**
-		 * Cover image upload
-		 *
-		 * Element `coverUploadButtonClassName` *must* have
-		 * an `img` and `coverRemoveClassName` elements
-		 * as children
-		 */
-		el.$trackContainer
-			.on("click", el.coverUploadButtonClassName, function (e) {
-				var $this = $(this);
-
-				wpMediaInit({
-					handler: "vi-cover",
-					title: vi_scripts.messages.media_title_upload_cover,
-					type: "image",
-					onMediaSelect: function (media) {
-						setTrackFieldCover($this.parents(el.trackFieldClassName), {
-							id: media.id,
-							url: media.sizes.thumbnail
-									 ? media.sizes.thumbnail.url
-									 : media.sizes.full.url,
-							alt: media.alt
-						});
-					}
-				});
-
-				e.preventDefault();
-			})
-			/* Remove Image */
-			.on("click", el.coverRemoveClassName, function (e) {
-				var $this = $(this);
-				resetCoverImage($this.parents(el.trackFieldClassName));
-				e.stopPropagation();
-				e.preventDefault();
-			});
-
-		/**
-		 * Generic image upload
-		 *
-		 * Element `imageUploadButtonClassName` *must* have
-		 * an `img` and `imageRemoveClassName` elements
-		 * as children
-		 *
-		 * TODO Refactor "Cover image upload" to reuse this generic component
-		 */
-		el.$trackContainer
-			.on("click", el.imageUploadButtonClassName, function (e) {
-				var $this = $(this);
-
-				wpMediaInit({
-					handler: "vi-cover",
-					title: vi_scripts.messages.media_title_upload_cover,
-					type: "image",
-					onMediaSelect: function (media) {
-						const url = media.sizes.thumbnail
-												? media.sizes.thumbnail.url
-												: media.sizes.full.url;
-
-						if (!media || !url || !media.id) {
-							return;
-						}
-
-						$this
-							.find("img")
-							.attr("src", url)
-							.attr("alt", media.alt || "");
-
-						$this
-							.addClass(el.hasImageValueClass)
-							.siblings("input")
-							.val(media.id);
-					}
-				});
-
-				e.preventDefault();
-			})
-			/* Remove Image */
-			.on("click", el.imageRemoveClassName, function (e) {
-				var $this = $(this);
-				const $parent = $this.closest(`.${el.hasImageValueClass}`);
-
-				$parent
-					.removeClass(el.hasImageValueClass)
-					.find("img")
-					.attr("src", "")
-					.attr("alt", "");
-				$parent
-					.find("input")
-					.val("");
-
-				e.stopPropagation();
-				e.preventDefault();
-			});
-
 		/**
 		 * Hide / show options based on player type
 		 *
@@ -636,8 +428,6 @@ jQuery(function ($) {
 			getNewTrackField: getNewTrackField,
 			removeElement: removeElement,
 			populateTrackField: populateTrackField,
-			setTrackFieldCover: setTrackFieldCover,
-			wpMediaInit: wpMediaInit
 		};
 	})();
 
@@ -647,8 +437,104 @@ jQuery(function ($) {
 	}
 });
 
+class VideoIgniterImageField extends HTMLElement {
+	constructor() {
+		super();
+
+		this.elements = {
+			triggerElement: this.querySelector('.vi-field-image-upload'),
+			dismissElement: this.querySelector('.vi-field-image-upload-dismiss'),
+			image: this.querySelector('img'),
+			placeholder: this.querySelector('.vi-field-image-placeholder'),
+			input: this.querySelector('input'),
+		}
+	}
+
+	connectedCallback() {
+		this.elements.triggerElement.addEventListener('click', event => {
+			event.preventDefault();
+			this.handleMediaUpload();
+		});
+
+		this.elements.dismissElement.addEventListener('click', event => {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			this.clear();
+		});
+
+		if (this.elements.input.value) {
+			this.populateData();
+		}
+	}
+
+	handleMediaUpload() {
+		wpMediaInit({
+			handler: "vi-upload-image",
+			title: vi_scripts.messages.media_title_upload_file,
+			type: 'image',
+			onMediaSelect: (media) => {
+				this.populateData(media.id, media.url);
+			},
+		});
+	}
+
+	populateData(imageId, imageUrl) {
+		if (imageId) {
+			this.elements.input.value = imageId;
+		}
+
+		if (imageUrl) {
+			this.elements.image.src = imageUrl;
+		}
+
+		this.elements.placeholder.style.display = 'none';
+		this.elements.dismissElement.style.display = 'block';
+		this.elements.image.style.display = 'inline-block';
+	}
+
+	clear() {
+		this.elements.input.value = "";
+		this.elements.placeholder.style.display = 'block';
+		this.elements.dismissElement.style.display = 'none';
+		this.elements.image.style.display = 'none';
+	}
+}
+
+customElements.define('vi-image-field', VideoIgniterImageField);
+
+class VideoIgniterFileUploadField extends HTMLElement {
+	constructor() {
+		super();
+
+		this.elements = {
+			input: this.querySelector('input'),
+			button: this.querySelector('button'),
+		}
+
+		this.mimeType = this.dataset.mimeType;
+	}
+
+	connectedCallback() {
+		this.elements.button.addEventListener('click', () => {
+			this.handleMediaUpload();
+		});
+	}
+
+	handleMediaUpload() {
+		wpMediaInit({
+			handler: 'vi-file-upload',
+			title: vi_scripts.messages.media_title_upload_file,
+			type: this.mimeType || undefined,
+			onMediaSelect: (media) => {
+				this.elements.input.value = media.url;
+			},
+		})
+	}
+}
+
+customElements.define('vi-file-upload-field', VideoIgniterFileUploadField);
+
 // Repeatable fields
-// TODO: Move to a better place
 class VideoIgniterRepeatableFields extends HTMLElement {
 	constructor() {
 		super();
@@ -777,14 +663,68 @@ class VideoIgniterOverlaysField extends VideoIgniterRepeatableField {
 		}
 
 		if (this.data.image_url) {
-			const imageField = this.querySelector('.vi-field-image');
-			imageField.querySelector('img').src = this.data.image_url;
-			imageField.classList.add('vi-field-image-has-value')
+			const imageField = this.querySelector('vi-image-field');
+			imageField.populateData(null, this.data.image_url);
 		}
 	}
 }
 
 customElements.define('vi-overlays-field', VideoIgniterOverlaysField);
+
+/**
+ * Initializes the WordPress Media Manager
+ *
+ * @param {Object} opts - Options object
+ * @param {string} opts.handler - Handler identifier of the media frame,
+ * this allows multiple media manager frames with different functionalities
+ * @param {string} [opts.type] - Filter media manager by type (video, image etc)
+ * @param {string} [opts.title=Select Media] - Title of the media manager frame
+ * @param {boolean} [opts.multiple=false] - Accept multiple selections
+ * @param {Function} [opts.onMediaSelect] - Do something after media selection
+ */
+function wpMediaInit(opts) {
+	if (!opts.handler) {
+		throw new Error("Missing `handler` option");
+	}
+
+	/* eslint-disable */
+	var multiple = opts.multiple || false;
+	var title = opts.title || "Select media";
+	var mediaManager = wp.media.frames[opts.handler];
+	/* eslint-enable */
+
+	if (mediaManager) {
+		mediaManager.open();
+		return;
+	}
+
+	mediaManager = wp.media({
+		title: title,
+		multiple: multiple,
+		library: {
+			type: opts.type
+		}
+	});
+
+	mediaManager.open();
+
+	mediaManager.on("select", function () {
+		var attachments;
+		var attachmentModels = mediaManager.state().get("selection");
+
+		if (multiple) {
+			attachments = attachmentModels.map(function (attachment) {
+				return attachment.toJSON();
+			});
+		} else {
+			attachments = attachmentModels.first().toJSON();
+		}
+
+		if (opts.onMediaSelect && typeof opts.onMediaSelect === "function") {
+			opts.onMediaSelect(attachments);
+		}
+	});
+}
 
 const form = document.querySelector('form[name="post"]');
 form.addEventListener('submit', (event) => {

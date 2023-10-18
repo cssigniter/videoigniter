@@ -565,35 +565,38 @@ class VideoIgniter {
 
 			<div class="vi-field-container">
 				<div class="vi-field-track-fields">
-					<div class="vi-field-cover">
-						<a href="#" class="vi-field-upload-cover <?php echo ! empty( $cover_url ) ? 'vi-has-cover' : ''; ?>">
-							<span class="vi-remove-cover">
-								<span class="screen-reader-text">
-									<?php esc_html_e( 'Remove Cover Image', 'videoigniter' ); ?>
+					<vi-image-field>
+						<div class="vi-field-image">
+							<a href="#" class="vi-field-image-upload">
+								<span class="vi-field-image-upload-dismiss">
+									<span class="screen-reader-text">
+										<?php esc_html_e( 'Remove Cover Image', 'videoigniter' ); ?>
+									</span>
+									<span class="dashicons dashicons-no-alt"></span>
 								</span>
-								<span class="dashicons dashicons-no-alt"></span>
-							</span>
 
-							<?php if ( ! empty( $cover_url ) ) : ?>
-								<img src="<?php echo esc_url( $cover_url ); ?>" alt="<?php echo esc_attr( $cover_data['alt'] ); ?>">
-							<?php else : ?>
-								<img src="#" alt="">
-							<?php endif; ?>
+								<?php if ( ! empty( $cover_url ) ) : ?>
+									<img src="<?php echo esc_url( $cover_url ); ?>" alt="<?php echo esc_attr( $cover_data['alt'] ); ?>">
+								<?php else : ?>
+									<img src="#" alt="">
+								<?php endif; ?>
 
-							<div class="vi-field-cover-placeholder">
-								<span class="vi-cover-prompt">
-									<?php esc_html_e( 'Upload Poster', 'videoigniter' ); ?>
-								</span>
-							</div>
-						</a>
+								<div class="vi-field-image-placeholder">
+									<span class="vi-field-image-placeholder-label">
+										<?php esc_html_e( 'Upload Poster', 'videoigniter' ); ?>
+									</span>
+								</div>
+							</a>
 
-						<input
-							type="hidden"
-							id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-cover_id"
-							name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][cover_id]"
-							value="<?php echo esc_attr( $cover_id ); ?>"
-						/>
-					</div>
+							<!-- TODO fix the value here is 0 for some reason when there's no cover image -->
+							<input
+								type="hidden"
+								id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-cover_id"
+								name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][cover_id]"
+								value="<?php echo esc_attr( $cover_id ); ?>"
+							/>
+						</div>
+					</vi-image-field>
 
 					<div class="vi-field-split">
 						<div class="vi-form-field">
@@ -653,30 +656,31 @@ class VideoIgniter {
 							</div>
 						</div>
 
-						<div class="vi-form-field">
-							<label
-								for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-chapters_url"
-								class="screen-reader-text">
-								<?php esc_html_e( 'Chapters File', 'videoigniter' ); ?>
-							</label>
+						<vi-file-upload-field data-mime-type="text/vtt">
+							<div class="vi-form-field">
+								<label
+									for="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-chapters_url"
+									class="screen-reader-text">
+									<?php esc_html_e( 'Chapters File', 'videoigniter' ); ?>
+								</label>
 
-							<div class="vi-form-field-addon">
-								<input
-									type="text"
-									id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-chapters_url"
-									class="vi-chapters-url"
-									name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][chapters_url]"
-									placeholder="<?php esc_attr_e( 'Chapters File', 'videoigniter' ); ?>"
-									value="<?php echo esc_url( $chapters_url ); ?>"
-									data-mime-type="text/vtt"
-								/>
-								<button type="button" class="button vi-upload">
-									<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
-								</button>
+								<div class="vi-form-field-addon">
+									<input
+										type="text"
+										id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-chapters_url"
+										class="vi-chapters-url"
+										name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][chapters_url]"
+										placeholder="<?php esc_attr_e( 'Chapters File', 'videoigniter' ); ?>"
+										value="<?php echo esc_url( $chapters_url ); ?>"
+									/>
+									<button type="button" class="button vi-upload">
+										<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
+									</button>
 
-								<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_field_after_chapters_upload_button' ); ?>
+									<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_field_after_chapters_upload_button' ); ?>
+								</div>
 							</div>
-						</div>
+						</vi-file-upload-field>
 
 						<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_fields_column_2', $track, $uid ); ?>
 					</div>
@@ -780,28 +784,29 @@ class VideoIgniter {
 		<template id="subtitles-repeatable-field-template">
 			<div class="vi-repeatable-field">
 				<div class="vi-repeatable-field-content">
-					<div class="vi-form-field">
-						<label
-							for="vi_playlist_tracks-{uid}-subtitles_url"
-							class="screen-reader-text">
-							<?php esc_html_e( 'Subtitles File', 'videoigniter' ); ?>
-						</label>
+					<vi-file-upload-field data-mime-type="text/vtt">
+						<div class="vi-form-field">
+							<label
+								for="vi_playlist_tracks-{uid}-subtitles_url"
+								class="screen-reader-text">
+								<?php esc_html_e( 'Subtitles File', 'videoigniter' ); ?>
+							</label>
 
-						<div class="vi-form-field-addon">
-							<input
-								type="text"
-								id="vi_playlist_tracks-{uid}-subtitles_url"
-								class="vi-subtitles-url"
-								name="url"
-								placeholder="<?php esc_attr_e( 'Subtitles File', 'videoigniter' ); ?>"
-								value=""
-								data-mime-type="text/vtt"
-							/>
-							<button type="button" class="button vi-upload">
-								<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
-							</button>
+								<div class="vi-form-field-addon">
+									<input
+										type="text"
+										id="vi_playlist_tracks-{uid}-subtitles_url"
+										class="vi-subtitles-url"
+										name="url"
+										placeholder="<?php esc_attr_e( 'Subtitles File', 'videoigniter' ); ?>"
+										value=""
+									/>
+									<button type="button" class="button vi-upload">
+										<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
+									</button>
+								</div>
 						</div>
-					</div>
+					</vi-file-upload-field>
 
 					<div class="vi-form-field">
 						<label
@@ -846,31 +851,33 @@ class VideoIgniter {
 		<template id="overlays-repeatable-field-template">
 			<div class="vi-repeatable-field">
 				<div class="vi-repeatable-field-content">
-					<div class="vi-field-image">
-						<a href="#" class="vi-field-image-upload">
-							<span class="vi-field-image-upload-dismiss">
-								<span class="screen-reader-text">
-									<?php esc_html_e( 'Remove Image', 'videoigniter' ); ?>
+					<vi-image-field>
+						<div class="vi-field-image">
+							<a href="#" class="vi-field-image-upload">
+								<span class="vi-field-image-upload-dismiss">
+									<span class="screen-reader-text">
+										<?php esc_html_e( 'Remove Image', 'videoigniter' ); ?>
+									</span>
+									<span class="dashicons dashicons-no-alt"></span>
 								</span>
-								<span class="dashicons dashicons-no-alt"></span>
-							</span>
 
-							<img src="" alt="">
+								<img src="" alt="">
 
-							<div class="vi-field-image-placeholder">
-								<span class="vi-field-image-placeholder-label">
-									<?php esc_html_e( 'Upload Image', 'videoigniter' ); ?>
-								</span>
-							</div>
-						</a>
+								<div class="vi-field-image-placeholder">
+									<span class="vi-field-image-placeholder-label">
+										<?php esc_html_e( 'Upload Image', 'videoigniter' ); ?>
+									</span>
+								</div>
+							</a>
 
-						<input
-							type="hidden"
-							id="vi_playlist_tracks-{uid}-overlay_image_id"
-							name="image_id"
-							value=""
-						/>
-					</div>
+							<input
+								type="hidden"
+								id="vi_playlist_tracks-{uid}-overlay_image_id"
+								name="image_id"
+								value=""
+							/>
+						</div>
+					</vi-image-field>
 
 					<div class="vi-overlay-template-form-fields">
 						<div class="vi-form-field">
@@ -1564,7 +1571,7 @@ class VideoIgniter {
 	}
 
 	// TODO: Add php doc and review
-	public function render_video_tracks( $playlist_id ) {
+	public function render_main_video_track( $playlist_id ) {
 		if ( ! $this->is_playlist( $playlist_id ) ) {
 			return '';
 		}
@@ -1680,7 +1687,7 @@ class VideoIgniter {
 			'vi-player-wrap',
 		), explode( ' ', $class_name ) );
 
-		$track_markup    = $this->render_video_tracks( $id );
+		$track_markup    = $this->render_main_video_track( $id );
 		$tracks          = $this->get_post_meta( $id, '_videoigniter_tracks', array() );
 		$playlist_layout = $this->get_post_meta( $id, '_videoigniter_playlist_layout', 'right' );
 
