@@ -303,8 +303,7 @@
   float: right;
 }
 
-.vi-field-image,
-.vi-field-cover {
+.vi-field-image {
   width: 100px;
   height: 100px;
   background-color: #f1f1f1;
@@ -411,8 +410,7 @@
   align-self: flex-end;
 }
 
-.vi-field-image-upload,
-.vi-field-upload-cover {
+.vi-field-image-upload {
   display: block;
   position: relative;
   width: 100px;
@@ -422,33 +420,28 @@
   overflow: hidden;
 }
 
-.vi-field-image-upload img,
-.vi-field-upload-cover img {
+.vi-field-image-upload img {
   max-width: 100%;
   display: none;
+  position: absolute;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
-.vi-field-image-has-value .vi-field-image-upload-dismiss,
-.vi-field-image-has-value .vi-remove-cover,
-.vi-has-cover .vi-field-image-upload-dismiss,
-.vi-has-cover .vi-remove-cover {
+.vi-field-image-has-value .vi-field-image-upload-dismiss {
   display: block;
 }
 
-.vi-field-image-has-value .vi-field-image-placeholder,
-.vi-field-image-has-value .vi-field-cover-placeholder,
-.vi-has-cover .vi-field-image-placeholder,
-.vi-has-cover .vi-field-cover-placeholder {
+.vi-field-image-has-value .vi-field-image-placeholder {
   display: none;
 }
 
-.vi-field-image-has-value img,
-.vi-has-cover img {
+.vi-field-image-has-value img {
   display: inline-block;
 }
 
-.vi-field-image-placeholder,
-.vi-field-cover-placeholder {
+.vi-field-image-placeholder {
   text-align: center;
   font-style: normal;
   font-size: .9em;
@@ -456,8 +449,7 @@
   padding-top: 28px;
 }
 
-.vi-field-image-placeholder::before,
-.vi-field-cover-placeholder::before {
+.vi-field-image-placeholder::before {
   content: "";
   display: inline-block;
   font: 400 20px/1 dashicons;
@@ -470,17 +462,12 @@
 }
 
 .vi-field-image-loading .vi-field-image-placeholder::before,
-.vi-track-loading .vi-field-image-placeholder::before,
-.vi-field-image-loading
-.vi-field-cover-placeholder::before,
-.vi-track-loading
-.vi-field-cover-placeholder::before {
+.vi-track-loading .vi-field-image-placeholder::before {
   content: "\f463";
   animation: rotation 1.2s infinite linear;
 }
 
-.vi-field-image-upload-dismiss,
-.vi-remove-cover {
+.vi-field-image-upload-dismiss {
   color: #ffffff;
   background-color: #ff0000;
   width: 16px;
@@ -494,15 +481,14 @@
   transition: opacity 0.18s ease-in;
   display: none;
   text-align: center;
+  z-index: 2;
 }
 
-.vi-field-image-upload-dismiss:hover,
-.vi-remove-cover:hover {
+.vi-field-image-upload-dismiss:hover {
   opacity: 1;
 }
 
-.vi-field-image-upload-dismiss .dashicons,
-.vi-remove-cover .dashicons {
+.vi-field-image-upload-dismiss .dashicons {
   font-size: 16px;
   width: 100%;
   height: 100%;
@@ -630,10 +616,6 @@ vi-overlays-field .vi-repeatable-field-content {
   .vi-field-split {
     float: none;
     width: 100%;
-  }
-
-  .vi-field-cover {
-    margin-bottom: 15px;
   }
 
   .vi-footer {
