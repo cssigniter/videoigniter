@@ -314,83 +314,6 @@ jQuery(function ($) {
 		});
 
 		/**
-		 * Hide / show options based on player type
-		 *
-		 * Different player types support different kind of options.
-		 * E.g. "Simple Player" doesn't support tracklist height, etc.
-		 */
-		var $settingsWrap = $(".vi-module-settings");
-		var $typeSelect = $(".vi-form-select-playlist-layout");
-
-		function getUnsupportedSettings($el) {
-			var settingsString = $el.data("no-support");
-
-			if (typeof settingsString !== "string") {
-				return [];
-			}
-
-			return settingsString
-				.replace(/\s/g, "") // remove all whitespace
-				.split(",")
-				.map(function (x) {
-					return "_videoigniter_" + x;
-				});
-		}
-
-		function filterUIBasedOnPlayerType($el) {
-			var type = $el.val();
-
-			// Reset styles
-			var $shortcodeMetaBox = $("#vi-meta-box-shortcode");
-			var $messageBox = $(".vi-playlist-layout-message");
-			var info = $el.data("info");
-
-			$shortcodeMetaBox.show();
-
-			if (info) {
-				$messageBox.text(info).show();
-			} else {
-				$messageBox.text("").hide();
-			}
-
-			// Player specific controls
-			switch (type) {
-				case "global-footer":
-					$shortcodeMetaBox.hide();
-					break;
-				default:
-					return;
-			}
-		}
-
-		function filterSettings() {
-			var $formFields;
-			var $type = $typeSelect.find(":selected");
-			var unsupportedSettings = getUnsupportedSettings($type);
-
-			filterUIBasedOnPlayerType($type);
-
-			if (unsupportedSettings.length === 0) {
-				$formFields = $settingsWrap.find(".vi-form-field");
-				$formFields.show();
-				return;
-			}
-
-			$settingsWrap.find("input", "select", "textarea").each(function () {
-				var $this = $(this);
-				var $parent = $this.parents(".vi-form-field");
-				if (unsupportedSettings.indexOf($this.attr("name")) > - 1) {
-					$parent.hide();
-				} else {
-					$parent.show();
-				}
-			});
-		}
-
-		filterSettings();
-		$typeSelect.on("change", filterSettings);
-
-		/**
 		 * Shortcode select on click
 		 */
 		el.$shortcodeInputField.on("click", function () {
@@ -431,6 +354,10 @@ class VideoIgniterImageField extends HTMLElement {
 			placeholder: this.querySelector('.vi-field-image-placeholder'),
 			input: this.querySelector('input'),
 		}
+		this.changeEvent = new Event('change', {
+			bubbles: true,
+			cancelable: true,
+		});
 	}
 
 	connectedCallback() {
@@ -462,8 +389,9 @@ class VideoIgniterImageField extends HTMLElement {
 	}
 
 	populateData(imageId, imageUrl) {
-		if (imageId) {
+		if (imageId != null) {
 			this.elements.input.value = imageId;
+			this.elements.input.dispatchEvent(this.changeEvent);
 		}
 
 		if (imageUrl) {
@@ -495,6 +423,10 @@ class VideoIgniterFileUploadField extends HTMLElement {
 		}
 
 		this.mimeType = this.dataset.mimeType;
+		this.changeEvent = new Event('change', {
+			bubbles: true,
+			cancelable: true,
+		});
 	}
 
 	connectedCallback() {
@@ -510,6 +442,7 @@ class VideoIgniterFileUploadField extends HTMLElement {
 			type: this.mimeType || undefined,
 			onMediaSelect: (media) => {
 				this.elements.input.value = media.url;
+				this.elements.input.dispatchEvent(this.changeEvent);
 			},
 		})
 	}
@@ -585,13 +518,23 @@ class VideoIgniterRepeatableField extends HTMLElement {
 	}
 
 	connectedCallback() {
+		this.parent = this.closest('vi-repeatable-fields');
 		const templateContent = document.getElementById(this.getTemplateId()).content;
 		this.appendChild(document.importNode(templateContent, true));
 		this.makeUnique();
 		this.populateData();
+		this.parent.serializeData();
 
 		this.querySelector('.vi-fields-remove-button').addEventListener('click', () => {
 			this.remove();
+			this.parent.serializeData();
+		});
+
+
+		this.querySelectorAll('input, textarea, select').forEach(element => {
+			element.addEventListener('change', () => {
+				this.parent.serializeData();
+			});
 		});
 	}
 
@@ -745,11 +688,3 @@ function uuid() {
 		return v.toString(16);
 	});
 }
-
-const form = document.querySelector('form[name="post"]');
-form.addEventListener('submit', (event) => {
-	event.preventDefault();
-	const repeatables = form.querySelectorAll('vi-repeatable-fields');
-	repeatables.forEach(repeatable => repeatable.serializeData());
-	form.submit();
-});

@@ -794,19 +794,19 @@ class VideoIgniter {
 								<?php esc_html_e( 'Subtitles File', 'videoigniter' ); ?>
 							</label>
 
-								<div class="vi-form-field-addon">
-									<input
-										type="text"
-										id="vi_playlist_tracks-{uid}-subtitles_url"
-										class="vi-subtitles-url"
-										name="url"
-										placeholder="<?php esc_attr_e( 'Subtitles File', 'videoigniter' ); ?>"
-										value=""
-									/>
-									<button type="button" class="button vi-upload">
-										<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
-									</button>
-								</div>
+							<div class="vi-form-field-addon">
+								<input
+									type="text"
+									id="vi_playlist_tracks-{uid}-subtitles_url"
+									class="vi-subtitles-url"
+									name="url"
+									placeholder="<?php esc_attr_e( 'Subtitles File', 'videoigniter' ); ?>"
+									value=""
+								/>
+								<button type="button" class="button vi-upload">
+									<?php esc_html_e( 'Upload', 'videoigniter' ); ?>
+								</button>
+							</div>
 						</div>
 					</vi-file-upload-field>
 
