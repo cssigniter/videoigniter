@@ -71,6 +71,10 @@
   padding: 1.133em 1.333em 4em;
 }
 
+.vi-player .vjs-title-bar-title {
+  margin-bottom: 0;
+}
+
 .vi-player:not(.vjs-hover-preview-running):hover .vjs-title-bar,
 .vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-title-bar {
   opacity: 1;
@@ -1192,4 +1196,15 @@
 .vi-player.vjs-layout-x-small,
 .vi-player.vjs-layout-tiny {
   --vi-player-control-bar-height: 42px;
+}
+
+.vi-player.vjs-layout-small .vjs-title-bar,
+.vi-player.vjs-layout-x-small .vjs-title-bar,
+.vi-player.vjs-layout-tiny .vjs-title-bar {
+  font-size: 1em;
+}
+
+.vi-player.vjs-layout-tiny [class^="vjs-skip-forward"],
+.vi-player.vjs-layout-tiny [class^="vjs-skip-backward"] {
+  display: none;
 }
