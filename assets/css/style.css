@@ -701,6 +701,10 @@
   z-index: -1;
 }
 
+.vi-player .vjs-poster img {
+  height: 100%;
+}
+
 .vi-player .vjs-branding {
   position: absolute;
   opacity: 0;
