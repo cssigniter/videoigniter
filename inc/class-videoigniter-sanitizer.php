@@ -167,6 +167,9 @@ class VideoIgniter_Sanitizer {
 		$sanitized['srclang'] = sanitize_text_field( $subtitle['srclang'] );
 		$sanitized['label']   = sanitize_text_field( $subtitle['label'] );
 
+		// TODO anastis how to sanitize this? it's a checkbox
+		$sanitized['caption'] = $subtitle['caption'];
+
 		$tmp = array_filter( $sanitized );
 		if ( empty( $tmp ) ) {
 			$sanitized = false;

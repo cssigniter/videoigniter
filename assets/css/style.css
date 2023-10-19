@@ -84,7 +84,30 @@
 
 /* Controls */
 .vi-player .vjs-big-play-button {
-  display: none;
+  opacity: 0;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(255, 255, 255, .25);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.vi-player .vjs-big-play-button:focus,
+.vi-player:hover .vjs-big-play-button {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, .25);
+}
+
+.vi-player.vjs-hover-preview-running .vjs-big-play-button {
+  opacity: .85;
+  display: block;
+}
+
+.vi-player .vjs-big-play-button .vjs-icon-placeholder::before {
+  content: '';
+  background: url('../icons/play.svg') center center / calc(var(--vi-player-control-icon-size) * 2) no-repeat;
 }
 
 .vi-player .vjs-control {

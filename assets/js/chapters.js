@@ -185,17 +185,18 @@ function chaptersTimeline() {
     const chapters = getChapters();
     const cues = chapters?.[0]?.cues;
 
+    const seekBar = player.getChild('controlBar').getChild('progressControl').getChild('seekBar');
+
+    // Remove all previous potential chapter timelines
+    seekBar.el().querySelectorAll('.vjs-chapter-timeline').forEach(el => {
+      el.remove();
+    });
+
     if (!cues) {
       return;
     }
 
-    const seekBar = player.getChild('controlBar').getChild('progressControl').getChild('seekBar');
     const duration = player.duration();
-
-    // Remove all previous chapter timelines
-    seekBar.el().querySelectorAll('.vjs-chapter-timeline').forEach(el => {
-      el.remove();
-    });
 
     [].forEach.call(cues, cue => {
       const startTimePercentage = (cue.startTime / duration) * 100;

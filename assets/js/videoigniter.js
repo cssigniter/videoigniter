@@ -37,22 +37,6 @@ jQuery(function ($) {
 		};
 
 		/**
-		 * Generate a rfc4122 version 4 compliant UUID
-		 * http://stackoverflow.com/a/2117523
-		 *
-		 * @returns {string} - UUID
-		 */
-		function uuid() {
-			return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-				c
-			) {
-				var r = (Math.random() * 16) | 0;
-				var v = c === "x" ? r : (r & 0x3) | 0x8;
-				return v.toString(16);
-			});
-		}
-
-		/**
 		 * Check if field is collapsed
 		 *
 		 * @param {Object} $field - jQuery object
@@ -418,7 +402,6 @@ jQuery(function ($) {
 		 */
 		return {
 			elements: el,
-			uuid: uuid,
 			collapseField: collapseField,
 			expandField: expandField,
 			isFieldCollapsed: isFieldCollapsed,
@@ -571,11 +554,15 @@ class VideoIgniterRepeatableFields extends HTMLElement {
 		const childFields = this.container.querySelectorAll(this.component);
 
 		const data = [...childFields].map(field => {
-			// TODO Support all input types here like checkboxes, radios, etc.
 			const inputs = [...field.querySelectorAll('input, textarea, select')].filter(input => input !== this.input);
 
 			return [...inputs].reduce((acc, input) => {
-				acc[input.getAttribute('name')] = input.value;
+				if (input.type === 'checkbox' && input.checked) {
+					acc[input.getAttribute('name')] = '1';
+				} else {
+					acc[input.getAttribute('name')] = input.value;
+				}
+
 				return acc;
 			}, {});
 		});
@@ -600,10 +587,22 @@ class VideoIgniterRepeatableField extends HTMLElement {
 	connectedCallback() {
 		const templateContent = document.getElementById(this.getTemplateId()).content;
 		this.appendChild(document.importNode(templateContent, true));
+		this.makeUnique();
 		this.populateData();
 
 		this.querySelector('.vi-fields-remove-button').addEventListener('click', () => {
 			this.remove();
+		});
+	}
+
+	makeUnique() {
+		const id = uuid();
+		this.querySelectorAll('input, textarea, select, label').forEach(element => {
+			['id', 'for', 'name'].forEach(attr => {
+				if (element.getAttribute(attr)) {
+					element.setAttribute(attr, element.getAttribute(attr).replace('{uid}', id));
+				}
+			});
 		});
 	}
 
@@ -621,6 +620,11 @@ class VideoIgniterRepeatableField extends HTMLElement {
 			const value = this.data[input.getAttribute('name')];
 
 			if (value != null) {
+				if (input.type === 'checkbox' && value === '1') {
+					input.checked = 'true';
+					return;
+				}
+
 				input.value = value;
 			}
 		});
@@ -723,6 +727,22 @@ function wpMediaInit(opts) {
 		if (opts.onMediaSelect && typeof opts.onMediaSelect === "function") {
 			opts.onMediaSelect(attachments);
 		}
+	});
+}
+
+/**
+ * Generate a rfc4122 version 4 compliant UUID
+ * http://stackoverflow.com/a/2117523
+ *
+ * @returns {string} - UUID
+ */
+function uuid() {
+	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+		c
+	) {
+		var r = (Math.random() * 16) | 0;
+		var v = c === "x" ? r : (r & 0x3) | 0x8;
+		return v.toString(16);
 	});
 }
 

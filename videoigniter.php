@@ -841,6 +841,20 @@ class VideoIgniter {
 							value=""
 						/>
 					</div>
+
+					<div class="vi-form-field">
+						<input
+							type="checkbox"
+							class="vi-checkbox"
+							id="vi_playlist_tracks-{uid}-subtitles_captions"
+							name="caption"
+							value=""
+						/>
+
+						<label for="vi_playlist_tracks-{uid}-subtitles_captions">
+							<?php esc_html_e( 'Mark as closed captions', 'videoigniter' ); ?>
+						</label>
+					</div>
 				</div>
 
 				<button type="button" class="button button-small vi-fields-remove-button">
@@ -1345,6 +1359,7 @@ class VideoIgniter {
 			'url'     => '',
 			'label'   => '',
 			'srclang' => '',
+			'caption' => ''
 		) );
 	}
 
@@ -1361,8 +1376,9 @@ class VideoIgniter {
 	}
 
 	public function register_image_sizes() {
-		// TODO: Change this to something bigger
-		add_image_size( 'videoigniter_cover', 560, 560, true );
+		// TODO: Check if this size is enough
+		// TODO: potentially add a smaller size for the thumbnails
+		add_image_size( 'videoigniter_cover', 1920, 1080, true );
 	}
 
 	public function register_widgets() {
@@ -1530,9 +1546,11 @@ class VideoIgniter {
 				$subtitles = $track['subtitles'];
 				foreach ( $subtitles as $subtitle ) {
 					$subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
+					// TODO anastis do we need to convert to bool here or something, (it doesn't work)
+					$is_caption = $subtitle['caption'];
 
 					$text_tracks[] = array(
-						'kind'    => 'subtitles',
+						'kind'    => $is_caption ? 'captions' : 'subtitles',
 						'label'   => $subtitle['label'],
 						'src'     => $subtitle['url'],
 						'srclang' => $subtitle['label'],
@@ -1638,19 +1656,29 @@ class VideoIgniter {
 				src="<?php echo esc_attr( $main_track['track_url'] ); ?>"
 				type="<?php echo esc_attr( $this->get_video_mime_type_from_url( $main_track['track_url'] ) ); ?>"
 			/>
-			<?php if ( ! empty( $main_track['chapters_url'] ) ) : ?>
-				<track kind="chapters" src="<?php echo esc_url( $main_track['chapters_url'] ); ?>" />
-			<?php endif; ?>
 
-			<?php foreach ( $subtitles as $subtitle ) : ?>
-				<?php $subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() ); ?>
-				<track
-					kind="subtitles"
-					src="<?php echo esc_url( $subtitle['url'] ); ?>"
-					srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
-					label="<?php echo esc_attr( $subtitle['label'] ); ?>"
-				/>
-			<?php endforeach; ?>
+			<?php
+				// Only render tracks if we're not in playlist mode.
+				if ( count ( $tracks ) === 1 ) :
+			?>
+				<?php if ( ! empty( $main_track['chapters_url'] ) ) : ?>
+					<track kind="chapters" src="<?php echo esc_url( $main_track['chapters_url'] ); ?>" />
+				<?php endif; ?>
+
+				<?php foreach ( $subtitles as $subtitle ) : ?>
+					<?php
+						$subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
+						// TODO anastis do we need to convert to bool here or something, (it doesn't work)
+						$is_caption = $subtitle['caption'];
+					?>
+					<track
+						kind="<?php echo $is_caption ? 'captions' : 'subtitles'; ?>"
+						src="<?php echo esc_url( $subtitle['url'] ); ?>"
+						srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
+						label="<?php echo esc_attr( $subtitle['label'] ); ?>"
+					/>
+				<?php endforeach; ?>
+			<?php endif; ?>
 		</video>
 		<?php
 
