@@ -1169,6 +1169,16 @@
   .vjs-stuck .vjs-overlay {
     display: none;
   }
+
+  .editor-styles-wrapper .vjs-stuck .vjs-sticky-parent {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    width: auto;
+    transform: none;
+    z-index: 0;
+    animation: none;
+  }
 }
 
 /* Responsive

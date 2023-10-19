@@ -5,10 +5,15 @@ videojs.registerPlugin('hoverPreview', hoverPreviewPlugin);
 videojs.registerPlugin('branding', brandingPlugin);
 videojs.registerPlugin('stickyPlayer', stickyPlayer);
 
-addEventListener('DOMContentLoaded', () => {
+const videoIgniter = () => {
   const videos = document.querySelectorAll('.vi-player');
 
   videos.forEach(video => {
+    // Bail out if the player has already been initialized.
+    if (video.player) {
+      return;
+    }
+
     const main = video.closest('.vi-player-wrap ');
     const sticky = main.dataset.sticky === 'true';
     const fullscreenToggleEnabled = main.dataset.showFullscreenToggle === 'true';
@@ -95,7 +100,13 @@ addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+}
+
+addEventListener('DOMContentLoaded', () => {
+  videoIgniter();
 });
+
+window.__CI_VIDEOIGNITER_MANUAL_INIT__ = videoIgniter;
 
 /**
  * Branding

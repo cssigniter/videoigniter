@@ -4,13 +4,13 @@ add_action( 'init', 'videoigniter_player_block_init' );
 function videoigniter_player_block_init() {
 	register_block_type( 'videoigniter/player', array(
 		'attributes'      => array(
-			'uniqueId'                    => array(
+			'uniqueId'  => array(
 				'type' => 'string',
 			),
-			'playerId'                    => array(
+			'playerId'  => array(
 				'type' => 'string',
 			),
-			'className'                   => array(
+			'className' => array(
 				'type'    => 'string',
 				'default' => '',
 			),
@@ -21,8 +21,8 @@ function videoigniter_player_block_init() {
 
 function videoigniter_player_block_defaults() {
 	return array(
-		'uniqueId'                    => false,
-		'playerId'                    => false,
+		'uniqueId' => false,
+		'playerId' => false,
 	);
 }
 
@@ -37,7 +37,7 @@ function videoigniter_player_block_render_callback( $attributes ) {
 		return esc_html__( 'Select a playlist from the block settings.', 'videoigniter' );
 	}
 
-	$block_id = 'videoigniter-block-' . $unique_id;
+	$block_id      = 'videoigniter-block-' . $unique_id;
 	$block_classes = array_merge( array(
 		'videoigniter-block',
 		$block_id,
