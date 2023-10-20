@@ -5,8 +5,8 @@ videojs.registerPlugin('hoverPreview', hoverPreviewPlugin);
 videojs.registerPlugin('branding', brandingPlugin);
 videojs.registerPlugin('stickyPlayer', stickyPlayer);
 
-const videoIgniter = () => {
-  const videos = document.querySelectorAll('.vi-player');
+const videoIgniter = (videoElement) => {
+  const videos = videoElement ? [videoElement] : document.querySelectorAll('.vi-player');
 
   videos.forEach(video => {
     // Bail out if the player has already been initialized.
@@ -14,7 +14,7 @@ const videoIgniter = () => {
       return;
     }
 
-    const main = video.closest('.vi-player-wrap ');
+    const main = video.closest('.vi-player-wrap');
     const sticky = main.dataset.sticky === 'true';
     const fullscreenToggleEnabled = main.dataset.showFullscreenToggle === 'true';
     const hoverPreviewEnabled = main.dataset.hoverPreviewEnabled === 'true';

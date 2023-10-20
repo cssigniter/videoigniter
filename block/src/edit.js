@@ -33,7 +33,7 @@ const VideoIgniterPlayerEdit = ({
         const player = ref.current.querySelector(`#videoigniter-${playerId}`);
 
         if (player) {
-          window.__CI_VIDEOIGNITER_MANUAL_INIT__(player);
+          window.__CI_VIDEOIGNITER_MANUAL_INIT__();
           obs.disconnect();
         }
       });

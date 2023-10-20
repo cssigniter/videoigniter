@@ -187,6 +187,7 @@ class VideoIgniter {
 		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'filter_posts_columns' ) );
 		add_action( "manage_{$this->post_type}_posts_custom_column", array( $this, 'add_custom_columns' ), 10, 2 );
 
+		// TODO Fix this, console complains that the VI block is registered in an invalid category
 		add_filter( 'block_categories_all', array( $this, 'block_categories' ), 10, 2 );
 
 		add_filter( 'wp_check_filetype_and_ext', array( $this, 'register_file_extensions' ), 10, 4 );
