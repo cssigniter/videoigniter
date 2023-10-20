@@ -62,7 +62,9 @@ const videoIgniter = (videoElement) => {
     player.volume(initialVolume);
 
     // Initialize plugins
-    player.chaptersTimeline();
+    if (player.chaptersTimeline) {
+      player.chaptersTimeline();
+    }
 
     if (hoverPreviewEnabled) {
       player.hoverPreview();
@@ -89,7 +91,10 @@ const videoIgniter = (videoElement) => {
 
       player.on('playlistitem', () => {
         const currentItem = playlist[player.playlist.currentItem()];
-        player.overlays(currentItem.overlays ?? []);
+
+        if (overlays?.length > 0) {
+          player.overlays(currentItem.overlays ?? []);
+        }
 
         if (currentItem.name || currentItem.description) {
           player.titleBar.update({

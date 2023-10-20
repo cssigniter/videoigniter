@@ -223,23 +223,17 @@ class VideoIgniter {
 		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/assets/css/style.css', array( 'videojs' ), $this->version );
 		// TODO: Replace placeholders (here for the block to show up).
 		// TODO: Minify scripts and styles
-		// TODO: Load videojs plugins conditionally based on features
 		// TODO: Load core version of VJS and separately HLS and VTT if based on settings
-		wp_register_script( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/video.min.js', array(), $this->version, true );
-		wp_register_script( 'videojs-playlist', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist.min.js', array(), $this->version, true );
-		wp_register_script( 'videojs-playlist-ui', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist-ui.js', array(), $this->version, true );
-		wp_register_script( 'videojs-vimeo', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-vimeo.js', array(), $this->version, true );
-		wp_register_script( 'videojs-youtube', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-youtube.min.js', array(), $this->version, true );
-		wp_register_script( 'videojs-chapters', untrailingslashit( $this->plugin_url() ) . '/assets/js/chapters.js', array(), $this->version, true );
-		wp_register_script( 'videojs-overlays', untrailingslashit( $this->plugin_url() ) . '/assets/js/overlays.js', array(), $this->version, true );
+		wp_register_script( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/video.core.min.js', array(), $this->version, true );
+		wp_register_script( 'videojs-http-streaming', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-http-streaming.min.js', array('videojs'), $this->version, true );
+		wp_register_script( 'videojs-playlist', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist.min.js', array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-playlist-ui', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist-ui.js', array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-vimeo', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-vimeo.js', array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-youtube', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-youtube.min.js', array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-chapters', untrailingslashit( $this->plugin_url() ) . '/assets/js/chapters.js', array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-overlays', untrailingslashit( $this->plugin_url() ) . '/assets/js/overlays.js', array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/assets/js/scripts.js', array(
 			'videojs',
-			'videojs-playlist',
-			'videojs-playlist-ui',
-			'videojs-vimeo',
-			'videojs-youtube',
-			'videojs-chapters',
-			'videojs-overlays',
 		), $this->version, true );
 
 		wp_register_style( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . '/assets/css/admin-styles.css', array(), $this->version );
@@ -294,6 +288,58 @@ class VideoIgniter {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_style( 'videoigniter' );
+		// VideoIgniter main script loads in enqueue_playlist_scripts
+	}
+
+	/**
+	 * Enqueues frontend scripts based on the playlist's active features.
+	 *
+	 * @param int $id Post ID.
+	 *
+	 *@since NewVersion
+	 *
+	 */
+	public function enqueue_playlist_scripts( int $id ) {
+		if ( ! $this->is_playlist( $id ) ) {
+			return;
+		}
+		$tracks = $this->get_post_meta( $id, '_videoigniter_tracks', array() );
+
+		if ( empty( $tracks ) ) {
+			$tracks = array();
+		}
+
+		if ( count ( $tracks ) > 1 ) {
+			wp_enqueue_script( 'videojs-playlist' );
+			wp_enqueue_script( 'videojs-playlist-ui' );
+		}
+
+		foreach ( $tracks as $track ) {
+			$track     = wp_parse_args( $track, self::get_default_track_values() );
+			$track_url = $track['track_url'];
+			$overlays  = $track['overlays'];
+
+			if ( ! empty( $track['chapters_url'] ) ) {
+				wp_enqueue_script( 'videojs-chapters' );
+			}
+
+			if ( $this->is_youtube( $track_url ) ) {
+				wp_enqueue_script( 'videojs-youtube' );
+			}
+
+			if ( $this->is_vimeo( $track_url ) ) {
+				wp_enqueue_script( 'videojs-vimeo' );
+			}
+
+			if ( $this->is_streaming( $track_url ) ) {
+				wp_enqueue_script( 'videojs-http-streaming' );
+			}
+
+			if ( ! empty( $overlays ) ) {
+				wp_enqueue_script( 'videojs-overlays' );
+			}
+		}
+
 		wp_enqueue_script( 'videoigniter' );
 	}
 
@@ -1467,10 +1513,19 @@ class VideoIgniter {
 		return preg_match($pattern, $url);
 	}
 
+	// TOOD: Add php doc and review
+	public function is_streaming( $url ) {
+		$streaming_extensions = array( 'm3u8', 'm3u', 'ts', 'mpd' );
+
+		$file_ext = pathinfo( parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+		$file_ext = strtolower( $file_ext );
+
+		return in_array( $file_ext, $streaming_extensions );
+	}
+
 	// TODO: Add php doc and review
 	public function get_video_mime_type_from_url( $url ) {
 		// TODO: Replace function with wp_check_filetype() ? Why do we need this one?
-		// TODO add more mime types (HLS specifically)
 		// TODO: Check wp_get_mime_types() for more mime types.
 		// TODO: Note that avi and m4v have different mime types.
 		$mime_types = array(
@@ -1487,6 +1542,7 @@ class VideoIgniter {
 			'flv'  => 'video/x-flv',
 			'3gp'  => 'video/3gpp',
 			'm3u8' => 'application/x-mpegURL',
+			'mpd'  => 'application/dash+xml',
 		);
 
 		// TODO Improve sanitization
@@ -1736,6 +1792,8 @@ class VideoIgniter {
 		$track_markup    = $this->render_main_video_track( $id );
 		$tracks          = $this->get_post_meta( $id, '_videoigniter_tracks', array() );
 		$playlist_layout = $this->get_post_meta( $id, '_videoigniter_playlist_layout', 'right' );
+
+		$this->enqueue_playlist_scripts( $id );
 
 		$output = sprintf( '<div id="videoigniter-%s" class="%s" %s>%s</div>',
 			esc_attr( $id ),
