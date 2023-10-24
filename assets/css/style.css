@@ -96,6 +96,9 @@
   height: 96px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .vi-player .vjs-big-play-button:focus,
@@ -104,19 +107,25 @@
   border-color: rgba(255, 255, 255, .25);
 }
 
+.vi-player .vjs-big-play-button .vjs-svg-icon {
+  width: 36px;
+  height: 36px;
+  line-height: 0;
+}
+
 .vi-player.vjs-hover-preview-running .vjs-big-play-button {
   opacity: .85;
   display: block;
 }
 
-.vi-player .vjs-big-play-button .vjs-icon-placeholder::before {
-  content: '';
-  background: url('../icons/play.svg') center center / calc(var(--vi-player-control-icon-size) * 2) no-repeat;
-}
-
 .vi-player .vjs-control {
   height: 100%;
   width: 36px;
+}
+
+.vi-player .vjs-control:focus .vjs-svg-icon,
+.vi-player .vjs-svg-icon:hover {
+  filter: none;
 }
 
 @media (min-width: 750px) {
@@ -262,6 +271,12 @@
   width: 110px;
 }
 
+.vi-player .vjs-slider-horizontal .vjs-volume-level .vjs-svg-icon {
+  width: 12px;
+  height: 12px;
+  top: -4px;
+}
+
 /* Time control */
 .vi-player .vjs-time-control {
   line-height: var(--vi-player-control-bar-height);
@@ -282,6 +297,7 @@
 .vi-player .vjs-button {
   opacity: 0.85;
   transition: opacity 0.18s ease;
+  line-height: 0;
 }
 
 .vi-player .vjs-button:hover {
@@ -326,7 +342,8 @@
   font-size: 13px;
   padding: 6px 25px 6px 30px;
   margin: 1px 0;
-  display: block;
+  display: flex;
+  align-items: center;
   text-align: left;
   position: relative;
   white-space: nowrap;
@@ -376,6 +393,16 @@
   margin: 0 0 0 4px;
   position: relative;
   top: -1px;
+}
+
+.vi-player .vjs-menu li .vjs-menu-item-text {
+  text-transform: capitalize;
+  flex: auto;
+}
+
+.vi-player .vjs-menu li .vjs-svg-icon {
+  width: 20px;
+  height: 20px;
 }
 
 /* Loading spinner */
@@ -525,126 +552,12 @@
   justify-content: center;
 }
 
-.vi-player .vjs-play-control.vjs-button .vjs-icon-placeholder::before {
-  content: '';
-  background: url('../icons/play.svg') center center / var(--vi-player-control-icon-size) no-repeat;
-}
-
-.vi-player .vjs-play-control.vjs-button.vjs-playing .vjs-icon-placeholder::before {
-  content: '';
-  background: url('../icons/pause.svg') center center / var(--vi-player-control-icon-size) no-repeat;
-}
-
-.vi-player .vjs-icon-volume-high:before,
-.vi-player .vjs-mute-control .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/volume.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-volume-mid:before,
-.vi-player .vjs-mute-control.vjs-vol-2 .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/volume-mid.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-volume-low:before,
-.vi-player .vjs-mute-control.vjs-vol-1 .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/volume-low.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-volume-mute:before,
-.vi-player .vjs-mute-control.vjs-vol-0 .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/volume-mute.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-picture-in-picture-enter:before,
-.vi-player .vjs-picture-in-picture-control .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/picture-in-picture.svg') center center /
-    var(--vi-player-control-icon-size) no-repeat;
-}
-
-.vi-player .vjs-icon-picture-in-picture-exit:before,
-.vi-player.vjs-picture-in-picture .vjs-picture-in-picture-control .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/picture-in-picture-off.svg') center center /
-    var(--vi-player-control-icon-size) no-repeat;
-}
-
-.vi-player .vjs-icon-fullscreen-enter:before,
-.vi-player .vjs-fullscreen-control .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/maximize.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-fullscreen-exit:before,
-.vi-player.vjs-fullscreen .vjs-fullscreen-control .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/minimize.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player
-  .vjs-subs-caps-button
-  + .vjs-menu
-  .vjs-captions-menu-item
-  .vjs-menu-item-text
-  .vjs-icon-placeholder:before,
-.vi-player .vjs-icon-captions:before,
-.vi-player:lang(en) .vjs-subs-caps-button .vjs-icon-placeholder:before,
-.vi-player:lang(fr-CA) .vjs-subs-caps-button .vjs-icon-placeholder:before,
-.vi-player .vjs-captions-button .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/captions.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-cancel:before,
-.vi-player .vjs-control.vjs-close-button .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/square-x.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-audio:before,
-.vi-player .vjs-audio-button .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/headphones.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player .vjs-icon-chapters:before,
-.vi-player .vjs-chapters-button .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/list.svg') center center / var(--vi-player-control-icon-size) no-repeat;
-}
-
-.vi-player .vjs-icon-replay:before,
-.vi-player .vjs-play-control.vjs-ended .vjs-icon-placeholder:before {
-  content: '';
-  background: url('../icons/replay.svg') center center / var(--vi-player-control-icon-size)
-    no-repeat;
-}
-
-.vi-player [class^="vjs-skip-forward"] .vjs-icon-placeholder::before,
-.vi-player [class^="vjs-skip-forward"]::before {
-  content: '';
-  background: url('../icons/skip-forward.svg') center center / var(--vi-player-control-icon-size)
-  no-repeat;
-}
-
-.vi-player [class^="vjs-skip-backward"] .vjs-icon-placeholder::before,
-.vi-player [class^="vjs-skip-backward"]::before {
-  content: '';
-  background: url('../icons/skip-backward.svg') center center / var(--vi-player-control-icon-size)
-  no-repeat;
+.vi-player .vjs-svg-icon {
+  width: var(--vi-player-control-icon-size);
+  height: var(--vi-player-control-icon-size);
+  color: var(--vi-player-color-controls);
+  fill: var(--vi-player-color-controls);
+  stroke: var(--vi-player-color-controls);
 }
 
 /* Chapters / Timeline
@@ -1209,6 +1122,8 @@
 }
 
 .vi-player.vjs-layout-tiny [class^="vjs-skip-forward"],
-.vi-player.vjs-layout-tiny [class^="vjs-skip-backward"] {
+.vi-player.vjs-layout-tiny [class^="vjs-skip-backward"],
+.vi-player.vjs-layout-x-small [class^="vjs-skip-forward"],
+.vi-player.vjs-layout-x-small [class^="vjs-skip-backward"] {
   display: none;
 }

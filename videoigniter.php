@@ -268,6 +268,13 @@ class VideoIgniter {
 			'wp-keycodes',
 			'wp-html-entities',
 			'wp-server-side-render',
+			'videojs-http-streaming',
+			'videojs-playlist',
+			'videojs-playlist-ui',
+			'videojs-vimeo',
+			'videojs-youtube',
+			'videojs-chapters',
+			'videojs-overlays',
 			'videoigniter',
 		), $this->version, true );
 
