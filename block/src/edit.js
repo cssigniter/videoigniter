@@ -83,7 +83,7 @@ const VideoIgniterPlayerEdit = ({
             options={[
               {
                 label: __('Select a playlist'),
-                value: null,
+                value: '',
               },
               ...(playlists || []).map(playlist => ({
                 label: playlist.title.raw,

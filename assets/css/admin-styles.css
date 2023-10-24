@@ -590,12 +590,29 @@ vi-overlays-field .vi-repeatable-field-content {
   grid-template-columns: 1fr 1fr;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .vi-field-controls,
   .vi-field-controls-visibility {
     margin: 0;
     float: none;
     width: 100%;
+  }
+
+  .vi-field-track-fields {
+    flex-wrap: wrap;
+  }
+
+  .vi-field-track-fields .vi-field-image {
+    margin-bottom: 15px;
+  }
+
+  .vi-field-track-fields .vi-field-split {
+    width: 100%;
+  }
+
+  vi-subtitles-field .vi-repeatable-field-content,
+  .vi-overlay-template-form-fields {
+    grid-template-columns: 1fr;
   }
 
   .vi-field-controls {
@@ -623,11 +640,12 @@ vi-overlays-field .vi-repeatable-field-content {
 @media (max-width: 782px) {
   .vi-container .button .dashicons,
   .vi-module .button .dashicons {
-    line-height: 1.2em;
+    line-height: 2.3em;
   }
 
-  .vi-form-field-addon .button {
-    top: 2px;
+  button.vi-fields-add-button,
+  button.vi-fields-remove-button {
+    display: block !important;
   }
 }
 

@@ -187,7 +187,6 @@ class VideoIgniter {
 		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'filter_posts_columns' ) );
 		add_action( "manage_{$this->post_type}_posts_custom_column", array( $this, 'add_custom_columns' ), 10, 2 );
 
-		// TODO Fix this, console complains that the VI block is registered in an invalid category
 		add_filter( 'block_categories_all', array( $this, 'block_categories' ), 10, 2 );
 
 		add_filter( 'wp_check_filetype_and_ext', array( $this, 'register_file_extensions' ), 10, 4 );
@@ -221,7 +220,6 @@ class VideoIgniter {
 	public function register_scripts() {
 		wp_register_style( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/css/vendor/video-js.min.css', array(), $this->version );
 		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/assets/css/style.css', array( 'videojs' ), $this->version );
-		// TODO: Replace placeholders (here for the block to show up).
 		// TODO: Minify scripts and styles
 		wp_register_script( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/video.core.min.js', array(), $this->version, true );
 		wp_register_script( 'videojs-http-streaming', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-http-streaming.min.js', array('videojs'), $this->version, true );
@@ -742,91 +740,83 @@ class VideoIgniter {
 		wp_nonce_field( basename( __FILE__ ), $object->post_type . '_nonce' );
 		?>
 		<div class="vi-module vi-module-settings">
-			<div class="vi-form-field-group">
-				<h3 class="vi-form-field-group-title"><?php esc_html_e( 'Player &amp; Video listing', 'videoigniter' ); ?></h3>
+			<h3 class="vi-form-field-group-title"><?php esc_html_e( 'Player &amp; Video listing', 'videoigniter' ); ?></h3>
 
-				<div class="vi-form-field">
-					<div class="vi-playlist-layout-message vi-info-box"></div>
-					<label for="_videoigniter_playlist_layout">
-						<?php esc_html_e( 'Playlist layout', 'videoigniter' ); ?>
-					</label>
+			<div class="vi-form-field">
+				<div class="vi-playlist-layout-message vi-info-box"></div>
+				<label for="_videoigniter_playlist_layout">
+					<?php esc_html_e( 'Playlist layout', 'videoigniter' ); ?>
+				</label>
 
-					<select
-						class="widefat vi-form-select-playlist-layout"
-						id="_videoigniter_playlist_layout"
-						name="_videoigniter_playlist_layout"
-					>
-						<?php foreach ( $this->get_playlist_layouts() as $player_key => $playlist_layout ) : ?>
-							<option
-								value="<?php echo esc_attr( $player_key ); ?>"
-								data-no-support="<?php echo esc_attr( implode( ', ', $playlist_layout['no-support'] ) ); ?>"
-								data-info="<?php echo esc_attr( $playlist_layout['info'] ); ?>"
-								<?php selected( $layout, $player_key ); ?>
-							>
-								<?php echo wp_kses( $playlist_layout['label'], 'strip' ); ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_show_fullscreen_toggle"
-						name="_videoigniter_show_fullscreen_toggle"
-						value="1" <?php checked( $show_fullscreen_toggle, true ); ?>
-					/>
-
-					<label for="_videoigniter_show_fullscreen_toggle">
-						<?php esc_html_e( 'Show fullscreen toggle', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<input
-						type="checkbox"
-						class="vi-checkbox"
-						id="_videoigniter_show_playback_speed"
-						name="_videoigniter_show_playback_speed"
-						value="1" <?php checked( $show_playback_speed, true ); ?>
-					/>
-
-					<label for="_videoigniter_show_playback_speed">
-						<?php esc_html_e( 'Show playback speed controls', 'videoigniter' ); ?>
-					</label>
-				</div>
-
-				<div class="vi-form-field">
-					<label for="_videoigniter_volume">
-						<?php esc_html_e( 'Starting volume', 'videoigniter' ); ?>
-					</label>
-
-					<input
-						type="number"
-						min="0"
-						max="100"
-						step="10"
-						id="_videoigniter_volume"
-						class="vi-input"
-						name="_videoigniter_volume"
-						placeholder="<?php esc_attr_e( '0-100', 'videoigniter' ); ?>"
-						value="<?php echo esc_attr( $volume ); ?>"
-					/>
-
-					<p class="vi-field-help">
-						<?php esc_html_e( 'Enter a value between 0 and 100 in increments of 10.', 'videoigniter' ); ?>
-					</p>
-				</div>
-
-				<?php do_action( 'videoigniter_metabox_settings_group_player_track_listing_fields', $object, $box ); ?>
+				<select
+					class="widefat vi-form-select-playlist-layout"
+					id="_videoigniter_playlist_layout"
+					name="_videoigniter_playlist_layout"
+				>
+					<?php foreach ( $this->get_playlist_layouts() as $player_key => $playlist_layout ) : ?>
+						<option
+							value="<?php echo esc_attr( $player_key ); ?>"
+							data-no-support="<?php echo esc_attr( implode( ', ', $playlist_layout['no-support'] ) ); ?>"
+							data-info="<?php echo esc_attr( $playlist_layout['info'] ); ?>"
+							<?php selected( $layout, $player_key ); ?>
+						>
+							<?php echo wp_kses( $playlist_layout['label'], 'strip' ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
 			</div>
 
-			<?php
-				// TODO probably remove these actions -- check PRO version
-				do_action( 'videoigniter_metabox_settings_group_tracks_fields', $object, $box );
-				do_action( 'videoigniter_metabox_settings_group_player_track_track_listing_repeat_fields', $object, $box );
-			?>
+			<div class="vi-form-field">
+				<input
+					type="checkbox"
+					class="vi-checkbox"
+					id="_videoigniter_show_fullscreen_toggle"
+					name="_videoigniter_show_fullscreen_toggle"
+					value="1" <?php checked( $show_fullscreen_toggle, true ); ?>
+				/>
+
+				<label for="_videoigniter_show_fullscreen_toggle">
+					<?php esc_html_e( 'Show fullscreen toggle', 'videoigniter' ); ?>
+				</label>
+			</div>
+
+			<div class="vi-form-field">
+				<input
+					type="checkbox"
+					class="vi-checkbox"
+					id="_videoigniter_show_playback_speed"
+					name="_videoigniter_show_playback_speed"
+					value="1" <?php checked( $show_playback_speed, true ); ?>
+				/>
+
+				<label for="_videoigniter_show_playback_speed">
+					<?php esc_html_e( 'Show playback speed controls', 'videoigniter' ); ?>
+				</label>
+			</div>
+
+			<div class="vi-form-field">
+				<label for="_videoigniter_volume">
+					<?php esc_html_e( 'Starting volume', 'videoigniter' ); ?>
+				</label>
+
+				<input
+					type="number"
+					min="0"
+					max="100"
+					step="10"
+					id="_videoigniter_volume"
+					class="vi-input"
+					name="_videoigniter_volume"
+					placeholder="<?php esc_attr_e( '0-100', 'videoigniter' ); ?>"
+					value="<?php echo esc_attr( $volume ); ?>"
+				/>
+
+				<p class="vi-field-help">
+					<?php esc_html_e( 'Enter a value between 0 and 100 in increments of 10.', 'videoigniter' ); ?>
+				</p>
+			</div>
+
+			<?php do_action( 'videoigniter_metabox_settings_group_player_track_listing_fields', $object, $box ); ?>
 		</div>
 		<?php
 	}
@@ -1074,7 +1064,6 @@ class VideoIgniter {
 
 	/**
 	 * Returns a data attributes array for the given playlist.
-	 * TODO: Remove this functionality and the endpoint -- it is not needed.
 	 *
 	 * @version NewVersion
 	 * @since   NewVersion

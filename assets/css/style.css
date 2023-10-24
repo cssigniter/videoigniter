@@ -134,6 +134,13 @@
   }
 }
 
+.vi-player.vjs-layout-small .vjs-big-play-button,
+.vi-player.vjs-layout-x-small .vjs-big-play-button,
+.vi-player.vjs-layout-tiny .vjs-big-play-button {
+  width: 60px;
+  height: 60px;
+}
+
 /* Progress bar */
 .vi-player .vjs-progress-control {
   position: absolute;
@@ -921,8 +928,7 @@
 .vi-player.vjs-layout-small .vjs-overlay,
 .vi-player.vjs-layout-x-small .vjs-overlay,
 .vi-player.vjs-layout-tiny .vjs-overlay {
-  font-size: 9px;
-  padding: 0.5em;
+  display: none;
 }
 
 .vi-player .vjs-overlay-inner {
