@@ -62,8 +62,6 @@ const videoIgniter = (videoElement) => {
       })
     }
 
-    player.volume(initialVolume);
-
     // Initialize plugins
     if (player.chaptersTimeline && player.chaptersTimeline) {
       player.chaptersTimeline();
@@ -107,6 +105,10 @@ const videoIgniter = (videoElement) => {
         }
       });
     }
+
+    setTimeout(() => {
+      player.volume(initialVolume);
+    }, 100);
   });
 }
 
