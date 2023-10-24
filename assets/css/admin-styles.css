@@ -245,16 +245,6 @@
   clear: both;
 }
 
-.vi-field-container-links {
-  display: flex;
-  grid-gap: 20px;
-}
-
-.vi-field-container-links .vi-field-split {
-  width: 50%;
-  float: none;
-}
-
 .vi-field-head {
   padding: 8px 15px 5px;
   line-height: normal;
@@ -312,9 +302,14 @@
 }
 
 .vi-field-track-fields {
-  display: grid;
+  display: flex;
   grid-column-gap: 15px;
   grid-template-columns: 100px 1fr 1fr;
+}
+
+.vi-field-split {
+  width: 50%;
+  flex: auto;
 }
 
 .vi-container .button .dashicons,
@@ -609,12 +604,6 @@ vi-overlays-field .vi-repeatable-field-content {
 
   .vi-field-container-links {
     display: block;
-  }
-
-  .vi-field-container-links .vi-field-split,
-  .vi-field-split {
-    float: none;
-    width: 100%;
   }
 
   .vi-footer {

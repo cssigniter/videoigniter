@@ -245,16 +245,6 @@ $border-radius-base: 2px !default;
 	flex-direction: column;
 }
 
-.vi-field-container-links {
-	display: flex;
-	grid-gap: 20px;
-
-	.vi-field-split {
-		width: 50%;
-		float: none;
-	}
-}
-
 .vi-field-head {
 	@include clearfix;
 	padding: 8px $base-pad 5px;
@@ -307,9 +297,14 @@ $border-radius-base: 2px !default;
 }
 
 .vi-field-track-fields {
-	display: grid;
+	display: flex;
 	grid-column-gap: 15px;
 	grid-template-columns: 100px 1fr 1fr;
+}
+
+.vi-field-split {
+	width: 50%;
+	flex: auto;
 }
 
 //
@@ -344,7 +339,6 @@ $border-radius-base: 2px !default;
 
 	label {
 		display: inline-block;
-		font-weight: bold;
 		margin-bottom: 3px;
 	}
 
@@ -581,12 +575,6 @@ $border-radius-base: 2px !default;
 
 	.vi-field-container-links {
 		display: block;
-	}
-
-	.vi-field-container-links .vi-field-split,
-	.vi-field-split {
-		float: none;
-		width: 100%;
 	}
 
 	.vi-footer {

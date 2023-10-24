@@ -101,19 +101,9 @@ class VideoIgniter_Sanitizer {
 
 		$sanitized_track = array();
 
-		$sanitized_track['cover_id']     = self::intval_or_empty( $track['cover_id'] );
 		$sanitized_track['title']        = sanitize_text_field( $track['title'] );
 		$sanitized_track['description']  = sanitize_text_field( $track['description'] );
 		$sanitized_track['track_url']    = esc_url_raw( $track['track_url'] );
-		$sanitized_track['chapters_url'] = esc_url_raw( $track['chapters_url'] );
-
-		$subtitles = is_array( $track['subtitles'] ) ? $track['subtitles'] : json_decode( wp_unslash( $track['subtitles'] ), true );
-		$subtitles = ! is_null( $subtitles ) ? $subtitles : array();
-		$overlays  = is_array( $track['overlays'] ) ? $track['overlays'] : json_decode( wp_unslash( $track['overlays'] ), true );
-		$overlays  = ! is_null( $overlays ) ? $overlays : array();
-
-		$sanitized_track['subtitles'] = self::track_subtitles( $subtitles );
-		$sanitized_track['overlays']  = self::track_overlays( $overlays );
 
 		$tmp = array_filter( $sanitized_track );
 		if ( empty( $tmp ) ) {
