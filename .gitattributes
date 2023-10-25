@@ -1,9 +1,7 @@
 ### Make sure to also update .distignore when updating this file ###
 
 # Project-specific
-*.scss                      export-ignore
-player/src                  export-ignore
-player/dev-tracks.json      export-ignore
+block/src                   export-ignore
 README.md                   export-ignore
 
 # VCS
@@ -34,6 +32,7 @@ package-lock.json           export-ignore
 webpack.config.js           export-ignore
 webpack.parts.js            export-ignore
 yarn.lock                   export-ignore
+gulpfile.js                 export-ignore
 
 # WP.org
 .wordpress-org              export-ignore

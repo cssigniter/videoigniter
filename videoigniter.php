@@ -133,11 +133,6 @@ class VideoIgniter {
 		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-sanitizer.php';
 		$this->sanitizer = new VideoIgniter_Sanitizer();
 
-//		if ( ! class_exists( 'VideoIgniter_Pro', false ) ) {
-//			require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-admin-page-upsell.php';
-//			new VideoIgniter_Admin_Page_Upsell();
-//		}
-
 		// Initialization needed in every request.
 		$this->init();
 
@@ -213,28 +208,54 @@ class VideoIgniter {
 	}
 
 	/**
+	 * Returns the filename suffix to be used when enqueuing scripts and styles.
+	 *
+	 * @since NewVersion
+	 *
+	 * @return string
+	 */
+	private function scripts_styles_suffix() {
+		$suffix = '.min';
+
+		if ( ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
+			$suffix = '';
+		}
+
+		/**
+		 * Filters the filename suffix used for scripts and styles.
+		 *
+		 * @since NewVersion
+		 *
+		 * @param string $suffix
+		 */
+		return apply_filters( 'videoigniter_scripts_styles_suffix', $suffix );
+	}
+
+	/**
 	 * Register (but not enqueue) all scripts and styles to be used throughout the plugin.
 	 *
 	 * @since NewVersion
 	 */
 	public function register_scripts() {
-		wp_register_style( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/css/vendor/video-js.min.css', array(), $this->version );
-		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/assets/css/style.css', array( 'videojs' ), $this->version );
-		// TODO: Minify scripts and styles
-		wp_register_script( 'videojs', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/video.core.min.js', array(), $this->version, true );
-		wp_register_script( 'videojs-http-streaming', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-http-streaming.min.js', array('videojs'), $this->version, true );
-		wp_register_script( 'videojs-playlist', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist.min.js', array( 'videojs' ), $this->version, true );
-		wp_register_script( 'videojs-playlist-ui', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-playlist-ui.js', array( 'videojs' ), $this->version, true );
-		wp_register_script( 'videojs-vimeo', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-vimeo.js', array( 'videojs' ), $this->version, true );
-		wp_register_script( 'videojs-youtube', untrailingslashit( $this->plugin_url() ) . '/assets/js/vendor/videojs-youtube.min.js', array( 'videojs' ), $this->version, true );
-		wp_register_script( 'videojs-chapters', untrailingslashit( $this->plugin_url() ) . '/assets/js/chapters.js', array( 'videojs' ), $this->version, true );
-		wp_register_script( 'videojs-overlays', untrailingslashit( $this->plugin_url() ) . '/assets/js/overlays.js', array( 'videojs' ), $this->version, true );
-		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . '/assets/js/scripts.js', array(
+		$suffix = $this->scripts_styles_suffix();
+
+		wp_register_style( 'videojs', untrailingslashit( $this->plugin_url() ) . "/assets/css/vendor/video-js{$suffix}.css", array(), $this->version );
+		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . "/assets/css/style{$suffix}.css", array( 'videojs' ), $this->version );
+
+		wp_register_script( 'videojs', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/video.core{$suffix}.js", array(), $this->version, true );
+		wp_register_script( 'videojs-http-streaming', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-http-streaming{$suffix}.js", array('videojs'), $this->version, true );
+		wp_register_script( 'videojs-playlist', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-playlist{$suffix}.js", array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-playlist-ui', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-playlist-ui{$suffix}.js", array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-vimeo', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-vimeo{$suffix}.js", array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-youtube', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-youtube{$suffix}.js", array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-chapters', untrailingslashit( $this->plugin_url() ) . "/assets/js/chapters{$suffix}.js", array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videojs-overlays', untrailingslashit( $this->plugin_url() ) . "/assets/js/overlays{$suffix}.js", array( 'videojs' ), $this->version, true );
+		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . "/assets/js/scripts{$suffix}.js", array(
 			'videojs',
 		), $this->version, true );
 
-		wp_register_style( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . '/assets/css/admin-styles.css', array(), $this->version );
-		wp_register_script( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . '/assets/js/videoigniter.js', array(), $this->version, true );
+		wp_register_style( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . "/assets/css/admin/admin-styles{$suffix}.css", array(), $this->version );
+		wp_register_script( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . "/assets/js/admin/videoigniter{$suffix}.js", array(), $this->version, true );
 
 		wp_localize_script( 'videoigniter-admin', 'vi_scripts', array(
 			'messages' => array(
@@ -245,13 +266,7 @@ class VideoIgniter {
 			),
 		) );
 
-		wp_register_style( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . '/assets/css/admin/settings.css', array(), $this->version );
-
-		wp_localize_script( 'videoigniter', 'vi_front_scripts', array(
-			'multi_sound_disabled_TODO' => true,
-			'typography_disabled_TODO'  => get_theme_mod( 'videoigniter_disable_typography', '' ),
-			'statistics_enabled_TODO'   => (bool) get_option( 'videoigniter_stats_enabled' ),
-		) );
+		wp_register_style( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . "/assets/css/admin/settings{$suffix}.css", array(), $this->version );
 
 		wp_register_script( 'videoigniter-block-editor', untrailingslashit( $this->plugin_url() ) . '/block/build/block.js', array(
 			'wp-components',
@@ -279,10 +294,6 @@ class VideoIgniter {
 			'wp-edit-blocks',
 			'videoigniter',
 		), $this->version );
-
-		wp_localize_script( 'videoigniter-block-editor', 'viColors', array(
-			'disableTypography' => get_theme_mod( 'videoigniter_disable_typography', '' ),
-		) );
 	}
 
 	/**
@@ -370,7 +381,7 @@ class VideoIgniter {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_style( 'videoigniter-settings-styles', $this->plugin_url() . '/assets/css/admin/settings.css', array(), $this->version );
 			wp_enqueue_media();
-			wp_enqueue_script( 'videoigniter-settings-scripts', $this->plugin_url() . '/assets/js/settings.js', array(
+			wp_enqueue_script( 'videoigniter-settings-scripts', $this->plugin_url() . '/assets/js/admin/settings.js', array(
 				'wp-color-picker',
 			), $this->version, true );
 		}
@@ -1374,11 +1385,6 @@ class VideoIgniter {
 		$params = apply_filters( 'videoigniter_shortcode_data_attributes_array', $this->get_playlist_data_attributes_array( $id ), $id, $post );
 		$params = array_filter( $params, array( $this->sanitizer, 'array_filter_empty_null' ) );
 		$params = $this->sanitizer::html_data_attributes_array( $params );
-
-		// Returning a truthy value from the filter, will short-circuit execution of the shortcode.
-		if ( false !== apply_filters( 'videoigniter_shortcode_shortcircuit', false, $id, $post, $params ) ) {
-			return '';
-		}
 
 		$data = '';
 		foreach ( $params as $attribute => $value ) {

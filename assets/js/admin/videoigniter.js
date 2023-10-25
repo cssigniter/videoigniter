@@ -1,7 +1,5 @@
-/* eslint-env browser, jquery */
 /* global wp vi_scripts */
 
-// eslint-disable-next-line vars-on-top
 var VideoIgniter = (function () {
 	var $ = jQuery;
 
@@ -17,15 +15,11 @@ var VideoIgniter = (function () {
 		removeFieldButtonClassName: ".vi-remove-field",
 		$removeAllTracksButton: $(".vi-remove-all-fields"),
 		$batchUploadButton: $(".vi-add-field-batch"),
-		$trackDownloadUsesTrackUrlButton: $(".vi-use-track-url-download"),
 		videoUploadButtonClassName: ".vi-track-url-upload",
 		fieldTitleClassName: ".vi-field-title",
 		trackTitleClassName: ".vi-track-title",
 		trackDescriptionClassName: ".vi-track-description",
-		trackLyricsClassName: ".vi-track-lyrics",
 		trackUrlClassName: ".vi-track-url",
-		trackDownloadUrlClassName: ".vi-track-download-url",
-		trackDownloadUsesTrackUrlClassName: ".vi-track-download-uses-track-url",
 		fieldHeadClassName: ".vi-field-head",
 		fieldCollapsedClass: "vi-collapsed",
 		customElements: 'vi-subtitles-field,vi-overlays-field',

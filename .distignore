@@ -2,6 +2,8 @@
 
 # Project-specific
 *.scss
+block/src
+gulpfile.js
 README.md
 
 # VCS

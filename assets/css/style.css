@@ -844,11 +844,6 @@
   background-color: var(--vi-player-color-gray-2);
 }
 
-/* TODO decide if we keep this, i think only when auto play is on */
-.vi-playlist .vjs-up-next .vjs-up-next-text {
-  /*display: block;*/
-}
-
 .vi-playlist .vjs-playlist-now-playing-text {
   display: none;
 }
@@ -1133,3 +1128,17 @@
 .vi-player.vjs-layout-x-small [class^="vjs-skip-backward"] {
   display: none;
 }
+
+/* Block
+==================================== */
+.videoigniter-block-placeholder {
+  display: none;
+}
+
+.wp-block-videoigniter-player .videoigniter-block-placeholder {
+  display: block;
+  padding: 15px;
+  text-align: center;
+  background: #ededed;
+}
+

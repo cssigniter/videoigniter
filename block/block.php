@@ -34,7 +34,7 @@ function videoigniter_player_block_render_callback( $attributes ) {
 	$class_name = $attributes['className'];
 
 	if ( empty( $player_id ) ) {
-		return esc_html__( 'Select a playlist from the block settings.', 'videoigniter' );
+		return '<div class="videoigniter-block-placeholder">' . esc_html__( 'Select a playlist from the block settings.', 'videoigniter' ) . '</div>';
 	}
 
 	$block_id      = 'videoigniter-block-' . $unique_id;
