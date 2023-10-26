@@ -95,7 +95,7 @@
   pointer-events: none;
   margin: 0;
   transform: translate(-50%, -50%);
-  border: 2px solid rgba(255, 255, 255, .25);
+  border: 2px solid rgba(255, 255, 255, 0.25);
   width: 96px;
   height: 96px;
   border-radius: 50%;
@@ -108,7 +108,7 @@
 .vi-player .vjs-big-play-button:focus,
 .vi-player:hover .vjs-big-play-button {
   background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, .25);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .vi-player .vjs-big-play-button .vjs-svg-icon {
@@ -118,7 +118,7 @@
 }
 
 .vi-player.vjs-hover-preview-running .vjs-big-play-button {
-  opacity: .85;
+  opacity: 0.85;
   display: block;
   pointer-events: auto;
 }
@@ -189,7 +189,11 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
-.vi-player .vjs-progress-control:hover .vjs-progress-holder .vjs-load-progress div {
+.vi-player
+  .vjs-progress-control:hover
+  .vjs-progress-holder
+  .vjs-load-progress
+  div {
   background: rgba(255, 255, 255, 0.5);
 }
 
@@ -201,8 +205,16 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
-.vi-player .vjs-progress-control .vjs-progress-holder .vjs-play-progress .vjs-svg-icon,
-.vi-player .vjs-progress-control:hover .vjs-progress-holder .vjs-play-progress .vjs-svg-icon {
+.vi-player
+  .vjs-progress-control
+  .vjs-progress-holder
+  .vjs-play-progress
+  .vjs-svg-icon,
+.vi-player
+  .vjs-progress-control:hover
+  .vjs-progress-holder
+  .vjs-play-progress
+  .vjs-svg-icon {
   top: -4px;
   right: -8px;
   width: 13px;
@@ -235,7 +247,11 @@
 }
 
 .vi-player .vjs-progress-control:hover .vjs-play-progress::before,
-.vi-player .vjs-progress-control:hover .vjs-progress-holder .vjs-play-progress .vjs-svg-icon {
+.vi-player
+  .vjs-progress-control:hover
+  .vjs-progress-holder
+  .vjs-play-progress
+  .vjs-svg-icon {
   transform: scale(1);
 }
 
@@ -606,7 +622,9 @@
   opacity: 0;
 }
 
-.vi-player .vjs-chapter-timeline.vjs-chapter-timeline-current .vjs-chapter-timeline-progress {
+.vi-player
+  .vjs-chapter-timeline.vjs-chapter-timeline-current
+  .vjs-chapter-timeline-progress {
   opacity: 1;
 }
 
@@ -949,8 +967,10 @@
   visibility: visible;
 }
 
-.vi-player:not(.vjs-hover-preview-running):hover .vjs-overlay.vjs-overlay-visible,
-.vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-overlay.vjs-overlay-visible {
+.vi-player:not(.vjs-hover-preview-running):hover
+  .vjs-overlay.vjs-overlay-visible,
+.vi-player.vjs-paused:not(.vjs-hover-preview-running)
+  .vjs-overlay.vjs-overlay-visible {
   opacity: 0.95;
   visibility: visible;
 }
@@ -1127,10 +1147,10 @@
   font-size: 1em;
 }
 
-.vi-player.vjs-layout-tiny [class^="vjs-skip-forward"],
-.vi-player.vjs-layout-tiny [class^="vjs-skip-backward"],
-.vi-player.vjs-layout-x-small [class^="vjs-skip-forward"],
-.vi-player.vjs-layout-x-small [class^="vjs-skip-backward"] {
+.vi-player.vjs-layout-tiny [class^='vjs-skip-forward'],
+.vi-player.vjs-layout-tiny [class^='vjs-skip-backward'],
+.vi-player.vjs-layout-x-small [class^='vjs-skip-forward'],
+.vi-player.vjs-layout-x-small [class^='vjs-skip-backward'] {
   display: none;
 }
 
@@ -1146,4 +1166,3 @@
   text-align: center;
   background: #ededed;
 }
-

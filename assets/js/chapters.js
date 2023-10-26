@@ -29,7 +29,9 @@ class ChapterTimeline extends videojs.getComponent('Component') {
   }
 
   updateProgress(progress) {
-    const progressBar = this.el().querySelector('.vjs-chapter-timeline-progress');
+    const progressBar = this.el().querySelector(
+      '.vjs-chapter-timeline-progress',
+    );
     progressBar.style.width = `${progress}%`;
   }
 }
@@ -95,7 +97,9 @@ function chaptersTimeline() {
         // TODO center the tooltip
       } else {
         timeTooltip.write(time);
-        timeTooltip.el().classList.remove('vjs-time-tooltip-with-chapter-title');
+        timeTooltip
+          .el()
+          .classList.remove('vjs-time-tooltip-with-chapter-title');
       }
     };
   };
@@ -105,7 +109,9 @@ function chaptersTimeline() {
    * @param event
    */
   const chapterTimelineHighlight = event => {
-    const progressControl = player.getChild('controlBar').getChild('progressControl');
+    const progressControl = player
+      .getChild('controlBar')
+      .getChild('progressControl');
     const seekBarPoint = player
       .getChild('controlBar')
       .getChild('progressControl')
@@ -115,7 +121,9 @@ function chaptersTimeline() {
 
     const chapters = getChapters();
     const cues = chapters?.[0]?.cues;
-    const chapterTimelines = progressControl.el().querySelectorAll('.vjs-chapter-timeline');
+    const chapterTimelines = progressControl
+      .el()
+      .querySelectorAll('.vjs-chapter-timeline');
 
     if (!cues) {
       return;
@@ -135,7 +143,9 @@ function chaptersTimeline() {
   };
 
   const clearChapterTimelineHighlight = () => {
-    const progressControl = player.getChild('controlBar').getChild('progressControl');
+    const progressControl = player
+      .getChild('controlBar')
+      .getChild('progressControl');
     progressControl
       .el()
       .querySelectorAll('.vjs-chapter-timeline')
@@ -156,20 +166,27 @@ function chaptersTimeline() {
       return;
     }
 
-    const progressControl = player.getChild('controlBar').getChild('progressControl');
-    const chapterTimelines = progressControl.el().querySelectorAll('.vjs-chapter-timeline');
+    const progressControl = player
+      .getChild('controlBar')
+      .getChild('progressControl');
+    const chapterTimelines = progressControl
+      .el()
+      .querySelectorAll('.vjs-chapter-timeline');
 
     [].forEach.call(cues, (cue, index) => {
       const chapterTimeline = chapterTimelines[index];
 
       if (chapterTimeline) {
-        const progressEl = chapterTimeline.querySelector('.vjs-chapter-timeline-progress');
+        const progressEl = chapterTimeline.querySelector(
+          '.vjs-chapter-timeline-progress',
+        );
 
         if (currentTime >= cue.endTime) {
           progressEl.style.width = '100%';
         } else if (currentTime >= cue.startTime && currentTime <= cue.endTime) {
           const chapterProgress =
-            ((currentTime - cue.startTime) / (cue.endTime - cue.startTime)) * 100;
+            ((currentTime - cue.startTime) / (cue.endTime - cue.startTime)) *
+            100;
           progressEl.style.width = `${chapterProgress}%`;
         } else {
           progressEl.style.width = '0%';
@@ -185,12 +202,18 @@ function chaptersTimeline() {
     const chapters = getChapters();
     const cues = chapters?.[0]?.cues;
 
-    const seekBar = player.getChild('controlBar').getChild('progressControl').getChild('seekBar');
+    const seekBar = player
+      .getChild('controlBar')
+      .getChild('progressControl')
+      .getChild('seekBar');
 
     // Remove all previous potential chapter timelines
-    seekBar.el().querySelectorAll('.vjs-chapter-timeline').forEach(el => {
-      el.remove();
-    });
+    seekBar
+      .el()
+      .querySelectorAll('.vjs-chapter-timeline')
+      .forEach(el => {
+        el.remove();
+      });
 
     if (!cues) {
       return;
@@ -218,7 +241,9 @@ function chaptersTimeline() {
       renderChapterTimelines();
     }, 500);
 
-    const progressControl = player.getChild('controlBar').getChild('progressControl');
+    const progressControl = player
+      .getChild('controlBar')
+      .getChild('progressControl');
     progressControl.on('mousemove', chapterTimelineHighlight);
     progressControl.on('touchmove', chapterTimelineHighlight);
     progressControl.on('mouseout', clearChapterTimelineHighlight);
@@ -229,7 +254,9 @@ function chaptersTimeline() {
     player.off('loadedmetadata', renderChapterTimelines);
     player.off('timeupdate', updateChapterTimelineProgress);
 
-    const progressControl = player.getChild('controlBar').getChild('progressControl');
+    const progressControl = player
+      .getChild('controlBar')
+      .getChild('progressControl');
     progressControl.off('mousemove', chapterTimelineHighlight);
     progressControl.off('touchmove', chapterTimelineHighlight);
     progressControl.off('mouseout', clearChapterTimelineHighlight);

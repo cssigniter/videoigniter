@@ -5,8 +5,10 @@ videojs.registerPlugin('hoverPreview', hoverPreviewPlugin);
 videojs.registerPlugin('branding', brandingPlugin);
 videojs.registerPlugin('stickyPlayer', stickyPlayer);
 
-const videoIgniter = (videoElement) => {
-  const videos = videoElement ? [videoElement] : document.querySelectorAll('.vi-player');
+const videoIgniter = videoElement => {
+  const videos = videoElement
+    ? [videoElement]
+    : document.querySelectorAll('.vi-player');
 
   videos.forEach(video => {
     // Bail out if the player has already been initialized.
@@ -16,7 +18,8 @@ const videoIgniter = (videoElement) => {
 
     const main = video.closest('.vi-player-wrap');
     const sticky = main.dataset.sticky === 'true';
-    const fullscreenToggleEnabled = main.dataset.showFullscreenToggle === 'true';
+    const fullscreenToggleEnabled =
+      main.dataset.showFullscreenToggle === 'true';
     const hoverPreviewEnabled = main.dataset.hoverPreviewEnabled === 'true';
     const playbackSpeedEnabled = main.dataset.showPlaybackSpeed === 'true';
     const initialVolume = (parseInt(main.dataset.volume, 10) ?? 100) / 100;
@@ -49,7 +52,7 @@ const videoIgniter = (videoElement) => {
         medium: 600,
         large: 700,
         xlarge: 800,
-        huge: 900
+        huge: 900,
       },
     });
 
@@ -59,7 +62,7 @@ const videoIgniter = (videoElement) => {
       player.titleBar.update({
         title: title || '',
         description: description || '',
-      })
+      });
     }
 
     // Initialize plugins
@@ -110,7 +113,7 @@ const videoIgniter = (videoElement) => {
       player.volume(initialVolume);
     }, 100);
   });
-}
+};
 
 addEventListener('DOMContentLoaded', () => {
   videoIgniter();
@@ -234,7 +237,7 @@ function stickyPlayer() {
   });
 }
 
-function replaceIcons (player) {
+function replaceIcons(player) {
   const icons = `
   <svg xmlns="http://www.w3.org/2000/svg">
     <defs>

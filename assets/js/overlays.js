@@ -11,7 +11,13 @@ class Overlay extends videojs.getComponent('Component') {
   }
 
   createEl() {
-    const { url, title, text, imageUrl, position = 'top-left' } = this.options();
+    const {
+      url,
+      title,
+      text,
+      imageUrl,
+      position = 'top-left',
+    } = this.options();
     const mainEl = videojs.dom.createEl('div', {
       className: `vjs-overlay vjs-overlay-${position}`,
     });
@@ -88,7 +94,8 @@ function overlays(overlays) {
   const player = this;
 
   // Remove possible existing overlays
-  player.children()
+  player
+    .children()
     .filter(child => child.name?.() === 'Overlay')
     .forEach(child => child.remove());
 

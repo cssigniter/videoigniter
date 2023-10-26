@@ -35,7 +35,7 @@
   --vi-admin-info-box-border-color: #eeeac9;
   --vi-admin-info-box-text-color: #948832;
   --vi-admin-base-padding: 15px;
-  --vi-admin-transition-time: .18s;
+  --vi-admin-transition-time: 0.18s;
   --vi-admin-border-color: var(--vi-admin-lighter-grey);
   --vi-admin-borde-radius-base: 2px;
 }
@@ -58,12 +58,12 @@
 }
 
 .vi-row::after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
 
-[class^="vi-col-"] {
+[class^='vi-col-'] {
   float: left;
   padding-left: 15px;
   padding-right: 15px;
@@ -171,9 +171,9 @@
 }
 
 .vi-footer-links a::after {
-  content: "\007c";
+  content: '\007c';
   color: var(--vi-admin-color-white);
-  opacity: .5;
+  opacity: 0.5;
   margin: 0 7px;
 }
 
@@ -188,7 +188,7 @@
 }
 
 .vi-module::after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -203,7 +203,7 @@
 }
 
 .vi-field-controls-wrap::after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -260,7 +260,7 @@
 }
 
 .vi-field-container::after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -269,12 +269,16 @@
   padding: 8px var(--vi-admin-base-padding) 5px;
   line-height: normal;
   background-color: var(--vi-admin-medium-grey);
-  background: linear-gradient(to bottom, var(--vi-admin-lighter-grey), var(--vi-admin-medium-grey));
+  background: linear-gradient(
+    to bottom,
+    var(--vi-admin-lighter-grey),
+    var(--vi-admin-medium-grey)
+  );
   border-bottom: 1px solid var(--vi-admin-dark-grey);
 }
 
 .vi-field-head::after {
-  content: "";
+  content: '';
   display: table;
   clear: both;
 }
@@ -361,34 +365,34 @@
   margin-bottom: 3px;
 }
 
-.vi-form-field input[type="text"],
-.vi-form-field input[type="url"],
-.vi-form-field input[type="search"],
-.vi-form-field input[type="email"],
-.vi-form-field input[type="password"],
-.vi-form-field input[type="number"],
-.vi-form-field input[type="tel"],
-.vi-form-field input[type="date"],
+.vi-form-field input[type='text'],
+.vi-form-field input[type='url'],
+.vi-form-field input[type='search'],
+.vi-form-field input[type='email'],
+.vi-form-field input[type='password'],
+.vi-form-field input[type='number'],
+.vi-form-field input[type='tel'],
+.vi-form-field input[type='date'],
 .vi-form-field textarea,
 .vi-form-field select {
   width: 100%;
 }
 
-.vi-form-field input[type="checkbox"],
-.vi-form-field input[type="radio"] {
+.vi-form-field input[type='checkbox'],
+.vi-form-field input[type='radio'] {
   display: inline-block;
   position: relative;
   top: 1px;
 }
 
-.vi-module-settings .vi-form-field input[type="text"],
-.vi-module-settings .vi-form-field input[type="url"],
-.vi-module-settings .vi-form-field input[type="search"],
-.vi-module-settings .vi-form-field input[type="email"],
-.vi-module-settings .vi-form-field input[type="password"],
-.vi-module-settings .vi-form-field input[type="number"],
-.vi-module-settings .vi-form-field input[type="tel"],
-.vi-module-settings .vi-form-field input[type="date"],
+.vi-module-settings .vi-form-field input[type='text'],
+.vi-module-settings .vi-form-field input[type='url'],
+.vi-module-settings .vi-form-field input[type='search'],
+.vi-module-settings .vi-form-field input[type='email'],
+.vi-module-settings .vi-form-field input[type='password'],
+.vi-module-settings .vi-form-field input[type='number'],
+.vi-module-settings .vi-form-field input[type='tel'],
+.vi-module-settings .vi-form-field input[type='date'],
 .vi-module-settings .vi-form-field textarea,
 .vi-module-settings .vi-form-field select {
   width: 200px;
@@ -458,13 +462,13 @@
 .vi-field-image-placeholder {
   text-align: center;
   font-style: normal;
-  font-size: .9em;
-  opacity: .8;
+  font-size: 0.9em;
+  opacity: 0.8;
   padding-top: 28px;
 }
 
 .vi-field-image-placeholder::before {
-  content: "";
+  content: '';
   font: 400 20px/1 dashicons;
   speak: none;
   -webkit-font-smoothing: antialiased;
@@ -476,7 +480,7 @@
 
 .vi-field-image-loading .vi-field-image-placeholder::before,
 .vi-track-loading .vi-field-image-placeholder::before {
-  content: "\f463";
+  content: '\f463';
   animation: rotation 1.2s infinite linear;
 }
 
@@ -490,7 +494,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  opacity: .9;
+  opacity: 0.9;
   transition: opacity var(--vi-admin-transition-time) ease-in;
   display: none;
   text-align: center;
@@ -542,7 +546,7 @@
 }
 
 .vi-collapsed .toggle-indicator::before {
-  content: "\f140" !important;
+  content: '\f140' !important;
 }
 
 .vi-module-shortcode .code {
@@ -651,7 +655,7 @@ vi-overlays-field .vi-repeatable-field-content {
     margin-top: 10px;
   }
 
-  .vi-footer [class^="vi-col"] {
+  .vi-footer [class^='vi-col'] {
     width: 100%;
   }
 }
@@ -685,7 +689,7 @@ vi-overlays-field .vi-repeatable-field-content {
     display: block;
   }
 
-  .vi-header [class^="vi-col"] {
+  .vi-header [class^='vi-col'] {
     width: 100%;
   }
 }
