@@ -6,12 +6,14 @@ const rename = require('gulp-rename');
 
 const cssSrc = [
 	'assets/css/**/*.css',
-	'!assets/css/vendor/**/*.css'
+	'!assets/css/vendor/**/*.css',
+	'!assets/css/**/*.min.css',
 ];
 
 const jsSrc = [
 	'assets/js/**/*.js',
-	'!assets/js/vendor/**/*.js'
+	'!assets/js/vendor/**/*.js',
+	'!assets/js/**/*.min.js',
 ];
 
 gulp.task('minify-css', () => {

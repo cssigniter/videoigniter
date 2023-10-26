@@ -139,9 +139,9 @@ class VideoIgniter_Settings {
 	}
 
 	public function branding_image_position_render( $args ) {
-		$id      = $args['id'];
+		$id       = $args['id'];
 		$selected = $this->settings[ $id ];
-		$options = array(
+		$options  = array(
 			'top-left'     => __( 'Top Left', 'videoigniter' ),
 			'top-right'    => __( 'Top Right', 'videoigniter' ),
 			'bottom-left'  => __( 'Bottom Left', 'videoigniter' ),
@@ -183,6 +183,14 @@ class VideoIgniter_Settings {
 		<?php
 	}
 
+	public function default_settings() {
+		return array(
+			'accent-color'            => '#ff0000',
+			'branding-image-id'       => '',
+			'branding-image-position' => 'bottom-right',
+		);
+	}
+
 	/**
 	 * Makes sure there are no undefined indexes in the settings array.
 	 * Use before using a setting value. Eliminates the need for isset() before using.
@@ -192,11 +200,7 @@ class VideoIgniter_Settings {
 	 * @return array
 	 */
 	public function validate_settings( $settings ) {
-		$defaults = array(
-			'accent-color'            => '#ff0000',
-			'branding-image-id'       => '',
-			'branding-image-position' => 'bottom-right',
-		);
+		$defaults = $this->default_settings();
 
 		$settings = wp_parse_args( $settings, $defaults );
 

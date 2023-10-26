@@ -1090,7 +1090,13 @@ class VideoIgniter {
 			return array();
 		}
 
-		$settings = get_option( 'videoigniter_settings' );
+		// TODO anastis how do can we make this better, ie centralize
+		// where we store the default settings?
+		$settings = get_option( 'videoigniter_settings', array(
+			'accent-color'            => '#ff0000',
+			'branding-image-id'       => '',
+			'branding-image-position' => 'bottom-right',
+		) );
 		$branding_image_id = $settings['branding-image-id'];
 		$branding_image_src = $branding_image_id ? wp_get_attachment_image_src( $branding_image_id, 'full' )[0] : '';
 
@@ -1300,8 +1306,14 @@ class VideoIgniter {
 			}
 		}
 
-		// TODO anastis move these somewhere else perhaps?
-		$settings = get_option( 'videoigniter_settings' );
+		// TODO anastis how do can we make this better, ie centralize
+		// where we store the default settings?
+		// TODO anastis also, move it somewhere else perhaps?
+		$settings = get_option( 'videoigniter_settings', array(
+			'accent-color'            => '#ff0000',
+			'branding-image-id'       => '',
+			'branding-image-position' => 'bottom-right',
+		) );
 
 		ob_start();
 		// TODO anastis move the style to a better place globally and only load it one time?

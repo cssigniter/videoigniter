@@ -210,7 +210,6 @@ class VideoIgniter_Sanitizer {
 
 		$sanitized['url']        = esc_url_raw( $overlay['url'] );
 		$sanitized['title']      = sanitize_text_field( $overlay['title'] );
-		// TODO vmasto: If you decide against tags, replace with wp_kses( $overlay['text'], 'strip' ) to strip all tags.
 		$sanitized['text']       = wp_kses( $overlay['text'], wp_kses_allowed_html() );
 		$sanitized['image_id']   = self::intval_or_empty( $overlay['image_id'] );
 		$sanitized['start_time'] = self::intval_or_empty( $overlay['start_time'] );

@@ -21,13 +21,16 @@
   max-width: 100%;
   font-family: var(--vi-player-font-family);
   font-size: 13px;
+  font-weight: normal;
+  position: relative;
 }
 
-.vi-player {
-  font-family: var(--vi-player-font-family);
-  font-weight: normal;
-  font-size: 13px;
-  position: relative;
+.vi-player > video {
+  cursor: pointer;
+}
+
+.vi-player.vjs-playing > video {
+  cursor: auto;
 }
 
 /* Control bar */
@@ -89,6 +92,7 @@
 /* Controls */
 .vi-player .vjs-big-play-button {
   opacity: 0;
+  pointer-events: none;
   margin: 0;
   transform: translate(-50%, -50%);
   border: 2px solid rgba(255, 255, 255, .25);
@@ -116,6 +120,7 @@
 .vi-player.vjs-hover-preview-running .vjs-big-play-button {
   opacity: .85;
   display: block;
+  pointer-events: auto;
 }
 
 .vi-player .vjs-control {
