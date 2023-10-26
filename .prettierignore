@@ -1,1 +1,2 @@
-player/build
+*.min.*
+block/build
