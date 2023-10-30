@@ -130,6 +130,7 @@
 
 .vi-brand-module-actions {
   text-align: right;
+  margin-left: auto;
 }
 
 .vi-brand-module-actions p {
@@ -139,6 +140,8 @@
 .vi-header {
   margin: 12px 0 -12px;
   height: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .vi-header-actions {
@@ -148,11 +151,11 @@
 .vi-logo {
   display: inline-block;
   position: relative;
-  top: -2px;
+  line-height: 0;
 }
 
 .vi-logo img {
-  height: 44px;
+  height: 26px;
 }
 
 .vi-note {
@@ -681,8 +684,8 @@ vi-overlays-field .vi-repeatable-field-content {
     text-align: center;
   }
 
-  .vi-header .vi-brand-module-actions {
-    margin-top: 10px;
+  .vi-logo img {
+    height: 16px;
   }
 
   .vi-header .vi-btn {

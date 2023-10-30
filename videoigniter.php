@@ -515,24 +515,20 @@ class VideoIgniter {
 	protected function metabox_tracks_header() {
 		?>
 		<div class="vi-header vi-brand-module">
-			<div class="vi-row">
-				<div class="vi-col-left">
-					<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard&utm_medium=link&utm_content=videoigniter&utm_campaign=logo" target="_blank" class="vi-logo">
-						<!-- TODO: replace with logo. -->
-						<span style="color:white;font-size:28px;">VideoIgniter Logo</span>
+			<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard&utm_medium=link&utm_content=videoigniter&utm_campaign=logo" target="_blank" class="vi-logo">
+				<img
+					src="<?php echo esc_url( $this->plugin_url() . 'assets/images/videoigniter-logo.svg' ); ?>"
+					alt="<?php esc_attr_e( 'VideoIgniter Logo', 'audioigniter' ); ?>"
+				>
+			</a>
+
+			<?php if ( apply_filters( 'videoigniter_metabox_tracks_show_upgrade_button', true ) ) : ?>
+				<div class="vi-brand-module-actions">
+					<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard&utm_medium=link&utm_content=videoigniter&utm_campaign=upgrade-pro" class="vi-btn vi-btn-green" target="_blank">
+						<?php esc_html_e( 'Upgrade to Pro', 'videoigniter' ); ?>
 					</a>
 				</div>
-
-				<?php if ( apply_filters( 'videoigniter_metabox_tracks_show_upgrade_button', true ) ) : ?>
-					<div class="vi-col-right">
-						<div class="vi-brand-module-actions">
-							<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard&utm_medium=link&utm_content=videoigniter&utm_campaign=upgrade-pro" class="vi-btn vi-btn-green" target="_blank">
-								<?php esc_html_e( 'Upgrade to Pro', 'videoigniter' ); ?>
-							</a>
-						</div>
-					</div>
-				<?php endif; ?>
-			</div>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
