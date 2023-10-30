@@ -137,7 +137,6 @@ function chaptersTimeline() {
   };
 
   const clearChapterTimelineHighlight = () => {
-    console.log('clear');
     const progressControl = player
       .getChild('controlBar')
       .getChild('progressControl');

@@ -652,7 +652,6 @@ class VideoIgniter {
 								</div>
 							</a>
 
-							<!-- TODO fix the value here is 0 for some reason when there's no cover image -->
 							<input
 								type="hidden"
 								id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-cover_id"
@@ -1066,8 +1065,7 @@ class VideoIgniter {
 	}
 
 	public function register_image_sizes() {
-		// TODO: Check if this size is enough
-		// TODO: potentially add a smaller size for the thumbnails
+		// TODO: potentially add a smaller size for the thumbnails ? (TBD)
 		add_image_size( 'videoigniter_cover', 1920, 1080, true );
 	}
 
@@ -1231,57 +1229,10 @@ class VideoIgniter {
 
 		foreach ( $tracks as $track ) {
 			$track            = wp_parse_args( $track, self::get_default_track_values() );
-			// TODO anastis cover id has been moved to pro, do we need to do anything different here?
 			$track_poster_url = (string) wp_get_attachment_image_url( (int) $track['cover_id'], 'videoigniter_cover' );
 
-			$text_tracks = array();
-
-			// TODO anastis chapters url has been moved to pro, do we need to do anything different here?
-			if ( ! empty( $track['chapters_url'] ) ) {
-				$text_tracks[] = array(
-					'kind'    => 'chapters',
-					'label'   => '',
-					'src'     => $track['chapters_url'],
-					'default' => true,
-				);
-			}
-
-			// TODO anastis subtitles have been moved to pro, do we need to do anything different here?
-			if ( ! empty( $track['subtitles'] ) ) {
-				$subtitles = $track['subtitles'];
-				foreach ( $subtitles as $subtitle ) {
-					$subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
-					// TODO anastis do we need to convert to bool here or something, (it doesn't work)
-					$is_caption = $subtitle['caption'];
-
-					$text_tracks[] = array(
-						'kind'    => $is_caption ? 'captions' : 'subtitles',
-						'label'   => $subtitle['label'],
-						'src'     => $subtitle['url'],
-						'srclang' => $subtitle['label'],
-					);
-				}
-			}
-
-			// TODO anastis overlays have been moved to pro, do we need to do anything different here?
-			$overlay_array = array();
-
-			if ( ! empty( $track['overlays'] ) ) {
-				$overlays = $track['overlays'];
-				foreach ( $overlays as $overlay ) {
-					$overlay = wp_parse_args( $overlay, self::get_default_track_overlay_values() );
-
-					$overlay_array[] = array(
-						'title'     => $overlay['title'],
-						'text'      => $overlay['text'],
-						'url'       => $overlay['url'],
-						'startTime' => $overlay['start_time'],
-						'endTime'   => $overlay['end_time'],
-						'imageUrl'  => (string) wp_get_attachment_image_url( (int) $overlay['image_id'], 'thumbnail' ),
-						'position'  => $overlay['position'],
-					);
-				}
-			}
+			$text_tracks = apply_filters( 'videoigniter_playlist_track_text_tracks', array(), $track );
+			$overlays = apply_filters( 'videoigniter_playlist_track_overlays', array(), $track );
 
 			$playlist[] = array(
 				'sources'     => array(
@@ -1295,7 +1246,7 @@ class VideoIgniter {
 				'name'        => $track['title'],
 				'description' => $track['description'],
 				'textTracks'  => $text_tracks,
-				'overlays'    => $overlay_array,
+				'overlays'    => $overlays,
 			);
 		}
 
