@@ -56,6 +56,14 @@ class VideoIgniter {
 	public $sanitizer = null;
 
 	/**
+	 * Settings page instance.
+	 *
+	 * @var VideoIgniter_Settings
+	 * @since NewVersion
+	 */
+	public $settings_page = null;
+
+	/**
 	 * The URL directory path (with trailing slash) of the main plugin file.
 	 *
 	 * @var string
@@ -157,6 +165,10 @@ class VideoIgniter {
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
 
+		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-settings-page.php';
+		$this->settings_page = new VideoIgniter_Settings();
+
+
 		require_once 'block/block.php';
 
 		do_action( 'videoigniter_init' );
@@ -172,8 +184,6 @@ class VideoIgniter {
 		if ( ! is_admin() ) {
 			return;
 		}
-
-		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-settings-page.php';
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
@@ -311,7 +321,7 @@ class VideoIgniter {
 	 *
 	 * @param int $id Post ID.
 	 *
-	 *@since NewVersion
+	 * @since NewVersion
 	 *
 	 */
 	public function enqueue_playlist_scripts( int $id ) {
@@ -768,8 +778,7 @@ class VideoIgniter {
 	/**
 	 * Echoes the Settings metabox markup.
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @param WP_Post $object
 	 * @param array $box
@@ -896,8 +905,7 @@ class VideoIgniter {
 	/**
 	 * Returns the available playlist layouts
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @return array
 	 */
@@ -932,8 +940,7 @@ class VideoIgniter {
 	/**
 	 * Returns the available playlist skip options
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @return array
 	 */
@@ -963,8 +970,7 @@ class VideoIgniter {
 	/**
 	 * Returns the available overlay positions
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @return array
 	 */
@@ -1075,7 +1081,10 @@ class VideoIgniter {
 		) );
 
 		foreach ( $widgets as $class => $file ) {
-			require_once( $file );
+			if ( ! is_readable( $file ) ) {
+				continue;
+			}
+			require_once $file;
 			register_widget( $class );
 		}
 	}
@@ -1087,8 +1096,7 @@ class VideoIgniter {
 	/**
 	 * Checks whether passed post object or ID is an VideoIgniter playlist.
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @param int|WP_Post $post Post ID or post object.
 	 *
@@ -1097,7 +1105,7 @@ class VideoIgniter {
 	public function is_playlist( $post ) {
 		$post = get_post( $post );
 
-		if ( is_wp_error( $post ) || empty( $post ) || is_null( $post ) || $post->post_type !== $this->post_type ) {
+		if ( empty( $post ) || is_wp_error( $post ) || $post->post_type !== $this->post_type ) {
 			return false;
 		}
 
@@ -1107,8 +1115,7 @@ class VideoIgniter {
 	/**
 	 * Returns a data attributes array for the given playlist.
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @param int $post_id Post ID.
 	 *
@@ -1121,22 +1128,16 @@ class VideoIgniter {
 			return array();
 		}
 
-		// TODO anastis how do can we make this better, ie centralize
-		// where we store the default settings?
-		$settings = get_option( 'videoigniter_settings', array(
-			'accent-color'            => '#ff0000',
-			'branding-image-id'       => '',
-			'branding-image-position' => 'bottom-right',
-		) );
-		$branding_image_id = $settings['branding-image-id'];
-		$branding_image_src = $branding_image_id ? wp_get_attachment_image_src( $branding_image_id, 'full' )[0] : '';
+		$settings           = $this->settings_page->get_settings();
+		$branding_image_id  = $settings['branding-image-id'];
+		$branding_image_src = $branding_image_id ? wp_get_attachment_image_url( $branding_image_id, 'full' ) : '';
 
 		$attrs = array(
 			'data-playlist-layout'         => $this->get_post_meta( $post_id, '_videoigniter_playlist_layout', 'right' ),
 			'data-playlist'                => $this->get_playlist_json( $post_id ),
 			'data-show-fullscreen-toggle'  => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', 1 ) ),
 			'data-show-playback-speed'     => $this->convert_bool_string( $this->get_post_meta( $post_id, '_videoigniter_show_playback_speed', 0 ) ),
-			'data-volume'                  => intval( $this->get_post_meta( $post_id, '_videoigniter_volume', 100 ) ),
+			'data-volume'                  => (int) $this->get_post_meta( $post_id, '_videoigniter_volume', 100 ),
 			'data-branding-image'          => esc_url( $branding_image_src ),
 			'data-branding-image-position' => esc_attr( $settings['branding-image-position'] ),
 		);
@@ -1290,21 +1291,17 @@ class VideoIgniter {
 			}
 		}
 
-		// TODO anastis how do can we make this better, ie centralize
-		// where we store the default settings?
+		// TODO anastis how do can we make this better, ie centralize where we store the default settings?
+		// TODO: VideoIgniter_Settings->default_settings()
 		// TODO anastis also, move it somewhere else perhaps?
-		$settings = get_option( 'videoigniter_settings', array(
-			'accent-color'            => '#ff0000',
-			'branding-image-id'       => '',
-			'branding-image-position' => 'bottom-right',
-		) );
+		$settings = $this->settings_page->get_settings();
 
 		ob_start();
 		// TODO anastis move the style to a better place globally and only load it one time?
 		?>
 		<style>
 			.vi-player-wrap {
-				--vi-player-color-primary: <?php echo $settings['accent-color'] ?>;
+				--vi-player-color-primary: <?php echo $settings['accent-color']; ?>;
 			}
 		</style>
 		<video
@@ -1354,8 +1351,7 @@ class VideoIgniter {
 	/**
 	 * Returns the output of the [vi_playlist] shortcode.
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @param array  $atts    The shortcode attributes.
 	 * @param string $content Content, when used with a shortcode closing tag.
@@ -1533,7 +1529,8 @@ class VideoIgniter {
  *
  * Returns the working instance of VideoIgniter. No need for globals.
  *
- * @since  NewVersion
+ * @since NewVersion
+ *
  * @return VideoIgniter
  */
 function VideoIgniter() {

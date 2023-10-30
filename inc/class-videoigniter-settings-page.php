@@ -10,7 +10,7 @@ class VideoIgniter_Settings {
 	}
 
 	public function init() {
-		$this->settings = get_option( 'videoigniter_settings' );
+		$this->settings = get_option( 'videoigniter_settings', array() );
 		$this->settings = $this->validate_settings( $this->settings );
 	}
 
@@ -25,6 +25,7 @@ class VideoIgniter_Settings {
 	 *
 	 * @return int|string Integer value (including zero), or an empty string otherwise.
 	 */
+	// TODO anastis: Remove this in favour of VideoIgniter_Sanitizer::intval_or_empty ?
 	public static function intval_or_empty( $input ) {
 		if ( is_null( $input ) || false === $input || '' === $input ) {
 			return '';
@@ -106,8 +107,10 @@ class VideoIgniter_Settings {
 	}
 
 	public function branding_image_render( $args ) {
+		// TODO anastis: what is happening here?
 		$id        = $args['id'];
 		$image_id  = $this->settings[ $id ];
+		// TODO anastis: simplif this.
 		$image_src = $image_id ? wp_get_attachment_image_src( $image_id, 'full' )[0] : '';
 
 		$field_classes = array( 'vi-settings-image-upload' );
@@ -141,6 +144,7 @@ class VideoIgniter_Settings {
 	public function branding_image_position_render( $args ) {
 		$id       = $args['id'];
 		$selected = $this->settings[ $id ];
+		// TODO anastis: Break this into a defaults function. Use it to sanitize branding-image-position
 		$options  = array(
 			'top-left'     => __( 'Top Left', 'videoigniter' ),
 			'top-right'    => __( 'Top Right', 'videoigniter' ),
@@ -191,6 +195,10 @@ class VideoIgniter_Settings {
 		);
 	}
 
+	public function get_settings() {
+		return $this->validate_settings( $this->settings );
+	}
+
 	/**
 	 * Makes sure there are no undefined indexes in the settings array.
 	 * Use before using a setting value. Eliminates the need for isset() before using.
@@ -207,5 +215,3 @@ class VideoIgniter_Settings {
 		return $settings;
 	}
 }
-
-new VideoIgniter_Settings();

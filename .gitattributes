@@ -1,6 +1,7 @@
 ### Make sure to also update .distignore when updating this file ###
 
 # Project-specific
+*.scss                      export-ignore
 block/src                   export-ignore
 README.md                   export-ignore
 
@@ -26,6 +27,7 @@ README.md                   export-ignore
 .prettierrc                 export-ignore
 .wordpress-org              export-ignore
 ignitefile.js               export-ignore
+ignitefile.user.js          export-ignore
 node_modules                export-ignore
 package.json                export-ignore
 package-lock.json           export-ignore

@@ -14,8 +14,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes the playlist layout.
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @uses VideoIgniter->get_playlist_layouts()
 	 *
@@ -35,8 +34,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes playlist skipping options.
 	 *
-	 * @version NewVersion
-	 * @since   NewVersion
+	 * @since NewVersion
 	 *
 	 * @uses VideoIgniter->get_playlist_skip_options()
 	 *
@@ -157,9 +155,7 @@ class VideoIgniter_Sanitizer {
 		$sanitized['url']     = esc_url_raw( $subtitle['url'] );
 		$sanitized['srclang'] = sanitize_text_field( $subtitle['srclang'] );
 		$sanitized['label']   = sanitize_text_field( $subtitle['label'] );
-
-		// TODO anastis how to sanitize this? it's a checkbox
-		$sanitized['caption'] = $subtitle['caption'];
+		$sanitized['caption'] = (int) ( isset( $subtitle['caption'] ) && '1' === $subtitle['caption'] );
 
 		$tmp = array_filter( $sanitized );
 		if ( empty( $tmp ) ) {

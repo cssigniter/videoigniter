@@ -27,12 +27,14 @@ README.md
 .prettierrc
 .wordpress-org
 ignitefile.js
+ignitefile.user.js
 node_modules
 package.json
 package-lock.json
 webpack.config.js
 webpack.parts.js
 yarn.lock
+gulpfile.js
 
 # WP.org
 .wordpress-org

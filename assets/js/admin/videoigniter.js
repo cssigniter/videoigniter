@@ -564,9 +564,7 @@ class VideoIgniterRepeatableFields extends HTMLElement {
       ].filter(input => input !== this.input);
 
       return [...inputs].reduce((acc, input) => {
-        if (input.type === 'checkbox' && input.checked) {
-          acc[input.getAttribute('name')] = '1';
-        } else {
+        if (input.type !== 'checkbox' || (input.type === 'checkbox' && input.checked) ) {
           acc[input.getAttribute('name')] = input.value;
         }
 
@@ -644,12 +642,11 @@ class VideoIgniterRepeatableField extends HTMLElement {
       const value = this.data[input.getAttribute('name')];
 
       if (value != null) {
-        if (input.type === 'checkbox' && value === '1') {
-          input.checked = 'true';
-          return;
+        if (input.type === 'checkbox') {
+          input.checked = value == input.value;
+        } else {
+          input.value = value;
         }
-
-        input.value = value;
       }
     });
   }
