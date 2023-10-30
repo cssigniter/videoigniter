@@ -4,6 +4,9 @@ Video player for WordPress
 ## Development
 Development must be made in short-lived branches. When a feature is complete, its branch should be merged into `main` and get deleted. The `main` branch should remain stable at all times.
 
+TODO vmasto: (free & pro) Add .nvmrc file
+TODO vmasto: (free & pro) Detail how to dev/build js & css. Typical ignite-cli invocation doesn't seem to work (ignitefile.js is present), and a gulpfile is also present, so... how?
+
 Install [nvm](https://github.com/nvm-sh/nvm) and [yarn](https://yarnpkg.com/getting-started/install) on your machine.
 
 While developing, inside the plugin folder run:

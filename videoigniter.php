@@ -100,7 +100,7 @@ class VideoIgniter {
 	 * @see VideoIgniter()
 	 * @return VideoIgniter - Single instance.
 	 */
-	public static function instance() {
+	public static function instance(): VideoIgniter {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
@@ -313,6 +313,12 @@ class VideoIgniter {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_style( 'videoigniter' );
+
+		$settings = $this->settings_page->get_settings();
+		if ( ! empty( $settings['accent-color'] ) ) {
+			wp_add_inline_style( 'videoigniter', sprintf( '.vi-player-wrap { --vi-player-color-primary: %s; }', $settings['accent-color'] ) );
+		}
+
 		// VideoIgniter main script loads in enqueue_playlist_scripts
 	}
 
@@ -1129,8 +1135,7 @@ class VideoIgniter {
 		}
 
 		$settings           = $this->settings_page->get_settings();
-		$branding_image_id  = $settings['branding-image-id'];
-		$branding_image_src = $branding_image_id ? wp_get_attachment_image_url( $branding_image_id, 'full' ) : '';
+		$branding_image_src = $settings['branding-image-id'] ? wp_get_attachment_image_url( $settings['branding-image-id'], 'full' ) : '';
 
 		$attrs = array(
 			'data-playlist-layout'         => $this->get_post_meta( $post_id, '_videoigniter_playlist_layout', 'right' ),
@@ -1291,19 +1296,8 @@ class VideoIgniter {
 			}
 		}
 
-		// TODO anastis how do can we make this better, ie centralize where we store the default settings?
-		// TODO: VideoIgniter_Settings->default_settings()
-		// TODO anastis also, move it somewhere else perhaps?
-		$settings = $this->settings_page->get_settings();
-
 		ob_start();
-		// TODO anastis move the style to a better place globally and only load it one time?
 		?>
-		<style>
-			.vi-player-wrap {
-				--vi-player-color-primary: <?php echo $settings['accent-color']; ?>;
-			}
-		</style>
 		<video
 			class="video-js vjs-fluid vi-player"
 			controls
@@ -1318,22 +1312,19 @@ class VideoIgniter {
 				type="<?php echo esc_attr( $this->get_video_mime_type_from_url( $main_track['track_url'] ) ); ?>"
 			/>
 
-			<?php
-				// Only render tracks if we're not in playlist mode.
-				if ( count ( $tracks ) === 1 ) :
-			?>
+			<?php // Only render tracks if we're not in playlist mode. ?>
+			<?php if ( count( $tracks ) === 1 ) : ?>
 				<?php if ( ! empty( $main_track['chapters_url'] ) ) : ?>
 					<track kind="chapters" src="<?php echo esc_url( $main_track['chapters_url'] ); ?>" />
 				<?php endif; ?>
 
 				<?php foreach ( $subtitles as $subtitle ) : ?>
 					<?php
-						$subtitle = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
-						// TODO anastis do we need to convert to bool here or something, (it doesn't work)
-						$is_caption = $subtitle['caption'];
+						$subtitle   = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
+						$is_caption = ! empty( $subtitle['caption'] );
 					?>
 					<track
-						kind="<?php echo $is_caption ? 'captions' : 'subtitles'; ?>"
+						kind="<?php echo esc_attr( $is_caption ? 'captions' : 'subtitles' ); ?>"
 						src="<?php echo esc_url( $subtitle['url'] ); ?>"
 						srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
 						label="<?php echo esc_attr( $subtitle['label'] ); ?>"
@@ -1343,9 +1334,7 @@ class VideoIgniter {
 		</video>
 		<?php
 
-		$output = ob_get_clean();
-
-		return $output;
+		return ob_get_clean();
 	}
 
 	/**
@@ -1393,7 +1382,8 @@ class VideoIgniter {
 
 		$this->enqueue_playlist_scripts( $id );
 
-		$output = sprintf( '<div id="videoigniter-%s" class="%s" %s>%s</div>',
+		$output = sprintf(
+			'<div id="videoigniter-%s" class="%s" %s>%s</div>',
 			esc_attr( $id ),
 			esc_attr( implode( ' ', $player_classes ) ),
 			$data,
@@ -1401,8 +1391,15 @@ class VideoIgniter {
 		);
 
 		if ( count( $tracks ) > 1 ) {
-			// TODO maybe there's a cleaner way to add all these wrapper divs when we have a playlist and not a single video?
-			$output = sprintf( '<div id="videoigniter-%s" class="%s" %s><div class="vi-playlist vi-playlist-layout-%s"><div class="vi-playlist-main">%s</div><div class="vi-playlist-nav"><div class="vjs-playlist"></div></div></div></div>',
+			$output = sprintf(
+				'<div id="videoigniter-%s" class="%s" %s>
+							<div class="vi-playlist vi-playlist-layout-%s">
+								<div class="vi-playlist-main">%s</div>
+								<div class="vi-playlist-nav">
+									<div class="vjs-playlist"></div>
+								</div>
+							</div>
+						</div>',
 				esc_attr( $id ),
 				esc_attr( implode( ' ', $player_classes ) ),
 				$data,

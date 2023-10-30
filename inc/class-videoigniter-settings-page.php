@@ -18,26 +18,6 @@ class VideoIgniter_Settings {
 		add_submenu_page( 'edit.php?post_type=vi_playlist', esc_html__( 'VideoIgniter Settings', 'videoigniter' ), esc_html__( 'Settings', 'videoigniter' ), 'manage_options', 'vi_settings', array( $this, 'options_page' ) );
 	}
 
-	/**
-	 * Sanitizes integer input while differentiating zero from empty string.
-	 *
-	 * @param mixed $input Input value to sanitize.
-	 *
-	 * @return int|string Integer value (including zero), or an empty string otherwise.
-	 */
-	// TODO anastis: Remove this in favour of VideoIgniter_Sanitizer::intval_or_empty ?
-	public static function intval_or_empty( $input ) {
-		if ( is_null( $input ) || false === $input || '' === $input ) {
-			return '';
-		}
-
-		if ( 0 == $input ) { // WPCS: loose comparison ok.
-			return 0;
-		}
-
-		return intval( $input );
-	}
-
 	public function settings_sanitize( $settings ) {
 		$new_settings = array();
 
