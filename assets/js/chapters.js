@@ -46,9 +46,10 @@ function chaptersTimeline() {
    * @returns {*[]}
    */
   const getChapters = () => {
-    const chapters = [].filter.call(player.textTracks(), textTrack => {
-      return textTrack.kind === 'chapters';
-    });
+    const [chapters] =
+      Array.from(player.textTracks()).filter(textTrack => {
+        return textTrack.kind === 'chapters';
+      }) ?? [];
 
     return chapters;
   };
@@ -59,23 +60,16 @@ function chaptersTimeline() {
    * @returns {TextTrackCue|null}
    */
   const findChapter = time => {
-    const chapters = [].filter.call(player.textTracks(), textTrack => {
-      return textTrack.kind === 'chapters';
-    });
-    const cues = chapters?.[0]?.cues;
+    const chapters = getChapters();
+    const cues = chapters?.cues;
 
     if (!cues) {
       return;
     }
 
-    for (let i = 0; i < cues.length; i++) {
-      const cue = cues[i];
-      if (time >= cue.startTime && time <= cue.endTime) {
-        return cue;
-      }
-    }
-
-    return null;
+    return Array.from(cues).find(
+      cue => time >= cue.startTime && time <= cue.endTime,
+    );
   };
 
   const handleTooltipUpdate = () => {
@@ -120,7 +114,7 @@ function chaptersTimeline() {
     const seconds = seekBarPoint * player.duration();
 
     const chapters = getChapters();
-    const cues = chapters?.[0]?.cues;
+    const cues = chapters?.cues;
     const chapterTimelines = progressControl
       .el()
       .querySelectorAll('.vjs-chapter-timeline');
@@ -129,7 +123,7 @@ function chaptersTimeline() {
       return;
     }
 
-    [].forEach.call(cues, (cue, index) => {
+    Array.from(cues).forEach((cue, index) => {
       const chapterTimeline = chapterTimelines[index];
 
       if (chapterTimeline) {
@@ -143,6 +137,7 @@ function chaptersTimeline() {
   };
 
   const clearChapterTimelineHighlight = () => {
+    console.log('clear');
     const progressControl = player
       .getChild('controlBar')
       .getChild('progressControl');
@@ -160,7 +155,7 @@ function chaptersTimeline() {
   const updateChapterTimelineProgress = () => {
     const currentTime = player.currentTime();
     const chapters = getChapters();
-    const cues = chapters?.[0]?.cues;
+    const cues = chapters?.cues;
 
     if (!cues) {
       return;
@@ -173,7 +168,7 @@ function chaptersTimeline() {
       .el()
       .querySelectorAll('.vjs-chapter-timeline');
 
-    [].forEach.call(cues, (cue, index) => {
+    Array.from(cues).forEach((cue, index) => {
       const chapterTimeline = chapterTimelines[index];
 
       if (chapterTimeline) {
@@ -200,7 +195,7 @@ function chaptersTimeline() {
    */
   const renderChapterTimelines = () => {
     const chapters = getChapters();
-    const cues = chapters?.[0]?.cues;
+    const cues = chapters?.cues;
 
     const seekBar = player
       .getChild('controlBar')
@@ -221,7 +216,7 @@ function chaptersTimeline() {
 
     const duration = player.duration();
 
-    [].forEach.call(cues, cue => {
+    Array.from(cues).forEach(cue => {
       const startTimePercentage = (cue.startTime / duration) * 100;
       const endTimePercentage = (cue.endTime / duration) * 100;
       const chapterTimeline = new ChapterTimeline(player, {
@@ -235,18 +230,41 @@ function chaptersTimeline() {
     handleTooltipUpdate();
   };
 
-  player.on('loadedmetadata', () => {
-    // TODO: Address this, we should detect when text tracks are available.
-    setTimeout(() => {
-      renderChapterTimelines();
-    }, 500);
+  /**
+   * Polls for chapters tracks.
+   * @returns {Promise<Array>}
+   */
+  const waitForChaptersTextTrack = () => {
+    return new Promise(resolve => {
+      let attempts = 0;
+      const maxAttempts = 12;
 
-    const progressControl = player
-      .getChild('controlBar')
-      .getChild('progressControl');
-    progressControl.on('mousemove', chapterTimelineHighlight);
-    progressControl.on('touchmove', chapterTimelineHighlight);
-    progressControl.on('mouseout', clearChapterTimelineHighlight);
+      const check = () => {
+        const chapters = getChapters();
+        if (chapters) {
+          resolve(chapters);
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(check, 250);
+        }
+      };
+
+      check();
+    });
+  };
+
+  player.on('loadedmetadata', async () => {
+    try {
+      await waitForChaptersTextTrack();
+      renderChapterTimelines();
+
+      const progressControl = player
+        .getChild('controlBar')
+        .getChild('progressControl');
+      progressControl.on('mousemove', chapterTimelineHighlight);
+      progressControl.on('touchmove', chapterTimelineHighlight);
+      progressControl.on('mouseleave', clearChapterTimelineHighlight);
+    } catch {}
   });
   player.on('timeupdate', updateChapterTimelineProgress);
 
@@ -259,7 +277,7 @@ function chaptersTimeline() {
       .getChild('progressControl');
     progressControl.off('mousemove', chapterTimelineHighlight);
     progressControl.off('touchmove', chapterTimelineHighlight);
-    progressControl.off('mouseout', clearChapterTimelineHighlight);
+    progressControl.off('mouseleave', clearChapterTimelineHighlight);
   });
 }
 

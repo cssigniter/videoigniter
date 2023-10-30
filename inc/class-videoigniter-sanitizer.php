@@ -101,6 +101,7 @@ class VideoIgniter_Sanitizer {
 
 		$sanitized_track = array();
 
+		$sanitized_track['cover_id']     = self::intval_or_empty( $track['cover_id'] );
 		$sanitized_track['title']        = sanitize_text_field( $track['title'] );
 		$sanitized_track['description']  = sanitize_text_field( $track['description'] );
 		$sanitized_track['track_url']    = esc_url_raw( $track['track_url'] );

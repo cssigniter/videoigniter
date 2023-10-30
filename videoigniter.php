@@ -603,6 +603,10 @@ class VideoIgniter {
 		$title       = $track['title'];
 		$description = $track['description'];
 		$track_url   = $track['track_url'];
+		$cover_id    = $track['cover_id'];
+
+		$cover_url  = (string) wp_get_attachment_image_url( (int) $cover_id, 'thumbnail' );
+		$cover_data = $cover_url ? wp_prepare_attachment_for_js( (int) $cover_id ) : '';
 
 		$uid = uniqid();
 
@@ -628,6 +632,39 @@ class VideoIgniter {
 
 				<div class="vi-field-track-fields">
 					<?php do_action( 'videoigniter_metabox_tracks_repeatable_track_fields_start', $track, $uid ); ?>
+
+					<vi-image-field>
+						<div class="vi-field-image">
+							<a href="#" class="vi-field-image-upload">
+								<span class="vi-field-image-upload-dismiss">
+									<span class="screen-reader-text">
+										<?php esc_html_e( 'Remove Cover Image', 'videoigniter' ); ?>
+									</span>
+									<span class="dashicons dashicons-no-alt"></span>
+								</span>
+
+								<?php if ( ! empty( $cover_url ) ) : ?>
+									<img src="<?php echo esc_url( $cover_url ); ?>" alt="<?php echo esc_attr( $cover_data['alt'] ); ?>">
+								<?php else : ?>
+									<img src="#" alt="">
+								<?php endif; ?>
+
+								<div class="vi-field-image-placeholder">
+									<span class="vi-field-image-placeholder-label">
+										<?php esc_html_e( 'Upload Poster', 'videoigniter' ); ?>
+									</span>
+								</div>
+							</a>
+
+							<!-- TODO fix the value here is 0 for some reason when there's no cover image -->
+							<input
+								type="hidden"
+								id="vi_playlist_tracks-<?php echo esc_attr( $uid ); ?>-cover_id"
+								name="vi_playlist_tracks[<?php echo esc_attr( $uid ); ?>][cover_id]"
+								value="<?php echo esc_attr( $cover_id ); ?>"
+							/>
+						</div>
+					</vi-image-field>
 
 					<div class="vi-field-split">
 						<div class="vi-form-field">
@@ -1001,7 +1038,7 @@ class VideoIgniter {
 
 	public static function get_default_track_values() {
 		return apply_filters( 'videoigniter_default_track_values', array(
-			// Remove cover_id, overlays, and subtitles as they're pro features
+			// Remove overlays, and subtitles as they're pro features
 			'cover_id'    => '',
 			'title'       => '',
 			'description' => '',
