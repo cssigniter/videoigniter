@@ -161,6 +161,7 @@ class VideoIgniter {
 	protected function init() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_action( 'init', array( $this, 'register_scripts' ) );
+		add_action( 'wp_footer', array( $this, 'enqueue_footer_scripts' ) );
 		add_action( 'init', array( $this, 'register_image_sizes' ) );
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
@@ -261,6 +262,7 @@ class VideoIgniter {
 		wp_register_script( 'videojs-chapters', untrailingslashit( $this->plugin_url() ) . "/assets/js/chapters{$suffix}.js", array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videojs-overlays', untrailingslashit( $this->plugin_url() ) . "/assets/js/overlays{$suffix}.js", array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . "/assets/js/scripts{$suffix}.js", array(
+			// Additional dependencies are being added dynamically via add_videoigniter_script_dependencies()
 			'videojs',
 		), $this->version, true );
 
@@ -323,6 +325,72 @@ class VideoIgniter {
 	}
 
 	/**
+	 * Enqueues frontend footer scripts and styles.
+	 *
+	 * @since NewVersion
+	 */
+	public function enqueue_footer_scripts() {
+		wp_enqueue_script( 'videoigniter' );
+	}
+
+	/**
+	 * Appends script dependencies on the 'videoigniter' script according to a playlist's requirements.
+	 *
+	 * Dependencies must only be added, as different playlists may have different requirements on the same page.
+	 *
+	 * @param int $post_id Post/playlist ID.
+	 *
+	 * @since NewVersion
+	 */
+	public function add_videoigniter_script_dependencies( int $post_id ) {
+		// TODO should we move overlays, chapters script loading to PRO as they're pro features?
+
+		$videoigniter = wp_scripts()->registered['videoigniter'];
+
+		if ( ! $this->is_playlist( $post_id ) ) {
+			return;
+		}
+
+		$tracks = $this->get_post_meta( $post_id, '_videoigniter_tracks', array() );
+		if ( empty( $tracks ) ) {
+			$tracks = array();
+		}
+
+		if ( count( $tracks ) > 1 ) {
+			$videoigniter->deps[] = 'videojs-playlist';
+			$videoigniter->deps[] = 'videojs-playlist-ui';
+		}
+
+		foreach ( $tracks as $track ) {
+			$track     = wp_parse_args( $track, self::get_default_track_values() );
+			$track_url = $track['track_url'];
+			$overlays  = $track['overlays'];
+
+			if ( ! empty( $track['chapters_url'] ) ) {
+				$videoigniter->deps[] = 'videojs-chapters';
+			}
+
+			if ( $this->is_youtube( $track_url ) ) {
+				$videoigniter->deps[] = 'videojs-youtube';
+			}
+
+			if ( $this->is_vimeo( $track_url ) ) {
+				$videoigniter->deps[] = 'videojs-vimeo';
+			}
+
+			if ( $this->is_streaming( $track_url ) ) {
+				$videoigniter->deps[] = 'videojs-http-streaming';
+			}
+
+			if ( ! empty( $overlays ) ) {
+				$videoigniter->deps[] = 'videojs-overlays';
+			}
+		}
+
+		$videoigniter->deps = array_unique( $videoigniter->deps );
+	}
+
+	/**
 	 * Enqueues frontend scripts based on the playlist's active features.
 	 *
 	 * @param int $id Post ID.
@@ -342,7 +410,7 @@ class VideoIgniter {
 			$tracks = array();
 		}
 
-		if ( count ( $tracks ) > 1 ) {
+		if ( count( $tracks ) > 1 ) {
 			wp_enqueue_script( 'videojs-playlist' );
 			wp_enqueue_script( 'videojs-playlist-ui' );
 		}
@@ -1365,6 +1433,8 @@ class VideoIgniter {
 			return '';
 		}
 
+		$this->add_videoigniter_script_dependencies( $id );
+
 		$post = get_post( $id );
 
 		$params = apply_filters( 'videoigniter_shortcode_data_attributes_array', $this->get_playlist_data_attributes_array( $id ), $id, $post );
@@ -1383,8 +1453,6 @@ class VideoIgniter {
 		$track_markup    = $this->render_main_video_track( $id );
 		$tracks          = $this->get_post_meta( $id, '_videoigniter_tracks', array() );
 		$playlist_layout = $this->get_post_meta( $id, '_videoigniter_playlist_layout', 'right' );
-
-		$this->enqueue_playlist_scripts( $id );
 
 		$output = sprintf(
 			'<div id="videoigniter-%s" class="%s" %s>%s</div>',
