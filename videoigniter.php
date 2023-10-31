@@ -1166,10 +1166,9 @@ class VideoIgniter {
 	public function is_streaming( $url ) {
 		$streaming_extensions = array( 'm3u8', 'm3u', 'ts', 'mpd' );
 
-		$file_ext = pathinfo( parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
-		$file_ext = strtolower( $file_ext );
+		$file_ext = $this->get_url_extension( $url );
 
-		return in_array( $file_ext, $streaming_extensions );
+		return in_array( $file_ext, $streaming_extensions, true );
 	}
 
 	// TODO: Add php doc and review
@@ -1207,15 +1206,21 @@ class VideoIgniter {
 			return 'video/vimeo';
 		}
 
-		$parsed_url = wp_parse_url( $url );
-		$pathinfo   = pathinfo( $parsed_url['path'] );
-		$file_ext   = strtolower( $pathinfo['extension'] );
+		$file_ext = $this->get_url_extension( $url );
 
 		if ( array_key_exists( $file_ext, $mime_types ) ) {
 			return $mime_types[ $file_ext ];
 		}
 
 		return '';
+	}
+
+	public function get_url_extension( $url ) {
+		$parsed_url = wp_parse_url( $url );
+		$pathinfo   = ! empty( $parsed_url['path'] ) ? pathinfo( $parsed_url['path'] ) : array();
+		$file_ext   = ! empty( $pathinfo['extension'] ) ? strtolower( $pathinfo['extension'] ) : '';
+
+		return $file_ext;
 	}
 
 	// TODO: Add php doc and review
