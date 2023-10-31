@@ -5,7 +5,7 @@
  * Description: VideoIgniter lets you create video playlists and embed them in your WordPress posts, pages or custom post types and serve your video content in style!
  * Author: The CSSIgniter Team
  * Author URI: https://www.cssigniter.com
- * Version: 0.0.1
+ * Version: 0.1.0
  * Text Domain: videoigniter
  * Domain Path: languages
  *
@@ -602,7 +602,7 @@ class VideoIgniter {
 			<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard&utm_medium=link&utm_content=videoigniter&utm_campaign=logo" target="_blank" class="vi-logo">
 				<img
 					src="<?php echo esc_url( $this->plugin_url() . 'assets/images/videoigniter-logo.svg' ); ?>"
-					alt="<?php esc_attr_e( 'VideoIgniter Logo', 'audioigniter' ); ?>"
+					alt="<?php esc_attr_e( 'VideoIgniter Logo', 'videoigniter' ); ?>"
 				>
 			</a>
 
