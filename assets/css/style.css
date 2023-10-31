@@ -655,6 +655,11 @@
   width: 36%;
 }
 
+.vi-player .vjs-branding img {
+  max-width: 100%;
+  height: auto;
+}
+
 .vi-player:not(.vjs-hover-preview-running):hover .vjs-branding,
 .vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-branding {
   opacity: 1;

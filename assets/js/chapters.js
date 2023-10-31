@@ -190,12 +190,9 @@ function chaptersTimeline() {
   };
 
   /**
-   * Renders the chapters as timeline bars on the player's progress bar.
+   * Clears chapter timelines.
    */
-  const renderChapterTimelines = () => {
-    const chapters = getChapters();
-    const cues = chapters?.cues;
-
+  const clearChapterTimelines = () => {
     const seekBar = player
       .getChild('controlBar')
       .getChild('progressControl')
@@ -208,6 +205,21 @@ function chaptersTimeline() {
       .forEach(el => {
         el.remove();
       });
+  };
+
+  /**
+   * Renders the chapters as timeline bars on the player's progress bar.
+   */
+  const renderChapterTimelines = () => {
+    const chapters = getChapters();
+    const cues = chapters?.cues;
+
+    const seekBar = player
+      .getChild('controlBar')
+      .getChild('progressControl')
+      .getChild('seekBar');
+
+    clearChapterTimelines();
 
     if (!cues) {
       return;
@@ -252,9 +264,35 @@ function chaptersTimeline() {
     });
   };
 
+  /**
+   * Polls for chapter cues.
+   * @returns {Promise<unknown>}
+   */
+  const waitForCues = () => {
+    return new Promise(async resolve => {
+      let attempts = 0;
+      const maxAttempts = 12;
+
+      const check = async () => {
+        const chapters = await waitForChaptersTextTrack();
+        const cues = chapters?.cues;
+        if (cues) {
+          resolve(cues);
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(check, 250);
+        }
+      };
+
+      await check();
+    });
+  };
+
   player.on('loadedmetadata', async () => {
+    clearChapterTimelines();
+
     try {
-      await waitForChaptersTextTrack();
+      await waitForCues();
       renderChapterTimelines();
 
       const progressControl = player
