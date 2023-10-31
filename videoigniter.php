@@ -1194,12 +1194,10 @@ class VideoIgniter {
 			'mpd'  => 'application/dash+xml',
 		);
 
-		// TODO Improve sanitization
-		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+		$url = esc_url_raw( $url );
+		if ( ! $url ) {
 			return '';
 		}
-
-		$url = filter_var( $url, FILTER_SANITIZE_URL );
 
 		if ( $this->is_youtube( $url ) ) {
 			return 'video/youtube';
@@ -1209,8 +1207,9 @@ class VideoIgniter {
 			return 'video/vimeo';
 		}
 
-		$file_ext = pathinfo( parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
-		$file_ext = strtolower( $file_ext );
+		$parsed_url = wp_parse_url( $url );
+		$pathinfo   = pathinfo( $parsed_url['path'] );
+		$file_ext   = strtolower( $pathinfo['extension'] );
 
 		if ( array_key_exists( $file_ext, $mime_types ) ) {
 			return $mime_types[ $file_ext ];
