@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
       }
 
       mediaManager = wp.media({
-        title: 'Choose image', // TODO: i18n
+        title: vi_admin_settings.messages.media_modal_title,
         multiple: false,
         library: {
           type: 'image',

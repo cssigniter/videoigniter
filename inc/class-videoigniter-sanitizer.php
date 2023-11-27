@@ -88,9 +88,9 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @uses VideoIgniter::get_default_track_values()
 	 *
-	 * @param array $track Input values to sanitize.
-	 * @param int|null $post_id Optional. Post ID where the track belongs to.
-	 * @param string $track_uid Optional. UID that identifies the track in the metabox list.
+	 * @param array    $track     Input values to sanitize.
+	 * @param int|null $post_id   Optional. Post ID where the track belongs to.
+	 * @param string   $track_uid Optional. UID that identifies the track in the metabox list.
 	 *
 	 * @return array|false Array if at least one field is completed, false otherwise.
 	 */
@@ -99,10 +99,10 @@ class VideoIgniter_Sanitizer {
 
 		$sanitized_track = array();
 
-		$sanitized_track['cover_id']     = self::intval_or_empty( $track['cover_id'] );
-		$sanitized_track['title']        = sanitize_text_field( $track['title'] );
-		$sanitized_track['description']  = sanitize_text_field( $track['description'] );
-		$sanitized_track['track_url']    = esc_url_raw( $track['track_url'] );
+		$sanitized_track['cover_id']    = self::intval_or_empty( $track['cover_id'] );
+		$sanitized_track['title']       = sanitize_text_field( $track['title'] );
+		$sanitized_track['description'] = sanitize_text_field( $track['description'] );
+		$sanitized_track['track_url']   = esc_url_raw( $track['track_url'] );
 
 		$tmp = array_filter( $sanitized_track );
 		if ( empty( $tmp ) ) {
@@ -222,45 +222,6 @@ class VideoIgniter_Sanitizer {
 	}
 
 	/**
-	 * Sanitizes a checkbox value.
-	 *
-	 * @since NewVersion
-	 *
-	 * @param int|string|bool $input Input value to sanitize.
-	 *
-	 * @return int|string Returns 1 if $input evaluates to 1, an empty string otherwise.
-	 */
-	public static function checkbox( $input ) {
-		if ( 1 == $input ) { // WPCS: loose comparison ok.
-			return 1;
-		}
-
-		return '';
-	}
-
-	/**
-	 * Sanitizes a checkbox value. Value is passed by reference.
-	 *
-	 * Useful when sanitizing form checkboxes. Since browsers don't send any data when a checkbox
-	 * is not checked, checkbox() throws an error.
-	 * checkbox_ref() however evaluates &$input as null so no errors are thrown.
-	 *
-	 * @since NewVersion
-	 *
-	 * @param int|string|bool &$input Input value to sanitize.
-	 *
-	 * @return int|string Returns 1 if $input evaluates to 1, an empty string otherwise.
-	 */
-	public static function checkbox_ref( &$input ) {
-		if ( 1 == $input ) { // WPCS: loose comparison ok.
-			return 1;
-		}
-
-		return '';
-	}
-
-
-	/**
 	 * Sanitizes integer input while differentiating zero from empty string.
 	 *
 	 * @since NewVersion
@@ -274,11 +235,11 @@ class VideoIgniter_Sanitizer {
 			return '';
 		}
 
-		if ( 0 == $input ) { // WPCS: loose comparison ok.
+		if ( 0 == $input ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 			return 0;
 		}
 
-		return intval( $input );
+		return (int) $input;
 	}
 
 
@@ -418,13 +379,14 @@ class VideoIgniter_Sanitizer {
 	 * @return int A number between 0-255.
 	 */
 	public static function int_0_255( $value ) {
-		if ( intval( $value ) > 255 ) {
+		$value = (int) $value;
+		if ( $value > 255 ) {
 			$value = 255;
-		} elseif ( intval( $value ) < 0 ) {
+		} elseif ( $value < 0 ) {
 			$value = 0;
 		}
 
-		return intval( $value );
+		return $value;
 	}
 
 	/**
