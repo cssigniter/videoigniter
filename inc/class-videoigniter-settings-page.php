@@ -41,7 +41,7 @@ class VideoIgniter_Settings {
 
 		add_settings_field(
 			'videoigniter_accent_color',
-			sprintf('%s <span>%s</span>', __('Accent color', 'videoigniter'), __('The primary color of the player', 'videoigniter')),
+			sprintf('%s <span>%s</span>', __('Accent Color', 'videoigniter'), __('The primary color of the player', 'videoigniter')),
 			array( $this, 'color_input_render' ),
 			'videoigniter',
 			'videoigniter_settings',
