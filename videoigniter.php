@@ -29,12 +29,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
+/**
+ * VideoIgniter class.
+ */
 class VideoIgniter {
 
 	/**
 	 * VideoIgniter version.
 	 *
 	 * @var string
+	 *
 	 * @since NewVersion
 	 */
 	public $version = null;
@@ -43,6 +47,7 @@ class VideoIgniter {
 	 * Instance of this class.
 	 *
 	 * @var VideoIgniter
+	 *
 	 * @since NewVersion
 	 */
 	protected static $instance = null;
@@ -51,7 +56,9 @@ class VideoIgniter {
 	 * Sanitizer instance.
 	 *
 	 * @var VideoIgniter_Sanitizer
+	 *
 	 * @since NewVersion
+	 *
 	 */
 	public $sanitizer = null;
 
@@ -59,45 +66,29 @@ class VideoIgniter {
 	 * Settings page instance.
 	 *
 	 * @var VideoIgniter_Settings
+	 *
 	 * @since NewVersion
 	 */
 	public $settings_page = null;
 
 	/**
-	 * The URL directory path (with trailing slash) of the main plugin file.
-	 *
-	 * @var string
-	 * @since NewVersion
-	 */
-	protected static $plugin_url = '';
-
-	/**
-	 * The filesystem directory path (with trailing slash) of the main plugin file.
-	 *
-	 * @var string
-	 * @since NewVersion
-	 */
-	protected static $plugin_path = '';
-
-
-	/**
 	 * Playlist post type name.
 	 *
 	 * @var string
+	 *
 	 * @since NewVersion
 	 */
 	public $post_type = 'vi_playlist';
-
-
 
 	/**
 	 * VideoIgniter Instance.
 	 *
 	 * Instantiates or reuses an instance of VideoIgniter.
 	 *
-	 * @since NewVersion
-	 * @static
 	 * @see VideoIgniter()
+	 *
+	 * @since NewVersion
+	 *
 	 * @return VideoIgniter - Single instance.
 	 */
 	public static function instance(): VideoIgniter {
@@ -133,21 +124,18 @@ class VideoIgniter {
 			$this->version = $plugin_data['Version'];
 		}
 
-		self::$plugin_url  = plugin_dir_url( __FILE__ );
-		self::$plugin_path = plugin_dir_path( __FILE__ );
-
 		load_plugin_textdomain( 'videoigniter', false, dirname( self::plugin_basename() ) . '/languages' );
 
 		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-sanitizer.php';
 		$this->sanitizer = new VideoIgniter_Sanitizer();
 
-		// Initialization needed in every request.
+		// Initializations needed in every request.
 		$this->init();
 
-		// Initialization needed in admin requests.
+		// Initializations needed in admin requests.
 		$this->admin_init();
 
-		// Initialization needed in frontend requests.
+		// Initializations needed in frontend requests.
 		$this->frontend_init();
 
 		do_action( 'videoigniter_loaded' );
@@ -161,7 +149,6 @@ class VideoIgniter {
 	protected function init() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_action( 'init', array( $this, 'register_scripts' ) );
-		add_action( 'wp_footer', array( $this, 'enqueue_footer_scripts' ) );
 		add_action( 'init', array( $this, 'register_image_sizes' ) );
 		add_action( 'init', array( $this, 'register_shortcodes' ) );
 		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
@@ -169,12 +156,10 @@ class VideoIgniter {
 		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-settings-page.php';
 		$this->settings_page = new VideoIgniter_Settings();
 
-
 		require_once 'block/block.php';
 
 		do_action( 'videoigniter_init' );
 	}
-
 
 	/**
 	 * Registers actions that need to be run on admin only.
@@ -195,7 +180,7 @@ class VideoIgniter {
 
 		add_filter( 'block_categories_all', array( $this, 'block_categories' ), 10, 2 );
 
-		add_filter( 'wp_check_filetype_and_ext', array( $this, 'register_file_extensions' ), 10, 4 );
+		add_filter( 'wp_check_filetype_and_ext', array( $this, 'register_file_extensions' ), 10, 5 );
 		add_filter( 'upload_mimes', array( $this, 'register_mime_times' ) );
 
 		add_action( 'enqueue_block_assets', array( $this, 'enqueue_editor_assets' ) );
@@ -254,7 +239,7 @@ class VideoIgniter {
 		wp_register_style( 'videoigniter', untrailingslashit( $this->plugin_url() ) . "/assets/css/style{$suffix}.css", array( 'videojs' ), $this->version );
 
 		wp_register_script( 'videojs', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/video.core{$suffix}.js", array(), $this->version, true );
-		wp_register_script( 'videojs-http-streaming', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-http-streaming{$suffix}.js", array('videojs'), $this->version, true );
+		wp_register_script( 'videojs-http-streaming', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-http-streaming{$suffix}.js", array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videojs-playlist', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-playlist{$suffix}.js", array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videojs-playlist-ui', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-playlist-ui{$suffix}.js", array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videojs-vimeo', untrailingslashit( $this->plugin_url() ) . "/assets/js/vendor/videojs-vimeo{$suffix}.js", array( 'videojs' ), $this->version, true );
@@ -262,7 +247,7 @@ class VideoIgniter {
 		wp_register_script( 'videojs-chapters', untrailingslashit( $this->plugin_url() ) . "/assets/js/chapters{$suffix}.js", array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videojs-overlays', untrailingslashit( $this->plugin_url() ) . "/assets/js/overlays{$suffix}.js", array( 'videojs' ), $this->version, true );
 		wp_register_script( 'videoigniter', untrailingslashit( $this->plugin_url() ) . "/assets/js/scripts{$suffix}.js", array(
-			// Additional dependencies are being added dynamically via add_videoigniter_script_dependencies()
+			// Additional dependencies are being added dynamically via $this->add_videoigniter_script_dependencies()
 			'videojs',
 		), $this->version, true );
 
@@ -279,7 +264,7 @@ class VideoIgniter {
 		) );
 
 		wp_register_style( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . "/assets/css/admin/settings{$suffix}.css", array(), $this->version );
-		wp_enqueue_script( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . "/assets/js/admin/settings{$suffix}.js", array(
+		wp_register_script( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . "/assets/js/admin/settings{$suffix}.js", array(
 			'wp-color-picker',
 		), $this->version, true );
 		wp_localize_script( 'videoigniter-admin-settings', 'vi_admin_settings', array(
@@ -329,16 +314,6 @@ class VideoIgniter {
 			wp_add_inline_style( 'videoigniter', sprintf( '.vi-player-wrap { --vi-player-color-primary: %s; }', $settings['accent-color'] ) );
 		}
 
-		// VideoIgniter main script loads in enqueue_playlist_scripts
-	}
-
-	/**
-	 * Enqueues frontend footer scripts and styles.
-	 *
-	 * @since NewVersion
-	 */
-	public function enqueue_footer_scripts() {
-		// TODO anastis: Why did I make this get enqueued here?
 		wp_enqueue_script( 'videoigniter' );
 	}
 
@@ -403,6 +378,8 @@ class VideoIgniter {
 	 * Enqueues admin scripts and styles.
 	 *
 	 * @since NewVersion
+	 *
+	 * @param string $hook The current admin page.
 	 */
 	public function enqueue_admin_scripts( $hook ) {
 		$screen = get_current_screen();
@@ -429,7 +406,7 @@ class VideoIgniter {
 	 *
 	 * @since NewVersion
 	 */
-	public function enqueue_editor_assets( $hook ) {
+	public function enqueue_editor_assets() {
 		if ( ! is_admin() ) {
 			return;
 		}
@@ -442,9 +419,11 @@ class VideoIgniter {
 	 * Register VideoIgniter's block category
 	 *
 	 * @since NewVersion
+	 *
+	 * @param array[] $block_categories Array of categories for block types.
 	 */
-	public function block_categories( $categories ) {
-		return array_merge( $categories, array(
+	public function block_categories( $block_categories ): array {
+		return array_merge( $block_categories, array(
 			array(
 				'slug'  => 'videoigniter',
 				'title' => __( 'VideoIgniter', 'videoigniter' ),
@@ -507,17 +486,16 @@ class VideoIgniter {
 	 *
 	 * @since NewVersion
 	 *
-	 * @param WP_Post $object
-	 * @param array $box
+	 * @param WP_Post $object Post object.
+	 * @param array   $box    Metabox args.
 	 */
 	public function metabox_tracks( $object, $box ) {
 		$tracks = $this->get_post_meta( $object->ID, '_videoigniter_tracks', array() );
 
 		wp_nonce_field( basename( __FILE__ ), $object->post_type . '_nonce' );
+
+		$this->metabox_tracks_header();
 		?>
-
-		<?php $this->metabox_tracks_header(); ?>
-
 		<div class="vi-container">
 			<?php $this->metabox_tracks_field_controls( 'top', $object->ID ); ?>
 
@@ -525,24 +503,21 @@ class VideoIgniter {
 
 			<div class="<?php echo esc_attr( implode( ' ', $container_classes ) ); ?>">
 				<?php
-					if ( ! empty( $tracks ) ) {
-						foreach ( $tracks as $track ) {
-							$this->metabox_tracks_repeatable_track_field( $track );
-						}
-					} else {
-						$this->metabox_tracks_repeatable_track_field();
+				if ( ! empty( $tracks ) ) {
+					foreach ( $tracks as $track ) {
+						$this->metabox_tracks_repeatable_track_field( $track );
 					}
+				} else {
+					$this->metabox_tracks_repeatable_track_field();
+				}
 				?>
 			</div>
 
 			<?php $this->metabox_tracks_field_controls( 'bottom', $object->ID ); ?>
 		</div>
-
-		<?php $this->metabox_tracks_footer(); ?>
-
 		<?php
+		$this->metabox_tracks_footer();
 	}
-
 
 	/**
 	 * Echoes the Tracks metabox header.
@@ -583,31 +558,31 @@ class VideoIgniter {
 				<div class="vi-col-left">
 					<ul class="vi-list-inline vi-footer-links">
 						<?php
-							$links = apply_filters( 'videoigniter_metabox_tracks_footer_links', array(
-								'support'       => array(
-									'title' => __( 'Support', 'videoigniter' ),
-									'url'   => 'https://wordpress.org/support/plugin/videoigniter',
-								),
-								'documentation' => array(
-									'title' => __( 'Documentation', 'videoigniter' ),
-									'url'   => 'https://www.cssigniter.com/docs/videoigniter/',
-								),
-								'rate_plugin'   => array(
-									'title' => __( 'Rate this plugin', 'videoigniter' ),
-									'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
-								),
-							) );
+						$links = apply_filters( 'videoigniter_metabox_tracks_footer_links', array(
+							'support'       => array(
+								'title' => __( 'Support', 'videoigniter' ),
+								'url'   => 'https://wordpress.org/support/plugin/videoigniter',
+							),
+							'documentation' => array(
+								'title' => __( 'Documentation', 'videoigniter' ),
+								'url'   => 'https://www.cssigniter.com/docs/videoigniter/',
+							),
+							'rate_plugin'   => array(
+								'title' => __( 'Rate this plugin', 'videoigniter' ),
+								'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
+							),
+						) );
 
-							foreach ( $links as $link ) {
-								if ( empty( $link['url'] ) || empty( $link['title'] ) ) {
-									continue;
-								}
-
-								echo sprintf( '<li><a href="%s" target="_blank">%s</a></li>',
-									esc_url( $link['url'] ),
-									esc_html( $link['title'] )
-								);
+						foreach ( $links as $link ) {
+							if ( empty( $link['url'] ) || empty( $link['title'] ) ) {
+								continue;
 							}
+
+							echo sprintf( '<li><a href="%s" target="_blank">%s</a></li>',
+								esc_url( $link['url'] ),
+								esc_html( $link['title'] )
+							);
+						}
 						?>
 					</ul>
 				</div>
@@ -630,6 +605,13 @@ class VideoIgniter {
 		do_action( 'videoigniter_metabox_tracks_field_footer_after' );
 	}
 
+	/**
+	 * Generates the repeatable track's metabox field markup.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $track Single track array.
+	 */
 	protected function metabox_tracks_repeatable_track_field( $track = array() ) {
 		$track = wp_parse_args( $track, self::get_default_track_values() );
 
@@ -773,6 +755,14 @@ class VideoIgniter {
 		<?php
 	}
 
+	/**
+	 * Generates the tracks field controls markup.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $location Location of controls. May be 'top' or 'bottom'.
+	 * @param int    $post_id  Post ID of the current post.
+	 */
 	protected function metabox_tracks_field_controls( $location, $post_id ) {
 		?>
 		<div class="vi-field-controls-wrap">
@@ -803,12 +793,12 @@ class VideoIgniter {
 	}
 
 	/**
-	 * Echoes the Settings metabox markup.
+	 * Generates the Settings metabox markup.
 	 *
 	 * @since NewVersion
 	 *
-	 * @param WP_Post $object
-	 * @param array $box
+	 * @param WP_Post $object Post object.
+	 * @param array   $box    Metabox args.
 	 */
 	public function metabox_settings( $object, $box ) {
 		$layout                 = $this->get_post_meta( $object->ID, '_videoigniter_playlist_layout', 'right' );
@@ -901,12 +891,12 @@ class VideoIgniter {
 	}
 
 	/**
-	 * Echoes the Shortcode metabox markup.
+	 * Generates the Shortcode metabox markup.
 	 *
 	 * @since NewVersion
 	 *
-	 * @param WP_Post $object
-	 * @param array $box
+	 * @param WP_Post $object Post object.
+	 * @param array   $box    Metabox args.
 	 */
 	public function metabox_shortcode( $object, $box ) {
 		?>
@@ -930,26 +920,25 @@ class VideoIgniter {
 	}
 
 	/**
-	 * Returns the available playlist layouts
+	 * Returns the available playlist layouts and their associated information.
 	 *
 	 * @since NewVersion
 	 *
 	 * @return array
 	 */
 	public function get_playlist_layouts() {
-		// Each playlist layout has a number of settings that it might not support
-		// Provide every setting that's not supported based on the `name`
-		// attribute of each setting input (input, select, textarea), *without
-		// the _videoigniter_ prefix* in the `no-support` array.
+		// Each playlist layout has a number of settings that it might not support.
+		// Provide every setting that's not supported based on the `name` attribute of each setting input
+		// (input, select, textarea), *without the _videoigniter_ prefix* in the `no-support` array.
 		// To allow support for every setting simply set `no-support` to an empty array.
 
 		$playlist_layouts = array(
-			'right'   => array(
+			'right'  => array(
 				'label'      => __( 'Right', 'videoigniter' ),
 				'no-support' => array(),
 				'info'       => '',
 			),
-			'left' => array(
+			'left'   => array(
 				'label'      => __( 'Left', 'videoigniter' ),
 				'no-support' => array(),
 				'info'       => '',
@@ -971,7 +960,7 @@ class VideoIgniter {
 	 *
 	 * @return array
 	 */
-	public function get_playlist_skip_options() {
+	public function get_playlist_skip_options(): array {
 		$skip_options = array(
 			'0'  => array(
 				'label' => __( 'Disabled', 'videoigniter' ),
@@ -1001,41 +990,41 @@ class VideoIgniter {
 	 *
 	 * @return array
 	 */
-	public static function get_track_overlay_positions() {
+	public static function get_track_overlay_positions(): array {
 		$overlay_positions = array(
-			'top-left'     => array(
+			'top-left'      => array(
 				'label' => __( 'Top left', 'videoigniter' ),
 				'info'  => '',
 			),
-			'top-center'     => array(
+			'top-center'    => array(
 				'label' => __( 'Top center', 'videoigniter' ),
 				'info'  => '',
 			),
-			'top-right'    => array(
+			'top-right'     => array(
 				'label' => __( 'Top right', 'videoigniter' ),
 				'info'  => '',
 			),
-			'middle-left'     => array(
+			'middle-left'   => array(
 				'label' => __( 'Middle left', 'videoigniter' ),
 				'info'  => '',
 			),
-			'middle-center'     => array(
+			'middle-center' => array(
 				'label' => __( 'Middle center', 'videoigniter' ),
 				'info'  => '',
 			),
-			'middle-right'    => array(
+			'middle-right'  => array(
 				'label' => __( 'Middle right', 'videoigniter' ),
 				'info'  => '',
 			),
-			'bottom-left'  => array(
+			'bottom-left'   => array(
 				'label' => __( 'Bottom left', 'videoigniter' ),
 				'info'  => '',
 			),
-			'bottom-center'  => array(
+			'bottom-center' => array(
 				'label' => __( 'Bottom center', 'videoigniter' ),
 				'info'  => '',
 			),
-			'bottom-right' => array(
+			'bottom-right'  => array(
 				'label' => __( 'Bottom Right', 'videoigniter' ),
 				'info'  => '',
 			),
@@ -1044,6 +1033,15 @@ class VideoIgniter {
 		return apply_filters( 'videoigniter_track_overlay_positions', $overlay_positions );
 	}
 
+	/**
+	 * Saves the current post's meta into the database.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param int $post_id Post ID of the post being saved.
+	 *
+	 * @return false|void
+	 */
 	public function save_post( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return false; }
 		if ( isset( $_POST['post_view'] ) && 'list' === $_POST['post_view'] ) { return false; }
@@ -1052,39 +1050,68 @@ class VideoIgniter {
 		$post_type_obj = get_post_type_object( $this->post_type );
 		if ( ! current_user_can( $post_type_obj->cap->edit_post, $post_id ) ) { return false; }
 
-		update_post_meta( $post_id, '_videoigniter_tracks', $this->sanitizer::metabox_playlist( $_POST['vi_playlist_tracks'], $post_id ) );
-		update_post_meta( $post_id, '_videoigniter_playlist_layout', $this->sanitizer::playlist_layout( $_POST['_videoigniter_playlist_layout'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', $this->sanitizer::checkbox_ref( $_POST['_videoigniter_show_fullscreen_toggle'] ) );
-		update_post_meta( $post_id, '_videoigniter_show_playback_speed', $this->sanitizer::checkbox_ref( $_POST['_videoigniter_show_playback_speed'] ) );
-		update_post_meta( $post_id, '_videoigniter_volume', (int) $_POST['_videoigniter_volume'] );
 
-		/**
-		 * @since NewVersion
-		 */
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput
+		if ( isset( $_POST['vi_playlist_tracks'] ) ) {
+			update_post_meta( $post_id, '_videoigniter_tracks', $this->sanitizer::metabox_playlist( $_POST['vi_playlist_tracks'], $post_id ) );
+		}
+
+		if ( isset( $_POST['_videoigniter_playlist_layout'] ) ) {
+			update_post_meta( $post_id, '_videoigniter_playlist_layout', $this->sanitizer::playlist_layout( $_POST['_videoigniter_playlist_layout'] ) );
+		}
+
+		if ( isset( $_POST['_videoigniter_volume'] ) ) {
+			update_post_meta( $post_id, '_videoigniter_volume', (int) $_POST['_videoigniter_volume'] );
+		}
+
+		update_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', isset( $_POST['_videoigniter_show_fullscreen_toggle'] ) );
+		update_post_meta( $post_id, '_videoigniter_show_playback_speed', isset( $_POST['_videoigniter_show_playback_speed'] ) );
+		// phpcs:enable
+
+
 		do_action( 'videoigniter_save_post', $post_id );
 	}
 
-	public static function get_default_track_values() {
+	/**
+	 * Returns the default values for a track.
+	 *
+	 * @since NewVersion
+	 *
+	 * @return array
+	 */
+	public static function get_default_track_values(): array {
 		return apply_filters( 'videoigniter_default_track_values', array(
 			'cover_id'    => '',
 			'title'       => '',
 			'description' => '',
 			'track_url'   => '',
-			'overlays'    => array(),
-			'subtitles'   => array(),
 		) );
 	}
 
-	public static function get_default_track_subtitle_values() {
+	/**
+	 * Returns the default values for a subtitle record.
+	 *
+	 * @since NewVersion
+	 *
+	 * @return array
+	 */
+	public static function get_default_track_subtitle_values(): array {
 		return apply_filters( 'videoigniter_default_track_subtitle_values', array(
 			'url'     => '',
 			'label'   => '',
 			'srclang' => '',
-			'caption' => ''
+			'caption' => '',
 		) );
 	}
 
-	public static function get_default_track_overlay_values() {
+	/**
+	 * Returns the default values for an overlay record.
+	 *
+	 * @since NewVersion
+	 *
+	 * @return array
+	 */
+	public static function get_default_track_overlay_values(): array {
 		return apply_filters( 'videoigniter_default_track_overlay_values', array(
 			'url'        => '',
 			'title'      => '',
@@ -1096,11 +1123,21 @@ class VideoIgniter {
 		) );
 	}
 
+	/**
+	 * Registers image sizes needed by the plugin.
+	 *
+	 * @since NewVersion
+	 */
 	public function register_image_sizes() {
 		// TODO: potentially add a smaller size for the thumbnails ? (TBD)
 		add_image_size( 'videoigniter_cover', 1920, 1080, true );
 	}
 
+	/**
+	 * Registers the plugin's widgets.
+	 *
+	 * @since NewVersion
+	 */
 	public function register_widgets() {
 		$widgets = apply_filters( 'videoigniter_register_widgets', array(
 			'VideoIgniter_Playlist_Widget' => $this->plugin_path() . '/widget/class-videoigniter-playlist-widget.php',
@@ -1115,12 +1152,17 @@ class VideoIgniter {
 		}
 	}
 
+	/**
+	 * Registers the plugin's shortcodes.
+	 *
+	 * @since NewVersion
+	 */
 	public function register_shortcodes() {
 		add_shortcode( 'vi_playlist', array( $this, 'shortcode_vi_playlist' ) );
 	}
 
 	/**
-	 * Checks whether passed post object or ID is an VideoIgniter playlist.
+	 * Checks whether passed post object or ID is a VideoIgniter playlist.
 	 *
 	 * @since NewVersion
 	 *
@@ -1129,9 +1171,9 @@ class VideoIgniter {
 	 * @return bool
 	 */
 	public function is_playlist( $post ) {
-		$post = get_post( $post );
+		$_post = get_post( $post );
 
-		if ( empty( $post ) || is_wp_error( $post ) || $post->post_type !== $this->post_type ) {
+		if ( empty( $_post ) || is_wp_error( $_post ) || $_post->post_type !== $this->post_type ) {
 			return false;
 		}
 
@@ -1148,7 +1190,7 @@ class VideoIgniter {
 	 * @return array
 	 */
 	public function get_playlist_data_attributes_array( $post_id ) {
-		$post_id = intval( $post_id );
+		$post_id = (int) $post_id;
 
 		if ( ! $this->is_playlist( $post_id ) ) {
 			return array();
@@ -1170,29 +1212,65 @@ class VideoIgniter {
 		return apply_filters( 'videoigniter_get_playlist_data_attributes_array', $attrs, $post_id );
 	}
 
-	// TOOD: Add php doc and review
+	/**
+	 * Determines whether the URL is a YouTube video.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return bool
+	 */
 	public function is_youtube( $url ) {
 		$pattern = '/^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/';
-		return preg_match($pattern, $url);
+
+		return (bool) preg_match( $pattern, $url );
 	}
 
-	// TOOD: Add php doc and review
+	/**
+	 * Determines whether the URL is a Vimeo video.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return bool
+	 */
 	public function is_vimeo( $url ) {
 		$pattern = '/^(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/)?(\d+)(?:|\/\?[^\s]*)?$/';
-		return preg_match($pattern, $url);
+
+		return (bool) preg_match( $pattern, $url );
 	}
 
-	// TOOD: Add php doc and review
-	public function is_streaming( $url ) {
+	/**
+	 * Determines whether the URL is a streaming video.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return bool
+	 */
+	public function is_streaming( $url ): bool {
 		$streaming_extensions = array( 'm3u8', 'm3u', 'ts', 'mpd' );
 
 		$file_ext = $this->get_url_extension( $url );
 
-		return in_array( $file_ext, $streaming_extensions, true );
+		$result = in_array( $file_ext, $streaming_extensions, true );
+
+		return apply_filters( 'videoigniter_url_is_streaming', $result, $url, $file_ext, $streaming_extensions );
 	}
 
-	// TODO: Add php doc and review
-	public function get_video_mime_type_from_url( $url ) {
+	/**
+	 * Returns the MIME type of the URL.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return string
+	 */
+	public function get_video_mime_type_from_url( $url ): string {
 		$mime_types = array(
 			'3gp'  => 'video/3gpp',
 			'avi'  => 'video/x-msvideo',
@@ -1232,8 +1310,16 @@ class VideoIgniter {
 		return '';
 	}
 
-	// TODO: Add php doc
-	public function get_url_extension( $url ) {
+	/**
+	 * Returns the extension of the URL, if any.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return string
+	 */
+	public function get_url_extension( $url ): string {
 		$parsed_url = wp_parse_url( $url );
 		$pathinfo   = ! empty( $parsed_url['path'] ) ? pathinfo( $parsed_url['path'] ) : array();
 		$file_ext   = ! empty( $pathinfo['extension'] ) ? strtolower( $pathinfo['extension'] ) : '';
@@ -1241,8 +1327,16 @@ class VideoIgniter {
 		return $file_ext;
 	}
 
-	// TODO: Add php doc and review
-	public function get_playlist_json( $playlist_id ) {
+	/**
+	 * Returns the JSON string for a specific playlist.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param int $playlist_id Post/playlist ID.
+	 *
+	 * @return string
+	 */
+	public function get_playlist_json( $playlist_id ): string {
 		if ( ! $this->is_playlist( $playlist_id ) ) {
 			return '';
 		}
@@ -1281,8 +1375,16 @@ class VideoIgniter {
 		return wp_json_encode( $playlist, JSON_PRETTY_PRINT );
 	}
 
-	// TODO: Add php doc and review
-	public function render_main_video_track( $playlist_id ) {
+	/**
+	 * Returns the main track's markup.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param int $playlist_id Post/playlist ID.
+	 *
+	 * @return string
+	 */
+	public function render_main_video_track( $playlist_id ): string {
 		if ( ! $this->is_playlist( $playlist_id ) ) {
 			return '';
 		}
@@ -1374,13 +1476,13 @@ class VideoIgniter {
 	 *
 	 * @return string
 	 */
-	public function shortcode_vi_playlist( $atts, $content, $tag ) {
+	public function shortcode_vi_playlist( $atts, $content, $tag ): string {
 		$atts = shortcode_atts( array(
 			'id'    => '',
 			'class' => '',
 		), $atts, $tag );
 
-		$id         = intval( $atts['id'] );
+		$id         = (int) $atts['id'];
 		$class_name = $atts['class'];
 
 		if ( ! $this->is_playlist( $id ) ) {
@@ -1437,7 +1539,16 @@ class VideoIgniter {
 		return $output;
 	}
 
-	public function convert_bool_string( $value ) {
+	/**
+	 * Returns a textual representation of a boolean value.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param bool $value Value to convert to string.
+	 *
+	 * @return string
+	 */
+	public function convert_bool_string( $value ): string {
 		if ( $value ) {
 			return 'true';
 		}
@@ -1445,7 +1556,16 @@ class VideoIgniter {
 		return 'false';
 	}
 
-	public function filter_posts_columns( $columns ) {
+	/**
+	 * Filters the table columns on the post listing screen.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $columns Array of table columns.
+	 *
+	 * @return array
+	 */
+	public function filter_posts_columns( $columns ): array {
 		$date = $columns['date'];
 		unset( $columns['date'] );
 
@@ -1455,23 +1575,33 @@ class VideoIgniter {
 		return $columns;
 	}
 
+	/**
+	 * Renders the cell value of a custom table column on the post listing screen.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $column  Column slug.
+	 * @param int    $post_id Post ID.
+	 */
 	public function add_custom_columns( $column, $post_id ) {
 		if ( 'shortcode' === $column ) {
-			?><input type="text" class="code" value="<?php echo esc_attr( sprintf( '[vi_playlist id="%s"]', $post_id ) ); ?>"><?php
+			?>
+			<input type="text" class="code" value="<?php echo esc_attr( sprintf( '[vi_playlist id="%s"]', $post_id ) ); ?>">
+			<?php
 		}
 	}
 
-	function get_filename_from_url( $url ) {
-		$struct = wp_parse_url( $url );
-
-		if ( ! empty( $struct['path'] ) ) {
-			return basename( $struct['path'] );
-		}
-
-		return '';
-	}
-
-	public function get_all_playlists( $orderby = 'date', $order = 'DESC' ) {
+	/**
+	 * Returns an array of all playlist post objects.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param string $orderby WP_Query compatible order by clause. Default 'date'.
+	 * @param string $order WP_Query compatible order clause. Default 'DESC'.
+	 *
+	 * @return array
+	 */
+	public function get_all_playlists( $orderby = 'date', $order = 'DESC' ): array {
 		$q = new WP_Query( array(
 			'post_type'      => $this->post_type,
 			'posts_per_page' => - 1,
@@ -1482,21 +1612,58 @@ class VideoIgniter {
 		return $q->posts;
 	}
 
-	public function register_file_extensions( $types, $file, $filename, $mimes ) {
+	/**
+	 * Filters the "real" file type of the given file.
+	 *
+	 * @since NewVersion.
+	 *
+	 * @param array         $wp_check_filetype_and_ext {
+	 *     Values for the extension, mime type, and corrected filename.
+	 *
+	 *     @type string|false $ext             File extension, or false if the file doesn't match a mime type.
+	 *     @type string|false $type            File mime type, or false if the file doesn't match a mime type.
+	 *     @type string|false $proper_filename File name with its correct extension, or false if it cannot be determined.
+	 * }
+	 * @param string        $file                      Full path to the file.
+	 * @param string        $filename                  The name of the file (may differ from $file due to
+	 *                                                 $file being in a tmp directory).
+	 * @param string[]|null $mimes                     Array of mime types keyed by their file extension regex, or null if
+	 *                                                 none were provided.
+	 * @param string|false  $real_mime                 The actual mime type or false if the type cannot be determined.
+	 */
+	public function register_file_extensions( $wp_check_filetype_and_ext, $file, $filename, $mimes, $real_mime ): array {
 		if ( false !== strpos( $filename, '.vtt' ) ) {
-			$types['ext']  = 'vtt';
-			$types['type'] = 'text/vtt';
+			$wp_check_filetype_and_ext['ext']  = 'vtt';
+			$wp_check_filetype_and_ext['type'] = 'text/vtt';
 		}
 
-		return $types;
+		return $wp_check_filetype_and_ext;
 	}
 
-	function register_mime_times( $mimes ) {
+	/**
+	 * Registers additional MIME types required by the plugin.
+	 *
+	 * @param array $mimes Array of allowed MIME types.
+	 *
+	 * @return array
+	 */
+	public function register_mime_times( $mimes ): array {
 		$mimes['vtt'] = 'text/vtt';
 
 		return $mimes;
 	}
 
+	/**
+	 * Returns a post meta value, or a default one if the meta key doesn't exist.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param int    $post_id Post ID.
+	 * @param string $key     Meta key.
+	 * @param mixed  $default Default value to fallback to.
+	 *
+	 * @return mixed
+	 */
 	public function get_post_meta( $post_id, $key, $default = '' ) {
 		$keys = get_post_custom_keys( $post_id );
 
@@ -1509,6 +1676,11 @@ class VideoIgniter {
 		return $value;
 	}
 
+	/**
+	 * Plugin activation hook.
+	 *
+	 * @since NewVersion
+	 */
 	public function plugin_activated() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return;
@@ -1521,6 +1693,11 @@ class VideoIgniter {
 		flush_rewrite_rules();
 	}
 
+	/**
+	 * Plugin deactivation hook.
+	 *
+	 * @since NewVersion
+	 */
 	public function plugin_deactivated() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return;
@@ -1533,16 +1710,31 @@ class VideoIgniter {
 		flush_rewrite_rules();
 	}
 
+	/**
+	 * Returns the basename of the plugin.
+	 *
+	 * @since NewVersion
+	 */
 	public static function plugin_basename() {
 		return plugin_basename( __FILE__ );
 	}
 
+	/**
+	 * Returns the plugin's URL.
+	 *
+	 * @since NewVersion
+	 */
 	public function plugin_url() {
-		return self::$plugin_url;
+		return plugin_dir_url( __FILE__ );
 	}
 
+	/**
+	 * Returns the plugin's paths.
+	 *
+	 * @since NewVersion
+	 */
 	public function plugin_path() {
-		return self::$plugin_path;
+		return plugin_dir_path( __FILE__ );
 	}
 }
 

@@ -44,7 +44,7 @@ if ( ! class_exists( 'VideoIgniter_Playlist_Widget' ) ):
 				echo $args['before_title'] . $title . $args['after_title'];
 			}
 
-			$playlist = intval( $playlist );
+			$playlist = (int) $playlist;
 			$post     = get_post( $playlist );
 
 			if ( ! empty( $post ) && VideoIgniter()->post_type === $post->post_type ) {
@@ -69,7 +69,7 @@ if ( ! class_exists( 'VideoIgniter_Playlist_Widget' ) ):
 			$instance = $old_instance;
 
 			$instance['title']    = sanitize_text_field( $new_instance['title'] );
-			$instance['playlist'] = intval( $new_instance['playlist'] );
+			$instance['playlist'] = (int) $new_instance['playlist'];
 
 			return $instance;
 		}
