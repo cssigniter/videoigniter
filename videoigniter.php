@@ -352,8 +352,6 @@ class VideoIgniter {
 	 * @since NewVersion
 	 */
 	public function add_videoigniter_script_dependencies( int $post_id ) {
-		// TODO should we move overlays, chapters script loading to PRO as they're pro features?
-
 		$videoigniter = wp_scripts()->registered['videoigniter'];
 
 		if ( ! $this->is_playlist( $post_id ) ) {
@@ -373,11 +371,6 @@ class VideoIgniter {
 		foreach ( $tracks as $track ) {
 			$track     = wp_parse_args( $track, self::get_default_track_values() );
 			$track_url = $track['track_url'];
-			$overlays  = $track['overlays'];
-
-			if ( ! empty( $track['chapters_url'] ) ) {
-				$videoigniter->deps[] = 'videojs-chapters';
-			}
 
 			if ( $this->is_youtube( $track_url ) ) {
 				$videoigniter->deps[] = 'videojs-youtube';
@@ -391,8 +384,15 @@ class VideoIgniter {
 				$videoigniter->deps[] = 'videojs-http-streaming';
 			}
 
-			if ( ! empty( $overlays ) ) {
-				$videoigniter->deps[] = 'videojs-overlays';
+			// Do not output any subtitles, chapters, or overlays, as they're controlled by Pro and may appear messed up without it.
+			if ( class_exists( 'VideoIgniter_Pro' ) ) {
+				if ( ! empty( $track['chapters_url'] ) ) {
+					$videoigniter->deps[] = 'videojs-chapters';
+				}
+
+				if ( ! empty( $track['overlays'] ) ) {
+					$videoigniter->deps[] = 'videojs-overlays';
+				}
 			}
 		}
 
@@ -1066,7 +1066,6 @@ class VideoIgniter {
 
 	public static function get_default_track_values() {
 		return apply_filters( 'videoigniter_default_track_values', array(
-			// Remove overlays, and subtitles as they're pro features
 			'cover_id'    => '',
 			'title'       => '',
 			'description' => '',
@@ -1261,7 +1260,7 @@ class VideoIgniter {
 			$track_poster_url = (string) wp_get_attachment_image_url( (int) $track['cover_id'], 'videoigniter_cover' );
 
 			$text_tracks = apply_filters( 'videoigniter_playlist_track_text_tracks', array(), $track );
-			$overlays = apply_filters( 'videoigniter_playlist_track_overlays', array(), $track );
+			$overlays    = apply_filters( 'videoigniter_playlist_track_overlays', array(), $track );
 
 			$playlist[] = array(
 				'sources'     => array(
@@ -1300,7 +1299,7 @@ class VideoIgniter {
 		$subtitles     = array();
 		$overlay_array = array();
 
-		// Do not output any subtitles or overlays, as they're controlled by Pro and may appear messed up without it.
+		// Do not output any subtitles, chapters, or overlays, as they're controlled by Pro and may appear messed up without it.
 		if ( class_exists( 'VideoIgniter_Pro' ) ) {
 			$subtitles = ! empty( $main_track['subtitles'] ) ? $main_track['subtitles'] : array();
 
@@ -1339,22 +1338,24 @@ class VideoIgniter {
 
 			<?php // Only render tracks if we're not in playlist mode. ?>
 			<?php if ( count( $tracks ) === 1 ) : ?>
-				<?php if ( ! empty( $main_track['chapters_url'] ) ) : ?>
-					<track kind="chapters" src="<?php echo esc_url( $main_track['chapters_url'] ); ?>" />
-				<?php endif; ?>
+				<?php if ( class_exists( 'VideoIgniter_Pro' ) ) : ?>
+					<?php if ( ! empty( $main_track['chapters_url'] ) ) : ?>
+						<track kind="chapters" src="<?php echo esc_url( $main_track['chapters_url'] ); ?>" />
+					<?php endif; ?>
 
-				<?php foreach ( $subtitles as $subtitle ) : ?>
-					<?php
-						$subtitle   = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
-						$is_caption = ! empty( $subtitle['caption'] );
-					?>
-					<track
-						kind="<?php echo esc_attr( $is_caption ? 'captions' : 'subtitles' ); ?>"
-						src="<?php echo esc_url( $subtitle['url'] ); ?>"
-						srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
-						label="<?php echo esc_attr( $subtitle['label'] ); ?>"
-					/>
-				<?php endforeach; ?>
+					<?php foreach ( $subtitles as $subtitle ) : ?>
+						<?php
+							$subtitle   = wp_parse_args( $subtitle, self::get_default_track_subtitle_values() );
+							$is_caption = ! empty( $subtitle['caption'] );
+						?>
+						<track
+							kind="<?php echo esc_attr( $is_caption ? 'captions' : 'subtitles' ); ?>"
+							src="<?php echo esc_url( $subtitle['url'] ); ?>"
+							srclang="<?php echo esc_attr( $subtitle['srclang'] ); ?>"
+							label="<?php echo esc_attr( $subtitle['label'] ); ?>"
+						/>
+					<?php endforeach; ?>
+				<?php endif; ?>
 			<?php endif; ?>
 		</video>
 		<?php
