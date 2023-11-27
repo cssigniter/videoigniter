@@ -279,6 +279,14 @@ class VideoIgniter {
 		) );
 
 		wp_register_style( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . "/assets/css/admin/settings{$suffix}.css", array(), $this->version );
+		wp_enqueue_script( 'videoigniter-admin-settings', untrailingslashit( $this->plugin_url() ) . "/assets/js/admin/settings{$suffix}.js", array(
+			'wp-color-picker',
+		), $this->version, true );
+		wp_localize_script( 'videoigniter-admin-settings', 'vi_admin_settings', array(
+			'messages' => array(
+				'media_modal_title' => esc_html__( 'Choose image', 'videoigniter' ),
+			),
+		) );
 
 		wp_register_script( 'videoigniter-block-editor', untrailingslashit( $this->plugin_url() ) . '/block/build/block.js', array(
 			'wp-components',
@@ -330,6 +338,7 @@ class VideoIgniter {
 	 * @since NewVersion
 	 */
 	public function enqueue_footer_scripts() {
+		// TODO anastis: Why did I make this get enqueued here?
 		wp_enqueue_script( 'videoigniter' );
 	}
 
@@ -391,60 +400,6 @@ class VideoIgniter {
 	}
 
 	/**
-	 * Enqueues frontend scripts based on the playlist's active features.
-	 *
-	 * @param int $id Post ID.
-	 *
-	 * @since NewVersion
-	 *
-	 */
-	public function enqueue_playlist_scripts( int $id ) {
-		// TODO should we move overlays, chapters script loading to PRO as they're pro features?
-		// Warning: it needs to load before the main 'videoigniter' script though
-		if ( ! $this->is_playlist( $id ) ) {
-			return;
-		}
-		$tracks = $this->get_post_meta( $id, '_videoigniter_tracks', array() );
-
-		if ( empty( $tracks ) ) {
-			$tracks = array();
-		}
-
-		if ( count( $tracks ) > 1 ) {
-			wp_enqueue_script( 'videojs-playlist' );
-			wp_enqueue_script( 'videojs-playlist-ui' );
-		}
-
-		foreach ( $tracks as $track ) {
-			$track     = wp_parse_args( $track, self::get_default_track_values() );
-			$track_url = $track['track_url'];
-			$overlays  = $track['overlays'];
-
-			if ( ! empty( $track['chapters_url'] ) ) {
-				wp_enqueue_script( 'videojs-chapters' );
-			}
-
-			if ( $this->is_youtube( $track_url ) ) {
-				wp_enqueue_script( 'videojs-youtube' );
-			}
-
-			if ( $this->is_vimeo( $track_url ) ) {
-				wp_enqueue_script( 'videojs-vimeo' );
-			}
-
-			if ( $this->is_streaming( $track_url ) ) {
-				wp_enqueue_script( 'videojs-http-streaming' );
-			}
-
-			if ( ! empty( $overlays ) ) {
-				wp_enqueue_script( 'videojs-overlays' );
-			}
-		}
-
-		wp_enqueue_script( 'videoigniter' );
-	}
-
-	/**
 	 * Enqueues admin scripts and styles.
 	 *
 	 * @since NewVersion
@@ -463,11 +418,9 @@ class VideoIgniter {
 
 		if ( 'vi_playlist_page_vi_settings' === $hook ) {
 			wp_enqueue_style( 'wp-color-picker' );
-			wp_enqueue_style( 'videoigniter-settings-styles', $this->plugin_url() . '/assets/css/admin/settings.css', array(), $this->version );
 			wp_enqueue_media();
-			wp_enqueue_script( 'videoigniter-settings-scripts', $this->plugin_url() . '/assets/js/admin/settings.js', array(
-				'wp-color-picker',
-			), $this->version, true );
+			wp_enqueue_style( 'videoigniter-admin-settings' );
+			wp_enqueue_script( 'videoigniter-admin-settings' );
 		}
 	}
 
@@ -1241,24 +1194,21 @@ class VideoIgniter {
 
 	// TODO: Add php doc and review
 	public function get_video_mime_type_from_url( $url ) {
-		// TODO: Replace function with wp_check_filetype() ? Why do we need this one?
-		// TODO: Check wp_get_mime_types() for more mime types.
-		// TODO: Note that avi and m4v have different mime types.
 		$mime_types = array(
-			'mp4'  => 'video/mp4',
-			'm4v'  => 'video/x-m4v',
-			'mov'  => 'video/quicktime',
-			'wmv'  => 'video/x-ms-wmv',
-			'avi'  => 'video/x-msvideo',
-			'mpg'  => 'video/mpeg',
-			'mpeg' => 'video/mpeg',
-			'mkv'  => 'video/x-matroska',
-			'webm' => 'video/webm',
-			'ogv'  => 'video/ogg',
-			'flv'  => 'video/x-flv',
 			'3gp'  => 'video/3gpp',
+			'avi'  => 'video/x-msvideo',
+			'flv'  => 'video/x-flv',
 			'm3u8' => 'application/x-mpegURL',
+			'm4v'  => 'video/x-m4v',
+			'mkv'  => 'video/x-matroska',
+			'mov'  => 'video/quicktime',
+			'mp4'  => 'video/mp4',
 			'mpd'  => 'application/dash+xml',
+			'mpeg' => 'video/mpeg',
+			'mpg'  => 'video/mpeg',
+			'ogv'  => 'video/ogg',
+			'webm' => 'video/webm',
+			'wmv'  => 'video/x-ms-wmv',
 		);
 
 		$url = esc_url_raw( $url );
@@ -1283,6 +1233,7 @@ class VideoIgniter {
 		return '';
 	}
 
+	// TODO: Add php doc
 	public function get_url_extension( $url ) {
 		$parsed_url = wp_parse_url( $url );
 		$pathinfo   = ! empty( $parsed_url['path'] ) ? pathinfo( $parsed_url['path'] ) : array();
@@ -1346,25 +1297,27 @@ class VideoIgniter {
 		$main_track       = wp_parse_args( $tracks[0], self::get_default_track_values() );
 		$track_poster_url = (string) wp_get_attachment_image_url( (int) $main_track['cover_id'], 'videoigniter_cover' );
 
-		// TODO anastis subtitles & overlays been moved to pro, do we need to do anything different here?
-		$subtitles = ! empty( $main_track['subtitles'] ) ? $main_track['subtitles'] : array();
-
+		$subtitles     = array();
 		$overlay_array = array();
 
-		if ( ! empty( $main_track['overlays'] ) ) {
-			$overlays = $main_track['overlays'];
-			foreach ( $overlays as $overlay ) {
-				$overlay = wp_parse_args( $overlay, self::get_default_track_overlay_values() );
+		// Do not output any subtitles or overlays, as they're controlled by Pro and may appear messed up without it.
+		if ( class_exists( 'VideoIgniter_Pro' ) ) {
+			$subtitles = ! empty( $main_track['subtitles'] ) ? $main_track['subtitles'] : array();
 
-				$overlay_array[] = array(
-					'title'     => $overlay['title'],
-					'text'      => $overlay['text'],
-					'url'       => $overlay['url'],
-					'startTime' => $overlay['start_time'],
-					'endTime'   => $overlay['end_time'],
-					'imageUrl'  => (string) wp_get_attachment_image_url( (int) $overlay['image_id'], 'thumbnail' ),
-					'position'  => $overlay['position'],
-				);
+			if ( ! empty( $main_track['overlays'] ) ) {
+				foreach ( $main_track['overlays'] as $overlay ) {
+					$overlay = wp_parse_args( $overlay, self::get_default_track_overlay_values() );
+
+					$overlay_array[] = array(
+						'title'     => $overlay['title'],
+						'text'      => $overlay['text'],
+						'url'       => $overlay['url'],
+						'startTime' => $overlay['start_time'],
+						'endTime'   => $overlay['end_time'],
+						'imageUrl'  => (string) wp_get_attachment_image_url( (int) $overlay['image_id'], 'thumbnail' ),
+						'position'  => $overlay['position'],
+					);
+				}
 			}
 		}
 

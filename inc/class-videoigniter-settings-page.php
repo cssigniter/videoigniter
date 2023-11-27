@@ -1,4 +1,5 @@
 <?php
+// TODO anastis: Docs in everything.
 class VideoIgniter_Settings {
 	protected $settings = false;
 
@@ -21,10 +22,9 @@ class VideoIgniter_Settings {
 	public function settings_sanitize( $settings ) {
 		$new_settings = array();
 
-		$new_settings['accent-color'] = isset( $settings['accent-color'] ) ? sanitize_hex_color( $settings['accent-color'] ) : '';
-		$new_settings['branding-image-id'] = isset( $settings['branding-image-id'] ) ? VideoIgniter_Sanitizer::intval_or_empty( $settings['branding-image-id'] ) : '';
-		// TODO sanitize
-		$new_settings['branding-image-position'] = isset( $settings['branding-image-position'] ) ? $settings['branding-image-position'] : 'bottom-right';
+		$new_settings['accent-color']            = isset( $settings['accent-color'] ) ? sanitize_hex_color( $settings['accent-color'] ) : '';
+		$new_settings['branding-image-id']       = isset( $settings['branding-image-id'] ) ? VideoIgniter_Sanitizer::intval_or_empty( $settings['branding-image-id'] ) : '';
+		$new_settings['branding-image-position'] = isset( $settings['branding-image-position'] ) && array_key_exists( $settings['branding-image-position'], $this->get_branding_image_position_options() ) ? $settings['branding-image-position'] : 'bottom-right';
 
 		return $new_settings;
 	}
@@ -41,7 +41,7 @@ class VideoIgniter_Settings {
 
 		add_settings_field(
 			'videoigniter_accent_color',
-			sprintf('%s <span>%s</span>', __('Accent Color', 'videoigniter'), __('The primary color of the player', 'videoigniter')),
+			sprintf( '%s <span>%s</span>', __( 'Accent Color', 'videoigniter' ), __( 'The primary color of the player', 'videoigniter' ) ),
 			array( $this, 'color_input_render' ),
 			'videoigniter',
 			'videoigniter_settings',
@@ -50,7 +50,7 @@ class VideoIgniter_Settings {
 
 		add_settings_field(
 			'videoigniter_branding_image_id',
-			sprintf('%s <span>%s</span>', __('Branding Image', 'videoigniter'), __('Transparent .pngs of your logo work best', 'videoigniter')),
+			sprintf( '%s <span>%s</span>', __( 'Branding Image', 'videoigniter' ), __( 'Transparent .pngs of your logo work best', 'videoigniter' ) ),
 			array( $this, 'branding_image_render' ),
 			'videoigniter',
 			'videoigniter_settings',
@@ -59,11 +59,11 @@ class VideoIgniter_Settings {
 
 		add_settings_field(
 			'videoigniter_branding_image_position',
-			sprintf('%s <span>%s</span>', __('Branding Image Position', 'videoigniter'), __('Position of the brand logo relative to the player', 'videoigniter')),
+			sprintf( '%s <span>%s</span>', __( 'Branding Image Position', 'videoigniter' ), __( 'Position of the brand logo relative to the player', 'videoigniter' ) ),
 			array( $this, 'branding_image_position_render' ),
 			'videoigniter',
 			'videoigniter_settings',
-			array( 'id' => 'branding-image-position', 'description' => 'hello' )
+			array( 'id' => 'branding-image-position' )
 		);
 	}
 
@@ -87,11 +87,9 @@ class VideoIgniter_Settings {
 	}
 
 	public function branding_image_render( $args ) {
-		// TODO anastis: what is happening here?
 		$id        = $args['id'];
 		$image_id  = $this->settings[ $id ];
-		// TODO anastis: simplif this.
-		$image_src = $image_id ? wp_get_attachment_image_src( $image_id, 'full' )[0] : '';
+		$image_src = wp_get_attachment_image_url( $image_id, 'full' );
 
 		$field_classes = array( 'vi-settings-image-upload' );
 
@@ -103,7 +101,7 @@ class VideoIgniter_Settings {
 		?>
 			<div class="<?php echo esc_attr( $field_classes ); ?>">
 				<div class="vi-settings-image-upload-placeholder">
-					<img src="<?php echo $image_src; ?>" alt="">
+					<img src="<?php echo esc_url( $image_src ); ?>" alt="">
 					<a href="#" class="vi-settings-image-upload-dismiss">&times;</a>
 				</div>
 
@@ -121,23 +119,25 @@ class VideoIgniter_Settings {
 		<?php
 	}
 
-	public function branding_image_position_render( $args ) {
-		$id       = $args['id'];
-		$selected = $this->settings[ $id ];
-		// TODO anastis: Break this into a defaults function. Use it to sanitize branding-image-position
-		$options  = array(
+	// TODO anastis: Docs
+	private function get_branding_image_position_options() {
+		return array(
 			'top-left'     => __( 'Top Left', 'videoigniter' ),
 			'top-right'    => __( 'Top Right', 'videoigniter' ),
 			'bottom-left'  => __( 'Bottom Left', 'videoigniter' ),
 			'bottom-right' => __( 'Bottom Right', 'videoigniter' ),
 		);
+	}
+	public function branding_image_position_render( $args ) {
+		$id       = $args['id'];
+		$selected = $this->settings[ $id ];
 		?>
 			<select
 				id="videoigniter_settings-<?php echo esc_attr( $id ); ?>"
 				name="videoigniter_settings[<?php echo esc_attr( $id ); ?>]"
 				class="videoigniter-branding-image-position"
 			>
-				<?php foreach ( $options as $value => $label ) : ?>
+				<?php foreach ( $this->get_branding_image_position_options() as $value => $label ) : ?>
 					<option
 						value="<?php echo esc_attr( $value ); ?>"
 						<?php echo selected( $selected, $value, false ); ?>>
