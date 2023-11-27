@@ -1,3 +1,21 @@
+:root {
+  --vi-admin-brand-color: #1c4866;
+  --vi-admin-brand-secondary-color: #ffcc00;
+  --vi-admin-lighter-grey: #f1f1f1;
+  --vi-admin-light-grey: #eeeeee;
+  --vi-admin-medium-grey: #d7d7d7;
+  --vi-admin-dark-grey: #cccccc;
+  --vi-admin-color-white: #ffffff;
+  --vi-admin-color-blue: #0073aa;
+  --vi-admin-color-red: #ff0000;
+  --vi-admin-color-green: #14b552;
+  --vi-admin-info-box-background-color: #fffce6;
+  --vi-admin-base-padding: 15px;
+  --vi-admin-transition-time: 0.18s;
+  --vi-admin-border-color: var(--vi-admin-lighter-grey);
+  --vi-admin-border-radius-base: 2px;
+}
+
 .vi-settings-image-upload {
   position: relative;
 }
@@ -68,4 +86,109 @@
   height: 100%;
   top: 0;
   left: 0;
+}
+
+.videoigniter-settings-content {
+  max-width: 680px;
+  background-color: white;
+}
+
+.videoigniter-settings-header {
+  display: flex;
+  align-items: center;
+  background: var(--vi-admin-brand-color);
+  color: white;
+  padding: 15px 25px;
+}
+
+.videoigniter-settings-upgrade-notice {
+  margin-left: auto;
+  flex: none;
+}
+
+.vi-settings-button,
+.vi-settings-button:hover,
+.vi-settings-button:active,
+.vi-settings-button:focus {
+  border: 0;
+  border-radius: var(--vi-admin-border-radius-base);
+  box-shadow: none;
+  padding: 14px 29px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: normal;
+  background: var(--vi-admin-color-green);
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.vi-settings-button:focus,
+.vi-settings-button:hover {
+  box-shadow: 0 0 0 1px var(--vi-admin-color-green);
+}
+
+.videoigniter-settings-footer {
+  display: flex;
+  align-items: center;
+  background: var(--vi-admin-brand-color);
+  color: white;
+  padding: 15px 25px;
+}
+
+.videoigniter-settings-nav {
+  display: flex;
+  align-items: center;
+  grid-gap: 15px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.videoigniter-settings-nav li {
+  margin: 0;
+  padding: 0;
+}
+
+.videoigniter-settings-nav a {
+  color: var(--vi-admin-brand-secondary-color);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.videoigniter-settings-nav a:hover {
+  text-decoration: underline;
+}
+
+.videoigniter-settings-main {
+  padding: 25px;
+}
+
+.videoigniter-settings-form > h2 {
+  display: none;
+}
+
+.videoigniter-settings-form > h3 {
+  margin: 0 0 15px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--vi-admin-border-color);
+}
+
+.videoigniter-settings-main .submit {
+  padding: 0;
+  margin: 30px 0 0;
+  text-align: right;
+}
+
+@media (min-width: 781px) {
+  .videoigniter-settings-main .form-table td {
+    text-align: right;
+    padding-right: 0;
+  }
+
+  .vi-settings-image-upload-placeholder {
+    text-align: left;
+    margin-left: auto;
+  }
 }

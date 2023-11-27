@@ -69,7 +69,7 @@ class VideoIgniter_Settings {
 
 	public function settings_section_callback() {
 		?>
-		<h2><?php esc_html_e( 'Player Branding', 'videoigniter' ); ?></h2>
+		<h3><?php esc_html_e( 'Player Branding', 'videoigniter' ); ?></h3>
 		<?php
 	}
 
@@ -153,15 +153,68 @@ class VideoIgniter_Settings {
 		<div class="wrap">
 			<div class="videoigniter-settings-container">
 				<div class="videoigniter-settings-content">
-					<form action="options.php" method="post" class="videoigniter-settings-form">
-					<?php
-					settings_fields( 'videoigniter' );
-					do_settings_sections( 'videoigniter' );
-					submit_button();
-					?>
-					</form>
-				</div>
+					<div class="videoigniter-settings-header">
+						<div class="videoigniter-settings-logo">
+							<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard-settings&utm_medium=link&utm_content=videoigniter&utm_campaign=logo" target="_blank" class="vi-logo">
+								<!-- TODO why does plugin_dir_path here not return the root path? -->
+								<img
+									src="<?php echo esc_url( plugin_dir_path( __FILE__ ) . 'assets/images/videoigniter-logo.svg' ); ?>"
+									alt="<?php esc_attr_e( 'VideoIgniter Logo', 'videoigniter' ); ?>"
+								>
+							</a>
+						</div>
 
+						<div class="videoigniter-settings-upgrade-notice">
+		<?php if ( apply_filters( 'videoigniter_metabox_tracks_show_upgrade_button', true ) ) : ?>
+							<a class="vi-settings-button" href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard-settings&utm_medium=link&utm_content=videoigniter&utm_campaign=upgrade-pro" target="_blank">
+								<?php esc_html_e( 'Upgrade to Pro', 'videoigniter' ); ?>
+							</a>
+			<?php endif; ?>
+						</div>
+					</div>
+
+					<div class="videoigniter-settings-main">
+						<form action="options.php" method="post" class="videoigniter-settings-form">
+							<?php
+								settings_fields( 'videoigniter' );
+								do_settings_sections( 'videoigniter' );
+								submit_button();
+							?>
+						</form>
+					</div>
+
+					<div class="videoigniter-settings-footer">
+						<ul class="videoigniter-settings-nav">
+							<?php
+								$links = apply_filters( 'videoigniter_metabox_tracks_footer_links', array(
+									'support'       => array(
+										'title' => __( 'Support', 'videoigniter' ),
+										'url'   => 'https://wordpress.org/support/plugin/videoigniter',
+									),
+									'documentation' => array(
+										'title' => __( 'Documentation', 'videoigniter' ),
+										'url'   => 'https://www.cssigniter.com/docs/videoigniter/',
+									),
+									'rate_plugin'   => array(
+										'title' => __( 'Rate this plugin', 'videoigniter' ),
+										'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
+									),
+								) );
+
+								foreach ( $links as $link ) {
+									if ( empty( $link['url'] ) || empty( $link['title'] ) ) {
+										continue;
+									}
+
+									echo sprintf( '<li><a href="%s" target="_blank">%s</a></li>',
+										esc_url( $link['url'] ),
+										esc_html( $link['title'] )
+									);
+								}
+							?>
+						</ul>
+					</div>
+				</div>
 			</div>
 		</div>
 		<?php
