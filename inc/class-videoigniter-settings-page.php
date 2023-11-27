@@ -41,7 +41,7 @@ class VideoIgniter_Settings {
 
 		add_settings_field(
 			'videoigniter_accent_color',
-			__( 'Accent color', 'videoigniter' ),
+			sprintf('%s <span>%s</span>', __('Accent color', 'videoigniter'), __('The primary color of the player', 'videoigniter')),
 			array( $this, 'color_input_render' ),
 			'videoigniter',
 			'videoigniter_settings',
@@ -50,7 +50,7 @@ class VideoIgniter_Settings {
 
 		add_settings_field(
 			'videoigniter_branding_image_id',
-			__('Branding Image', 'videoigniter'),
+			sprintf('%s <span>%s</span>', __('Branding Image', 'videoigniter'), __('Transparent .pngs of your logo work best', 'videoigniter')),
 			array( $this, 'branding_image_render' ),
 			'videoigniter',
 			'videoigniter_settings',
@@ -59,11 +59,11 @@ class VideoIgniter_Settings {
 
 		add_settings_field(
 			'videoigniter_branding_image_position',
-			__('Branding Image Position', 'videoigniter'),
+			sprintf('%s <span>%s</span>', __('Branding Image Position', 'videoigniter'), __('Position of the brand logo relative to the player', 'videoigniter')),
 			array( $this, 'branding_image_position_render' ),
 			'videoigniter',
 			'videoigniter_settings',
-			array( 'id' => 'branding-image-position' )
+			array( 'id' => 'branding-image-position', 'description' => 'hello' )
 		);
 	}
 
@@ -155,10 +155,9 @@ class VideoIgniter_Settings {
 				<div class="videoigniter-settings-content">
 					<div class="videoigniter-settings-header">
 						<div class="videoigniter-settings-logo">
-							<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard-settings&utm_medium=link&utm_content=videoigniter&utm_campaign=logo" target="_blank" class="vi-logo">
-								<!-- TODO why does plugin_dir_path here not return the root path? -->
+							<a href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard-settings&utm_medium=link&utm_content=videoigniter&utm_campaign=logo" target="_blank" class="videoigniter-settings-logo">
 								<img
-									src="<?php echo esc_url( plugin_dir_path( __FILE__ ) . 'assets/images/videoigniter-logo.svg' ); ?>"
+									src="<?php echo esc_url( VideoIgniter()->plugin_url() . 'assets/images/videoigniter-logo.svg' ); ?>"
 									alt="<?php esc_attr_e( 'VideoIgniter Logo', 'videoigniter' ); ?>"
 								>
 							</a>
