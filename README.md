@@ -4,21 +4,18 @@ Video player for WordPress
 ## Development
 Development must be made in short-lived branches. When a feature is complete, its branch should be merged into `main` and get deleted. The `main` branch should remain stable at all times.
 
-TODO vmasto: (free & pro) Add .nvmrc file
-TODO vmasto: (free & pro) Detail how to dev/build js & css. Typical ignite-cli invocation doesn't seem to work (ignitefile.js is present), and a gulpfile is also present, so... how?
-
 Install [nvm](https://github.com/nvm-sh/nvm) and [yarn](https://yarnpkg.com/getting-started/install) on your machine.
 
-While developing, inside the plugin folder run:
-```
-cd player
-nvm use
-yarn
-yarn start
-```
+## Development
+- First run `npm i && cd block && npm i` at the root of the project to install dependencies.
+- To develop the admin and frontend parts of VideoIgniter run `npm start`. It will minify scripts and styles and start a gulp watcher.
+- To develop for the block run `cd block && npm start`.
+
+**Don't forget to run `npm build` at the root of the project before committing your changes**.
 
 ## Build
-Run `yarn build` before releasing an update.
+- First run `npm i && cd block && npm i` at the root of the project.
+- Then, again at the **root of the project**, run `npm run build` before releasing an update. This will minify both VideoIgniter's frontend base styles and build the block's styles and scripts.
 
 ## Updating readme.txt without releasing a new version
 While it's technically possible, we don't support updating the readme.txt file via GitHub as it requires a separate long-lived `develop` branch.
