@@ -421,6 +421,8 @@ class VideoIgniter {
 	 * @since NewVersion
 	 *
 	 * @param array[] $block_categories Array of categories for block types.
+	 *
+	 * @return array
 	 */
 	public function block_categories( $block_categories ): array {
 		return array_merge( $block_categories, array(
@@ -1630,6 +1632,8 @@ class VideoIgniter {
 	 * @param string[]|null $mimes                     Array of mime types keyed by their file extension regex, or null if
 	 *                                                 none were provided.
 	 * @param string|false  $real_mime                 The actual mime type or false if the type cannot be determined.
+	 *
+	 * @return array
 	 */
 	public function register_file_extensions( $wp_check_filetype_and_ext, $file, $filename, $mimes, $real_mime ): array {
 		if ( false !== strpos( $filename, '.vtt' ) ) {

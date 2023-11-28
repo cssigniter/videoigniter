@@ -1,6 +1,14 @@
 <?php
-add_action( 'init', 'videoigniter_player_block_init' );
+/**
+ * Block-related functions.
+ */
 
+add_action( 'init', 'videoigniter_player_block_init' );
+/**
+ * Registers the plugin's blocks.
+ *
+ * @since NewVersion
+ */
 function videoigniter_player_block_init() {
 	register_block_type( 'videoigniter/player', array(
 		'attributes'      => array(
@@ -19,14 +27,28 @@ function videoigniter_player_block_init() {
 	) );
 }
 
-function videoigniter_player_block_defaults() {
+/**
+ * Returns the Player block's default values.
+ *
+ * @since NewVersion
+ *
+ * @return array
+ */
+function videoigniter_player_block_defaults(): array {
 	return array(
 		'uniqueId' => false,
 		'playerId' => false,
 	);
 }
 
-function videoigniter_player_block_render_callback( $attributes ) {
+/**
+ * Renders the Player block.
+ *
+ * @param array $attributes Array of block attributes.
+ *
+ * @return string
+ */
+function videoigniter_player_block_render_callback( $attributes ): string {
 	$attributes = wp_parse_args( $attributes, videoigniter_player_block_defaults() );
 
 	$unique_id  = $attributes['uniqueId'];
@@ -51,8 +73,6 @@ function videoigniter_player_block_render_callback( $attributes ) {
 	</div>
 	<?php
 
-	$response = ob_get_clean();
-
-	return $response;
+	return ob_get_clean();
 }
 

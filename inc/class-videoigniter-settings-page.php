@@ -1,8 +1,26 @@
 <?php
-// TODO anastis: Docs in everything.
+/**
+ * Class VideoIgniter_Settings
+ *
+ * Builds the settings page.
+ *
+ * @since NewVersion
+ */
 class VideoIgniter_Settings {
-	protected $settings = false;
+	/**
+	 * Settings array
+	 *
+	 * @var array
+	 *
+	 * @since NewVersion
+	 */
+	protected $settings;
 
+	/**
+	 * Class constructor.
+	 *
+	 * @since NewVersion
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
 
@@ -10,15 +28,34 @@ class VideoIgniter_Settings {
 		add_action( 'admin_init', array( $this, 'settings_init' ) );
 	}
 
+	/**
+	 * Registers actions that need to be run on both admin and frontend
+	 *
+	 * @since NewVersion
+	 */
 	public function init() {
 		$this->settings = get_option( 'videoigniter_settings', array() );
 		$this->settings = $this->validate_settings( $this->settings );
 	}
 
+	/**
+	 * Registers admin menu pages.
+	 *
+	 * @since NewVersion
+	 */
 	public function add_admin_menu() {
 		add_submenu_page( 'edit.php?post_type=vi_playlist', esc_html__( 'VideoIgniter Settings', 'videoigniter' ), esc_html__( 'Settings', 'videoigniter' ), 'manage_options', 'vi_settings', array( $this, 'options_page' ) );
 	}
 
+	/**
+	 * Sanitizes the plugin's settings.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $settings Settings array to sanitize.
+	 *
+	 * @return array
+	 */
 	public function settings_sanitize( $settings ) {
 		$new_settings = array();
 
@@ -29,6 +66,11 @@ class VideoIgniter_Settings {
 		return $new_settings;
 	}
 
+	/**
+	 * Registers the settings for the settings page.
+	 *
+	 * @since NewVersion
+	 */
 	public function settings_init() {
 		register_setting( 'videoigniter', 'videoigniter_settings', array( $this, 'settings_sanitize' ) );
 
@@ -67,12 +109,24 @@ class VideoIgniter_Settings {
 		);
 	}
 
+	/**
+	 * Callback for the add_settings_section() call.
+	 *
+	 * @since NewVersion
+	 */
 	public function settings_section_callback() {
 		?>
 		<h3><?php esc_html_e( 'Player Branding', 'videoigniter' ); ?></h3>
 		<?php
 	}
 
+	/**
+	 * Renders a color input setting.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $args The setting's args array.
+	 */
 	public function color_input_render( $args ) {
 		$id = $args['id'];
 		?>
@@ -86,6 +140,13 @@ class VideoIgniter_Settings {
 		<?php
 	}
 
+	/**
+	 * Renders an image input setting.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $args The setting's args array.
+	 */
 	public function branding_image_render( $args ) {
 		$id        = $args['id'];
 		$image_id  = $this->settings[ $id ];
@@ -119,8 +180,14 @@ class VideoIgniter_Settings {
 		<?php
 	}
 
-	// TODO anastis: Docs
-	private function get_branding_image_position_options() {
+	/**
+	 * Returns the Branding Image's position options.
+	 *
+	 * @since NewVersion
+	 *
+	 * @return array
+	 */
+	private function get_branding_image_position_options(): array {
 		return array(
 			'top-left'     => __( 'Top Left', 'videoigniter' ),
 			'top-right'    => __( 'Top Right', 'videoigniter' ),
@@ -128,6 +195,14 @@ class VideoIgniter_Settings {
 			'bottom-right' => __( 'Bottom Right', 'videoigniter' ),
 		);
 	}
+
+	/**
+	 * Renders the Branding Image Position setting.
+	 *
+	 * @since NewVersion
+	 *
+	 * @param array $args The setting's args array.
+	 */
 	public function branding_image_position_render( $args ) {
 		$id       = $args['id'];
 		$selected = $this->settings[ $id ];
@@ -148,6 +223,11 @@ class VideoIgniter_Settings {
 		<?php
 	}
 
+	/**
+	 * Renders the settings page.
+	 *
+	 * @since NewVersion
+	 */
 	public function options_page() {
 		?>
 		<div class="wrap">
@@ -164,11 +244,11 @@ class VideoIgniter_Settings {
 						</div>
 
 						<div class="videoigniter-settings-upgrade-notice">
-		<?php if ( apply_filters( 'videoigniter_metabox_tracks_show_upgrade_button', true ) ) : ?>
-							<a class="vi-settings-button" href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard-settings&utm_medium=link&utm_content=videoigniter&utm_campaign=upgrade-pro" target="_blank">
-								<?php esc_html_e( 'Upgrade to Pro', 'videoigniter' ); ?>
-							</a>
-			<?php endif; ?>
+							<?php if ( apply_filters( 'videoigniter_metabox_tracks_show_upgrade_button', true ) ) : ?>
+								<a class="vi-settings-button" href="https://www.cssigniter.com/plugins/videoigniter?utm_source=dashboard-settings&utm_medium=link&utm_content=videoigniter&utm_campaign=upgrade-pro" target="_blank">
+									<?php esc_html_e( 'Upgrade to Pro', 'videoigniter' ); ?>
+								</a>
+							<?php endif; ?>
 						</div>
 					</div>
 
@@ -185,31 +265,32 @@ class VideoIgniter_Settings {
 					<div class="videoigniter-settings-footer">
 						<ul class="videoigniter-settings-nav">
 							<?php
-								$links = apply_filters( 'videoigniter_metabox_tracks_footer_links', array(
-									'support'       => array(
-										'title' => __( 'Support', 'videoigniter' ),
-										'url'   => 'https://wordpress.org/support/plugin/videoigniter',
-									),
-									'documentation' => array(
-										'title' => __( 'Documentation', 'videoigniter' ),
-										'url'   => 'https://www.cssigniter.com/docs/videoigniter/',
-									),
-									'rate_plugin'   => array(
-										'title' => __( 'Rate this plugin', 'videoigniter' ),
-										'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
-									),
-								) );
+							$links = apply_filters( 'videoigniter_metabox_tracks_footer_links', array(
+								'support'       => array(
+									'title' => __( 'Support', 'videoigniter' ),
+									'url'   => 'https://wordpress.org/support/plugin/videoigniter',
+								),
+								'documentation' => array(
+									'title' => __( 'Documentation', 'videoigniter' ),
+									'url'   => 'https://www.cssigniter.com/docs/videoigniter/',
+								),
+								'rate_plugin'   => array(
+									'title' => __( 'Rate this plugin', 'videoigniter' ),
+									'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
+								),
+							) );
 
-								foreach ( $links as $link ) {
-									if ( empty( $link['url'] ) || empty( $link['title'] ) ) {
-										continue;
-									}
-
-									echo sprintf( '<li><a href="%s" target="_blank">%s</a></li>',
-										esc_url( $link['url'] ),
-										esc_html( $link['title'] )
-									);
+							foreach ( $links as $link ) {
+								if ( empty( $link['url'] ) || empty( $link['title'] ) ) {
+									continue;
 								}
+
+								printf(
+									'<li><a href="%s" target="_blank">%s</a></li>',
+									esc_url( $link['url'] ),
+									esc_html( $link['title'] )
+								);
+							}
 							?>
 						</ul>
 					</div>
@@ -219,7 +300,14 @@ class VideoIgniter_Settings {
 		<?php
 	}
 
-	public function default_settings() {
+	/**
+	 * Returns the default settings values.
+	 *
+	 * @since NewVersion
+	 *
+	 * @return array
+	 */
+	public function default_settings(): array {
 		return array(
 			'accent-color'            => '#ff0000',
 			'branding-image-id'       => '',
@@ -227,7 +315,14 @@ class VideoIgniter_Settings {
 		);
 	}
 
-	public function get_settings() {
+	/**
+	 * Returns an array of all settings.
+	 *
+	 * @since NewVersion
+	 *
+	 * @return array
+	 */
+	public function get_settings(): array {
 		return $this->validate_settings( $this->settings );
 	}
 
@@ -235,7 +330,7 @@ class VideoIgniter_Settings {
 	 * Makes sure there are no undefined indexes in the settings array.
 	 * Use before using a setting value. Eliminates the need for isset() before using.
 	 *
-	 * @param $settings
+	 * @param array $settings Settings array.
 	 *
 	 * @return array
 	 */

@@ -59,12 +59,12 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @uses VideoIgniter_Sanitizer::playlist_track()
 	 *
-	 * @param array $post_tracks Input values to sanitize, as passed by the playlist metabox.
-	 * @param int|null $post_id Optional. Post ID where the track belongs to.
+	 * @param array    $post_tracks Input values to sanitize, as passed by the playlist metabox.
+	 * @param int|null $post_id     Optional. Post ID where the track belongs to.
 	 *
 	 * @return array
 	 */
-	public static function metabox_playlist( $post_tracks, $post_id = null ) {
+	public static function metabox_playlist( $post_tracks, $post_id = null ): array {
 		if ( empty( $post_tracks ) || ! is_array( $post_tracks ) ) {
 			return array();
 		}
@@ -242,24 +242,23 @@ class VideoIgniter_Sanitizer {
 		return (int) $input;
 	}
 
-
 	/**
 	 * Returns a sanitized hex color code.
 	 *
 	 * @since NewVersion
 	 *
-	 * @param string $str The color string to be sanitized.
-	 * @param bool $return_hash Whether to return the color code prepended by a hash.
+	 * @param string $str         The color string to be sanitized.
+	 * @param bool   $return_hash Whether to return the color code prepended by a hash.
 	 * @param string $return_fail The value to return on failure.
 	 *
 	 * @return string A valid hex color code on success, an empty string on failure.
 	 */
-	public static function hex_color( $str, $return_hash = true, $return_fail = '' ) {
+	public static function hex_color( $str, $return_hash = true, $return_fail = '' ): string {
 		if ( false === $str || empty( $str ) || 'false' === $str ) {
 			return $return_fail;
 		}
 
-		// Allow keywords and predefined colors
+		// Allow keywords and predefined colors.
 		if ( in_array( $str, array( 'transparent', 'initial', 'inherit', 'black', 'silver', 'gray', 'grey', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua', 'orange', 'aliceblue', 'antiquewhite', 'aquamarine', 'azure', 'beige', 'bisque', 'blanchedalmond', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'limegreen', 'linen', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'oldlace', 'olivedrab', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'whitesmoke', 'yellowgreen', 'rebeccapurple' ), true ) ) {
 			return $str;
 		}
@@ -293,18 +292,18 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @since NewVersion
 	 *
-	 * @param string $color       The color value to sanitize
-	 * @param bool   $return_hash Whether to return hex color prefixed with a `#`
+	 * @param string $color       The color value to sanitize.
+	 * @param bool   $return_hash Whether to return hex color prefixed with a `#`.
 	 * @param string $return_fail Value to return when $color fails validation.
 	 *
 	 * @return string
 	 */
-	public static function rgba_color( $color, $return_hash = true, $return_fail = '' ) {
+	public static function rgba_color( $color, $return_hash = true, $return_fail = '' ): string {
 		if ( false === $color || empty( $color ) || 'false' === $color ) {
 			return $return_fail;
 		}
 
-		// Allow keywords and predefined colors
+		// Allow keywords and predefined colors.
 		if ( in_array( $color, array( 'transparent', 'initial', 'inherit', 'black', 'silver', 'gray', 'grey', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua', 'orange', 'aliceblue', 'antiquewhite', 'aquamarine', 'azure', 'beige', 'bisque', 'blanchedalmond', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'limegreen', 'linen', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'oldlace', 'olivedrab', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'whitesmoke', 'yellowgreen', 'rebeccapurple' ), true ) ) {
 			return $color;
 		}
@@ -351,19 +350,20 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @since NewVersion
 	 *
-	 * @param mixed $value
+	 * @param mixed $value The percentage value to sanitize.
 	 *
 	 * @return string A percentage value, including the percentage sign.
 	 */
-	public static function float_0_100( $value ) {
+	public static function float_0_100( $value ): string {
 		$value = str_replace( '%', '', $value );
-		if ( floatval( $value ) > 100 ) {
+		$value = (float) $value;
+		if ( $value > 100 ) {
 			$value = 100;
-		} elseif ( floatval( $value ) < 0 ) {
+		} elseif ( $value < 0 ) {
 			$value = 0;
 		}
 
-		return floatval( $value ) . '%';
+		return $value . '%';
 	}
 
 	/**
@@ -374,7 +374,7 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @since NewVersion
 	 *
-	 * @param mixed $value
+	 * @param mixed $value The value to sanitize.
 	 *
 	 * @return int A number between 0-255.
 	 */
@@ -394,18 +394,19 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @since NewVersion
 	 *
-	 * @param mixed $value
+	 * @param mixed $value The value to sanitize.
 	 *
 	 * @return float A number between 0-1.
 	 */
 	public static function float_0_1( $value ) {
-		if ( floatval( $value ) > 1 ) {
+		$value = (float) $value;
+		if ( $value > 1 ) {
 			$value = 1;
-		} elseif ( floatval( $value ) < 0 ) {
+		} elseif ( $value < 0 ) {
 			$value = 0;
 		}
 
-		return floatval( $value );
+		return $value;
 	}
 
 	/**
@@ -413,22 +414,22 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @since NewVersion
 	 *
-	 * @param array $array Input array to sanitize.
+	 * @param array $attributes Input array to sanitize.
 	 *
-	 * @return array()
+	 * @return array
 	 */
-	public static function html_data_attributes_array( $array ) {
-		$keys       = array_keys( $array );
+	public static function html_data_attributes_array( $attributes ): array {
+		$keys       = array_keys( $attributes );
 		$key_prefix = 'data-';
 
 		// Remove keys that are not data attributes.
 		foreach ( $keys as $key ) {
-			if ( substr( $key, 0, strlen( $key_prefix ) ) !== $key_prefix ) {
-				unset( $array[ $key ] );
+			if ( strpos( $key, $key_prefix ) !== 0 ) {
+				unset( $attributes[ $key ] );
 			}
 		}
 
-		return $array;
+		return $attributes;
 	}
 
 
@@ -442,7 +443,7 @@ class VideoIgniter_Sanitizer {
 	 *
 	 * @return bool false if empty or null, true otherwise.
 	 */
-	public static function array_filter_empty_null( $value ) {
+	public static function array_filter_empty_null( $value ): bool {
 		if ( '' === $value || is_null( $value ) ) {
 			return false;
 		}
