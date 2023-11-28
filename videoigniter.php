@@ -6,6 +6,8 @@
  * Author: The CSSIgniter Team
  * Author URI: https://www.cssigniter.com
  * Version: 0.1.0
+ * Requires at least: 6.4
+ * Requires PHP: 7.0
  * Text Domain: videoigniter
  * Domain Path: languages
  *
