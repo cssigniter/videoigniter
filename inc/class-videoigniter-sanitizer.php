@@ -213,7 +213,10 @@ class VideoIgniter_Sanitizer {
 		$sanitized['end_time']   = self::intval_or_empty( $overlay['end_time'] );
 		$sanitized['position']   = array_key_exists( $overlay['position'], VideoIgniter::get_track_overlay_positions() ) ? $overlay['position'] : 'top-left';
 
-		$tmp = array_filter( $sanitized );
+		$tmp = $sanitized;
+		// Unset position as it always has a value.
+		unset( $tmp['position'] );
+		$tmp = array_filter( $tmp );
 		if ( empty( $tmp ) ) {
 			$sanitized = false;
 		}
