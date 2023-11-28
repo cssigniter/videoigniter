@@ -1,16 +1,374 @@
-# Copyright (C) 2023 The CSSIgniter Team
-# This file is distributed under the same license as the VideoIgniter plugin.
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: VideoIgniter 0.1.0\n"
-"Report-Msgid-Bugs-To: https://cssigniter.com/support-hub/\n"
+"Project-Id-Version: VideoIgniter\n"
+"POT-Creation-Date: 2023-11-28 21:26+0200\n"
+"PO-Revision-Date: 2016-08-29 19:22+0300\n"
 "Last-Translator: CSSIgniter Team <team@cssigniter.com>\n"
 "Language-Team: CSSIgniter Team <team@cssigniter.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-09-28T10:47:30+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Domain: videoigniter\n"
+"X-Generator: Poedit 3.4.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: videoigniter.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: block/block.php:59
+msgid "Select a playlist from the block settings."
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:47
+#: inc/class-videoigniter-settings-page.php:79
+msgid "VideoIgniter Settings"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:47 videoigniter.php:484
+msgid "Settings"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:86
+msgid "Accent Color"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:86
+msgid "The primary color of the player"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:95
+msgid "Branding Image"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:95
+msgid "Transparent .pngs of your logo work best"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:104
+msgid "Branding Image Position"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:104
+msgid "Position of the brand logo relative to the player"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:119
+msgid "Player Branding"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:170
+msgid "Upload Image"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:192
+msgid "Top Left"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:193
+msgid "Top Right"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:194
+msgid "Bottom Left"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:195 videoigniter.php:1032
+msgid "Bottom Right"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:241 videoigniter.php:537
+msgid "VideoIgniter Logo"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:249 videoigniter.php:544
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:270 videoigniter.php:567
+msgid "Support"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:274 videoigniter.php:571
+msgid "Documentation"
+msgstr ""
+
+#: inc/class-videoigniter-settings-page.php:278 videoigniter.php:575
+msgid "Rate this plugin"
+msgstr ""
+
+#: videoigniter.php:261
+msgid ""
+"Do you really want to remove all videos? (This will not delete your video "
+"files)."
+msgstr ""
+
+#: videoigniter.php:262
+msgid "Select or upload video media"
+msgstr ""
+
+#: videoigniter.php:263
+msgid "Select a poster image"
+msgstr ""
+
+#: videoigniter.php:264
+msgid "Select a file"
+msgstr ""
+
+#: videoigniter.php:274
+msgid "Choose image"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+#: videoigniter.php:433
+msgid "VideoIgniter"
+msgstr ""
+
+#: videoigniter.php:445
+msgctxt "post type general name"
+msgid "Playlists"
+msgstr ""
+
+#: videoigniter.php:446 videoigniter.php:462
+msgctxt "post type singular name"
+msgid "Playlist"
+msgstr ""
+
+#: videoigniter.php:447
+msgctxt "admin menu"
+msgid "VideoIgniter"
+msgstr ""
+
+#: videoigniter.php:448
+msgctxt "admin menu"
+msgid "All Playlists"
+msgstr ""
+
+#: videoigniter.php:449
+msgctxt "add new on admin bar"
+msgid "Playlist"
+msgstr ""
+
+#: videoigniter.php:450 videoigniter.php:451
+msgid "Add New Playlist"
+msgstr ""
+
+#: videoigniter.php:452
+msgid "Edit Playlist"
+msgstr ""
+
+#: videoigniter.php:453
+msgid "New Playlist"
+msgstr ""
+
+#: videoigniter.php:454
+msgid "View Playlist"
+msgstr ""
+
+#: videoigniter.php:455
+msgid "Search Playlists"
+msgstr ""
+
+#: videoigniter.php:456
+msgid "No playlists found"
+msgstr ""
+
+#: videoigniter.php:457
+msgid "No playlists found in the trash"
+msgstr ""
+
+#: videoigniter.php:483
+msgid "Videos"
+msgstr ""
+
+#: videoigniter.php:485 videoigniter.php:1576
+msgid "Shortcode"
+msgstr ""
+
+#. translators: %s is a URL.
+#: videoigniter.php:598
+#, php-format
+msgid ""
+"Thank you for creating with <a href=\"%s\" target=\"_blank\">VideoIgniter</"
+"a>"
+msgstr ""
+
+#: videoigniter.php:643
+msgid "Toggle track visibility"
+msgstr ""
+
+#: videoigniter.php:660
+msgid "Remove Cover Image"
+msgstr ""
+
+#: videoigniter.php:673
+msgid "Upload Poster"
+msgstr ""
+
+#: videoigniter.php:692 videoigniter.php:699
+msgid "Title"
+msgstr ""
+
+#: videoigniter.php:707 videoigniter.php:713
+msgid "Description"
+msgstr ""
+
+#: videoigniter.php:725 videoigniter.php:734
+msgid "Video file or stream"
+msgstr ""
+
+#: videoigniter.php:738
+msgid "Upload"
+msgstr ""
+
+#: videoigniter.php:753
+msgid "Remove Video"
+msgstr ""
+
+#: videoigniter.php:776
+msgid "Add Video"
+msgstr ""
+
+#: videoigniter.php:783
+msgid "Clear Playlist"
+msgstr ""
+
+#: videoigniter.php:789
+msgid "Expand All"
+msgstr ""
+
+#: videoigniter.php:792
+msgid "Collapse All"
+msgstr ""
+
+#: videoigniter.php:816
+msgid "Player &amp; Video listing"
+msgstr ""
+
+#: videoigniter.php:821
+msgid "Playlist layout"
+msgstr ""
+
+#: videoigniter.php:852
+msgid "Show fullscreen toggle"
+msgstr ""
+
+#: videoigniter.php:866
+msgid "Show playback speed controls"
+msgstr ""
+
+#: videoigniter.php:872
+msgid "Starting volume"
+msgstr ""
+
+#: videoigniter.php:883
+msgid "0-100"
+msgstr ""
+
+#: videoigniter.php:888
+msgid "Enter a value between 0 and 100 in increments of 10."
+msgstr ""
+
+#: videoigniter.php:910
+msgid "Grab the shortcode"
+msgstr ""
+
+#: videoigniter.php:941
+msgid "Right"
+msgstr ""
+
+#: videoigniter.php:946
+msgid "Left"
+msgstr ""
+
+#: videoigniter.php:951
+msgid "Bottom"
+msgstr ""
+
+#: videoigniter.php:970
+msgid "Disabled"
+msgstr ""
+
+#: videoigniter.php:974
+msgid "5 seconds"
+msgstr ""
+
+#: videoigniter.php:978
+msgid "10 seconds"
+msgstr ""
+
+#: videoigniter.php:982
+msgid "30 seconds"
+msgstr ""
+
+#: videoigniter.php:1000
+msgid "Top left"
+msgstr ""
+
+#: videoigniter.php:1004
+msgid "Top center"
+msgstr ""
+
+#: videoigniter.php:1008
+msgid "Top right"
+msgstr ""
+
+#: videoigniter.php:1012
+msgid "Middle left"
+msgstr ""
+
+#: videoigniter.php:1016
+msgid "Middle center"
+msgstr ""
+
+#: videoigniter.php:1020
+msgid "Middle right"
+msgstr ""
+
+#: videoigniter.php:1024
+msgid "Bottom left"
+msgstr ""
+
+#: videoigniter.php:1028
+msgid "Bottom center"
+msgstr ""
+
+#: widget/class-videoigniter-playlist-widget.php:28
+msgid "Displays a single VideoIgniter Playlist."
+msgstr ""
+
+#: widget/class-videoigniter-playlist-widget.php:30
+msgid "VideoIgniter - Playlist"
+msgstr ""
+
+#: widget/class-videoigniter-playlist-widget.php:102
+msgid "Title:"
+msgstr ""
+
+#: widget/class-videoigniter-playlist-widget.php:115
+msgid "Playlist:"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://www.cssigniter.com/plugins/videoigniter/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"VideoIgniter lets you create video playlists and embed them in your "
+"WordPress posts, pages or custom post types and serve your video content "
+"in style!"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "The CSSIgniter Team"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.cssigniter.com"
+msgstr ""
