@@ -1133,7 +1133,6 @@ class VideoIgniter {
 	 * @since NewVersion
 	 */
 	public function register_image_sizes() {
-		// TODO: potentially add a smaller size for the thumbnails ? (TBD)
 		add_image_size( 'videoigniter_cover', 1920, 1080, true );
 	}
 
