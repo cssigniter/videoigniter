@@ -673,6 +673,7 @@
 .vi-player .vjs-branding-top-right {
   top: 15px;
   right: 15px;
+  text-align: right;
 }
 
 .vi-player .vjs-branding-bottom-left {
@@ -683,6 +684,7 @@
 .vi-player .vjs-branding-bottom-right {
   bottom: calc(var(--vi-player-control-bar-height) + 15px);
   right: 15px;
+  text-align: right;
 }
 
 .vi-player.vjs-controls-disabled .vjs-branding-bottom-left,
