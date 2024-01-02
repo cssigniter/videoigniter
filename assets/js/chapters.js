@@ -94,6 +94,8 @@ function chaptersTimeline() {
           .el()
           .classList.remove('vjs-time-tooltip-with-chapter-title');
       }
+      timeTooltip.el().style.transform = 'translateX(-50%)';
+      timeTooltip.el().style.right = 'auto';
     };
   };
 
