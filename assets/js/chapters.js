@@ -80,6 +80,8 @@ function chaptersTimeline() {
       .getChild('mouseTimeDisplay');
 
     const timeTooltip = mouseTimeDisplay.getChild('timeTooltip');
+    timeTooltip.el().style.transform = 'translateX(-50%)';
+    timeTooltip.el().style.right = 'auto';
 
     timeTooltip.update = function (seekBarRect, seekBarPoint, time) {
       const seconds = seekBarPoint * player.duration();
@@ -94,8 +96,6 @@ function chaptersTimeline() {
           .el()
           .classList.remove('vjs-time-tooltip-with-chapter-title');
       }
-      timeTooltip.el().style.transform = 'translateX(-50%)';
-      timeTooltip.el().style.right = 'auto';
     };
   };
 
