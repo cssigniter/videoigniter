@@ -36,7 +36,6 @@
 /* Control bar */
 .vi-player .vjs-control-bar {
   height: var(--vi-player-control-bar-height);
-  opacity: 0;
   display: flex;
   align-items: center;
   background: transparent;
@@ -46,12 +45,7 @@
   transition: opacity 0.25s ease;
 }
 
-.vi-player:not(.vjs-hover-preview-running):hover .vjs-control-bar,
-.vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-control-bar {
-  opacity: 1;
-}
-
-.vi-player.vjs-hover-preview-running {
+.vi-player.vjs-hover-preview-running video {
   cursor: pointer;
 }
 
@@ -70,17 +64,11 @@
 .vi-player .vjs-title-bar {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
   transition: opacity 0.25s ease;
-  opacity: 0;
   padding: 1.133em 1.333em 4em;
 }
 
 .vi-player .vjs-title-bar-title {
   margin-bottom: 0;
-}
-
-.vi-player:not(.vjs-hover-preview-running):hover .vjs-title-bar,
-.vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-title-bar {
-  opacity: 1;
 }
 
 /* Layout spacer */
@@ -121,6 +109,15 @@
   opacity: 0.85;
   display: block;
   pointer-events: auto;
+  cursor: pointer;
+}
+
+.vi-player.vjs-hover-preview-running .vjs-control-bar,
+.vi-player.vjs-hover-preview-running .vjs-title-bar,
+.vi-player.vjs-hover-preview-running .vjs-branding {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
 
 .vi-player .vjs-control {
@@ -293,9 +290,18 @@
   height: 100% !important;
 }
 
-.vi-player .vjs-volume-panel.vjs-volume-panel-horizontal.vjs-hover,
-.vi-player .vjs-volume-panel.vjs-volume-panel-horizontal:active,
-.vi-player .vjs-volume-panel.vjs-volume-panel-horizontal.vjs-slider-active {
+.vi-player
+  .vjs-volume-panel.vjs-volume-panel-horizontal:not(
+    .vjs-mute-toggle-only
+  ).vjs-hover,
+.vi-player
+  .vjs-volume-panel.vjs-volume-panel-horizontal:not(
+    .vjs-mute-toggle-only
+  ):active,
+.vi-player
+  .vjs-volume-panel.vjs-volume-panel-horizontal:not(
+    .vjs-mute-toggle-only
+  ).vjs-slider-active {
   width: 110px;
 }
 
@@ -326,6 +332,9 @@
   opacity: 0.85;
   transition: opacity 0.18s ease;
   line-height: 0;
+  flex: none;
+  padding: 0;
+  margin: 0;
 }
 
 .vi-player .vjs-button:hover {
@@ -346,6 +355,11 @@
     opacity 0.18s ease,
     visibility 0s ease 0.35s;
   display: block;
+}
+
+.vjs-layout-tiny .vjs-menu-button-popup .vjs-menu .vjs-menu-content,
+.vjs-layout-x-small .vjs-menu-button-popup .vjs-menu .vjs-menu-content {
+  max-height: 10em;
 }
 
 .vi-player .vjs-menu-button.vjs-hover .vjs-menu {
@@ -377,6 +391,10 @@
   white-space: nowrap;
   text-transform: capitalize;
   transition: background-color 0.18s ease;
+}
+
+.vjs-menu li.vjs-menu-title {
+  justify-content: flex-start;
 }
 
 .vi-player .vjs-menu li.vjs-menu-item:focus,
@@ -654,8 +672,8 @@
 
 .vi-player .vjs-branding {
   position: absolute;
-  opacity: 0;
-  transition: opacity 0.25s ease 0s;
+  opacity: 1;
+  transition: opacity 1s ease 0s;
   width: 36%;
 }
 
@@ -664,9 +682,12 @@
   height: auto;
 }
 
-.vi-player:not(.vjs-hover-preview-running):hover .vjs-branding,
-.vi-player.vjs-paused:not(.vjs-hover-preview-running) .vjs-branding {
-  opacity: 1;
+.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-branding {
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    visibility 1s,
+    opacity 1s;
 }
 
 .vi-player .vjs-branding-top-left {
@@ -1109,24 +1130,22 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 360px;
+    width: 390px;
     transform: translateY(100%);
     animation: vi-fade-in-up 0.25s ease forwards;
     z-index: 201;
   }
 
-  .vjs-stuck
-    .vjs-control-bar
-    > .vjs-control:not(
-      .vjs-progress-control,
-      .vjs-play-control,
-      .vjs-volume-panel,
-      .vjs-fullscreen-control
-    ),
   .vjs-stuck .vjs-time-control,
   .vjs-stuck .vjs-branding,
   .vjs-stuck .vjs-overlay {
     display: none;
+  }
+
+  .vjs-stuck .video-js.vjs-layout-small .vjs-volume-control,
+  .vjs-stuck .video-js.vjs-layout-tiny .vjs-volume-control,
+  .vjs-stuck .video-js.vjs-layout-x-small .vjs-volume-control {
+    display: flex;
   }
 
   .editor-styles-wrapper .vjs-stuck .vjs-sticky-parent {

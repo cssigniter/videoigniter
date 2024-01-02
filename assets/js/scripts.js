@@ -56,6 +56,8 @@ const videoIgniter = videoElement => {
       },
     });
 
+    player.playsinline('true');
+
     replaceIcons(player);
 
     if (title || description) {
@@ -150,6 +152,10 @@ function brandingPlugin(options) {
  * Hover preview
  */
 function hoverPreviewPlugin() {
+  if (videojs.browser.TOUCH_ENABLED) {
+    return;
+  }
+
   const player = this;
   let isMuted = false;
   let isExplicitlyStarted = false; // To track if playback was started by a click

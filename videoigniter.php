@@ -1431,7 +1431,9 @@ class VideoIgniter {
 			class="video-js vjs-fluid vi-player"
 			controls
 			preload="auto"
+			<?php if ( ! empty ( $track_poster_url ) ) : ?>
 			poster="<?php echo esc_attr( $track_poster_url ); ?>"
+			<?php endif; ?>
 			data-overlays="<?php echo esc_attr( wp_json_encode( $overlay_array ) ); ?>"
 			data-title="<?php echo esc_attr( $main_track['title'] ); ?>"
 			data-description="<?php echo esc_attr( $main_track['description'] ); ?>"
