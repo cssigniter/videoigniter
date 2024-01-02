@@ -88,7 +88,6 @@ function chaptersTimeline() {
       if (chapter) {
         timeTooltip.el().classList.add('vjs-time-tooltip-with-chapter-title');
         timeTooltip.el().innerHTML = `<span class="vjs-time-tooltip-chapter-title">${chapter.text}</span>${time}`;
-        // TODO center the tooltip
       } else {
         timeTooltip.write(time);
         timeTooltip
