@@ -510,6 +510,10 @@
   box-shadow: none;
 }
 
+.vi-player .vjs-text-track-settings select option {
+  color: #000000;
+}
+
 .vi-player .vjs-track-settings-controls button {
   cursor: pointer;
   display: inline-flex;
@@ -712,6 +716,7 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
   padding-bottom: 2px;
+  z-index: 0;
 }
 
 .vi-playlist-nav::-webkit-scrollbar {
