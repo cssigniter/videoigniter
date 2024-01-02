@@ -7,7 +7,7 @@ add_action( 'init', 'videoigniter_player_block_init' );
 /**
  * Registers the plugin's blocks.
  *
- * @since NewVersion
+ * @since 1.0.0
  */
 function videoigniter_player_block_init() {
 	register_block_type( 'videoigniter/player', array(
@@ -30,7 +30,7 @@ function videoigniter_player_block_init() {
 /**
  * Returns the Player block's default values.
  *
- * @since NewVersion
+ * @since 1.0.0
  *
  * @return array
  */

@@ -4,7 +4,7 @@
  *
  * Builds the settings page.
  *
- * @since NewVersion
+ * @since 1.0.0
  */
 class VideoIgniter_Settings {
 	/**
@@ -12,14 +12,14 @@ class VideoIgniter_Settings {
 	 *
 	 * @var array
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected $settings;
 
 	/**
 	 * Class constructor.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
@@ -31,7 +31,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Registers actions that need to be run on both admin and frontend
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function init() {
 		$this->settings = get_option( 'videoigniter_settings', array() );
@@ -41,7 +41,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Registers admin menu pages.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function add_admin_menu() {
 		add_submenu_page( 'edit.php?post_type=vi_playlist', esc_html__( 'VideoIgniter Settings', 'videoigniter' ), esc_html__( 'Settings', 'videoigniter' ), 'manage_options', 'vi_settings', array( $this, 'options_page' ) );
@@ -50,7 +50,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Sanitizes the plugin's settings.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $settings Settings array to sanitize.
 	 *
@@ -69,7 +69,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Registers the settings for the settings page.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function settings_init() {
 		register_setting( 'videoigniter', 'videoigniter_settings', array( $this, 'settings_sanitize' ) );
@@ -112,7 +112,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Callback for the add_settings_section() call.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function settings_section_callback() {
 		?>
@@ -123,7 +123,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Renders a color input setting.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $args The setting's args array.
 	 */
@@ -143,7 +143,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Renders an image input setting.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $args The setting's args array.
 	 */
@@ -183,7 +183,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Returns the Branding Image's position options.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -199,7 +199,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Renders the Branding Image Position setting.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $args The setting's args array.
 	 */
@@ -226,7 +226,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Renders the settings page.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function options_page() {
 		?>
@@ -305,7 +305,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Returns the default settings values.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -320,7 +320,7 @@ class VideoIgniter_Settings {
 	/**
 	 * Returns an array of all settings.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */

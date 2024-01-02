@@ -4,7 +4,7 @@
  *
  * Creates a playlist widget for VideoIgniter.
  *
- * @since NewVersion
+ * @since 1.0.0
  */
 class VideoIgniter_Playlist_Widget extends WP_Widget {
 	/**
@@ -12,7 +12,7 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 	 *
 	 * @var array $defaults
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected $defaults = array(
 		'title'    => '',
@@ -22,7 +22,7 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 	/**
 	 * Constructs a new instance of the class.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		$widget_ops  = array( 'description' => esc_html__( 'Displays a single VideoIgniter Playlist.', 'videoigniter' ) );
@@ -33,7 +33,7 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 	/**
 	 * A widget function that displays a playlist.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $args     An array of arguments.
 	 * @param array $instance An array of instance data.
@@ -68,7 +68,7 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 	/**
 	 * Updates the instance of the class with new values provided in $new_instance.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $new_instance The new instance values.
 	 * @param array $old_instance The old instance values.
@@ -87,7 +87,7 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 	/**
 	 * Displays the form for editing the widget settings.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $instance The current widget instance settings.
 	 */
@@ -130,7 +130,7 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 	/**
 	 * Generates the function comment for the dropdown_posts function.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array  $args an array of arguments (optional).
 	 * @param string $name the name of the dropdown (optional, default: 'post_id').

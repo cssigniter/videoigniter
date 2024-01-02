@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VideoIgniter\n"
-"POT-Creation-Date: 2023-11-28 21:26+0200\n"
+"POT-Creation-Date: 2024-01-02 14:28+0200\n"
 "PO-Revision-Date: 2016-08-29 19:22+0300\n"
 "Last-Translator: CSSIgniter Team <team@cssigniter.com>\n"
 "Language-Team: CSSIgniter Team <team@cssigniter.com>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: videoigniter.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "VideoIgniter Settings"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:47 videoigniter.php:484
+#: inc/class-videoigniter-settings-page.php:47 videoigniter.php:482
 msgid "Settings"
 msgstr ""
 
@@ -82,111 +82,107 @@ msgstr ""
 msgid "Bottom Right"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:241 videoigniter.php:537
+#: inc/class-videoigniter-settings-page.php:241 videoigniter.php:535
 msgid "VideoIgniter Logo"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:249 videoigniter.php:544
+#: inc/class-videoigniter-settings-page.php:249 videoigniter.php:542
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:270 videoigniter.php:567
+#: inc/class-videoigniter-settings-page.php:271 videoigniter.php:566
 msgid "Support"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:274 videoigniter.php:571
+#: inc/class-videoigniter-settings-page.php:275 videoigniter.php:570
 msgid "Documentation"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:278 videoigniter.php:575
-msgid "Rate this plugin"
-msgstr ""
-
-#: videoigniter.php:261
+#: videoigniter.php:259
 msgid ""
 "Do you really want to remove all videos? (This will not delete your video "
 "files)."
 msgstr ""
 
-#: videoigniter.php:262
+#: videoigniter.php:260
 msgid "Select or upload video media"
 msgstr ""
 
-#: videoigniter.php:263
+#: videoigniter.php:261
 msgid "Select a poster image"
 msgstr ""
 
-#: videoigniter.php:264
+#: videoigniter.php:262
 msgid "Select a file"
 msgstr ""
 
-#: videoigniter.php:274
+#: videoigniter.php:272
 msgid "Choose image"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-#: videoigniter.php:433
+#: videoigniter.php:431
 msgid "VideoIgniter"
 msgstr ""
 
-#: videoigniter.php:445
+#: videoigniter.php:443
 msgctxt "post type general name"
 msgid "Playlists"
 msgstr ""
 
-#: videoigniter.php:446 videoigniter.php:462
+#: videoigniter.php:444 videoigniter.php:460
 msgctxt "post type singular name"
 msgid "Playlist"
 msgstr ""
 
-#: videoigniter.php:447
+#: videoigniter.php:445
 msgctxt "admin menu"
 msgid "VideoIgniter"
 msgstr ""
 
-#: videoigniter.php:448
+#: videoigniter.php:446
 msgctxt "admin menu"
 msgid "All Playlists"
 msgstr ""
 
-#: videoigniter.php:449
+#: videoigniter.php:447
 msgctxt "add new on admin bar"
 msgid "Playlist"
 msgstr ""
 
-#: videoigniter.php:450 videoigniter.php:451
+#: videoigniter.php:448 videoigniter.php:449
 msgid "Add New Playlist"
 msgstr ""
 
-#: videoigniter.php:452
+#: videoigniter.php:450
 msgid "Edit Playlist"
 msgstr ""
 
-#: videoigniter.php:453
+#: videoigniter.php:451
 msgid "New Playlist"
 msgstr ""
 
-#: videoigniter.php:454
+#: videoigniter.php:452
 msgid "View Playlist"
 msgstr ""
 
-#: videoigniter.php:455
+#: videoigniter.php:453
 msgid "Search Playlists"
 msgstr ""
 
-#: videoigniter.php:456
+#: videoigniter.php:454
 msgid "No playlists found"
 msgstr ""
 
-#: videoigniter.php:457
+#: videoigniter.php:455
 msgid "No playlists found in the trash"
 msgstr ""
 
-#: videoigniter.php:483
+#: videoigniter.php:481
 msgid "Videos"
 msgstr ""
 
-#: videoigniter.php:485 videoigniter.php:1576
+#: videoigniter.php:483 videoigniter.php:1575
 msgid "Shortcode"
 msgstr ""
 

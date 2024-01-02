@@ -8,13 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Provides static sanitization functions.
  *
- * @since NewVersion
+ * @since 1.0.0
  */
 class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes the playlist layout.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @uses VideoIgniter->get_playlist_layouts()
 	 *
@@ -34,7 +34,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes playlist skipping options.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @uses VideoIgniter->get_playlist_skip_options()
 	 *
@@ -55,7 +55,7 @@ class VideoIgniter_Sanitizer {
 	 * Sanitizes a playlist (repeatable tracks).
 	 *
 	 * @version NewVersion
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @uses VideoIgniter_Sanitizer::playlist_track()
 	 *
@@ -84,7 +84,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes a single playlist track.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @uses VideoIgniter::get_default_track_values()
 	 *
@@ -115,7 +115,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes a playlist's track subtitle entries.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $subtitles Subtitle entries to sanitize.
 	 *
@@ -141,7 +141,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes a single playlist's track subtitle entry.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $subtitle Subtitle entry to sanitize.
 	 *
@@ -168,7 +168,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes a playlist's track overlay entries.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $overlays Overlay entries to sanitize.
 	 *
@@ -194,7 +194,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes a single playlist's track overlay entry.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $overlay Subtitle entry to sanitize.
 	 *
@@ -227,7 +227,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes integer input while differentiating zero from empty string.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param mixed $input Input value to sanitize.
 	 *
@@ -248,7 +248,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Returns a sanitized hex color code.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $str         The color string to be sanitized.
 	 * @param bool   $return_hash Whether to return the color code prepended by a hash.
@@ -293,7 +293,7 @@ class VideoIgniter_Sanitizer {
 	 * - 3 and 6 digit hex values, optionally prefixed with `#`
 	 * - Predefined CSS named colors/keywords, such as 'transparent', 'initial', 'inherit', 'black', 'silver', etc.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $color       The color value to sanitize.
 	 * @param bool   $return_hash Whether to return hex color prefixed with a `#`.
@@ -351,7 +351,7 @@ class VideoIgniter_Sanitizer {
 	 * Accepts float values with or without the percentage sign `%`
 	 * Returns a string suffixed with the percentage sign `%`.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param mixed $value The percentage value to sanitize.
 	 *
@@ -375,7 +375,7 @@ class VideoIgniter_Sanitizer {
 	 * Accepts float values with or without the percentage sign `%`
 	 * Returns a string suffixed with the percentage sign `%`.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param mixed $value The value to sanitize.
 	 *
@@ -395,7 +395,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes a CSS opacity value, 0 - 1.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param mixed $value The value to sanitize.
 	 *
@@ -415,7 +415,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Removes elements whose keys are not valid data-attribute names.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $attributes Input array to sanitize.
 	 *
@@ -440,7 +440,7 @@ class VideoIgniter_Sanitizer {
 	 * Returns false when value is empty or null.
 	 * Only use with array_filter() or similar, as the naming can lead to confusion.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param mixed $value Array value to check whether empty or null.
 	 *

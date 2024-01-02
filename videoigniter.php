@@ -5,7 +5,7 @@
  * Description: VideoIgniter lets you create video playlists and embed them in your WordPress posts, pages or custom post types and serve your video content in style!
  * Author: The CSSIgniter Team
  * Author URI: https://www.cssigniter.com
- * Version: 0.1.0
+ * Version: 1.0.0
  * Requires at least: 6.4
  * Requires PHP: 7.0
  * Text Domain: videoigniter
@@ -41,7 +41,7 @@ class VideoIgniter {
 	 *
 	 * @var string
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public $version = null;
 
@@ -50,7 +50,7 @@ class VideoIgniter {
 	 *
 	 * @var VideoIgniter
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected static $instance = null;
 
@@ -59,7 +59,7 @@ class VideoIgniter {
 	 *
 	 * @var VideoIgniter_Sanitizer
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public $sanitizer = null;
 
@@ -68,7 +68,7 @@ class VideoIgniter {
 	 *
 	 * @var VideoIgniter_Settings
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public $settings_page = null;
 
@@ -77,7 +77,7 @@ class VideoIgniter {
 	 *
 	 * @var string
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public $post_type = 'vi_playlist';
 
@@ -88,7 +88,7 @@ class VideoIgniter {
 	 *
 	 * @see VideoIgniter()
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return VideoIgniter - Single instance.
 	 */
@@ -105,14 +105,14 @@ class VideoIgniter {
 	 * http://wordpress.stackexchange.com/questions/70055/best-way-to-initiate-a-class-in-a-wp-plugin
 	 * https://gist.github.com/toscho/3804204
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function __construct() {}
 
 	/**
 	 * Kickstarts plugin loading.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function plugin_setup() {
 		if ( is_null( $this->version ) ) {
@@ -144,7 +144,7 @@ class VideoIgniter {
 	/**
 	 * Registers actions that need to be run on both admin and frontend
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected function init() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
@@ -164,7 +164,7 @@ class VideoIgniter {
 	/**
 	 * Registers actions that need to be run on admin only.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected function admin_init() {
 		if ( ! is_admin() ) {
@@ -191,7 +191,7 @@ class VideoIgniter {
 	/**
 	 * Registers actions that need to be run on frontend only.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected function frontend_init() {
 		if ( is_admin() ) {
@@ -206,7 +206,7 @@ class VideoIgniter {
 	/**
 	 * Returns the filename suffix to be used when enqueuing scripts and styles.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -220,7 +220,7 @@ class VideoIgniter {
 		/**
 		 * Filters the filename suffix used for scripts and styles.
 		 *
-		 * @since NewVersion
+		 * @since 1.0.0
 		 *
 		 * @param string $suffix
 		 */
@@ -230,7 +230,7 @@ class VideoIgniter {
 	/**
 	 * Register (but not enqueue) all scripts and styles to be used throughout the plugin.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function register_scripts() {
 		$suffix = $this->scripts_styles_suffix();
@@ -304,7 +304,7 @@ class VideoIgniter {
 	/**
 	 * Enqueues frontend scripts and styles.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_style( 'videoigniter' );
@@ -324,7 +324,7 @@ class VideoIgniter {
 	 *
 	 * @param int $post_id Post/playlist ID.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function add_videoigniter_script_dependencies( int $post_id ) {
 		$videoigniter = wp_scripts()->registered['videoigniter'];
@@ -377,7 +377,7 @@ class VideoIgniter {
 	/**
 	 * Enqueues admin scripts and styles.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $hook The current admin page.
 	 */
@@ -404,7 +404,7 @@ class VideoIgniter {
 	/**
 	 * Enqueues editor scripts and styles.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function enqueue_editor_assets() {
 		if ( ! is_admin() ) {
@@ -418,7 +418,7 @@ class VideoIgniter {
 	/**
 	 * Register VideoIgniter's block category
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array[] $block_categories Array of categories for block types.
 	 *
@@ -436,7 +436,7 @@ class VideoIgniter {
 	/**
 	 * Post types registration.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function register_post_types() {
 		$labels = array(
@@ -475,7 +475,7 @@ class VideoIgniter {
 	/**
 	 * Registers metaboxes for the vi_playlist post type.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function add_meta_boxes() {
 		add_meta_box( 'vi-meta-box-tracks', esc_html__( 'Videos', 'videoigniter' ), array( $this, 'metabox_tracks' ), $this->post_type, 'normal', 'high' );
@@ -486,7 +486,7 @@ class VideoIgniter {
 	/**
 	 * Echoes the Tracks metabox markup.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param WP_Post $object Post object.
 	 * @param array   $box    Metabox args.
@@ -524,7 +524,7 @@ class VideoIgniter {
 	/**
 	 * Echoes the Tracks metabox header.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected function metabox_tracks_header() {
 		?>
@@ -550,7 +550,7 @@ class VideoIgniter {
 	/**
 	 * Echoes the Tracks metabox footer.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	protected function metabox_tracks_footer() {
 		do_action( 'videoigniter_metabox_tracks_field_footer_before' );
@@ -612,7 +612,7 @@ class VideoIgniter {
 	/**
 	 * Generates the repeatable track's metabox field markup.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $track Single track array.
 	 */
@@ -762,7 +762,7 @@ class VideoIgniter {
 	/**
 	 * Generates the tracks field controls markup.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $location Location of controls. May be 'top' or 'bottom'.
 	 * @param int    $post_id  Post ID of the current post.
@@ -799,7 +799,7 @@ class VideoIgniter {
 	/**
 	 * Generates the Settings metabox markup.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param WP_Post $object Post object.
 	 * @param array   $box    Metabox args.
@@ -897,7 +897,7 @@ class VideoIgniter {
 	/**
 	 * Generates the Shortcode metabox markup.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param WP_Post $object Post object.
 	 * @param array   $box    Metabox args.
@@ -926,7 +926,7 @@ class VideoIgniter {
 	/**
 	 * Returns the available playlist layouts and their associated information.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -960,7 +960,7 @@ class VideoIgniter {
 	/**
 	 * Returns the available playlist skip options
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -990,7 +990,7 @@ class VideoIgniter {
 	/**
 	 * Returns the available overlay positions
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -1040,7 +1040,7 @@ class VideoIgniter {
 	/**
 	 * Saves the current post's meta into the database.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param int $post_id Post ID of the post being saved.
 	 *
@@ -1079,7 +1079,7 @@ class VideoIgniter {
 	/**
 	 * Returns the default values for a track.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -1095,7 +1095,7 @@ class VideoIgniter {
 	/**
 	 * Returns the default values for a subtitle record.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -1111,7 +1111,7 @@ class VideoIgniter {
 	/**
 	 * Returns the default values for an overlay record.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -1130,7 +1130,7 @@ class VideoIgniter {
 	/**
 	 * Registers image sizes needed by the plugin.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function register_image_sizes() {
 		add_image_size( 'videoigniter_cover', 1920, 1080, true );
@@ -1139,7 +1139,7 @@ class VideoIgniter {
 	/**
 	 * Registers the plugin's widgets.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function register_widgets() {
 		$widgets = apply_filters( 'videoigniter_register_widgets', array(
@@ -1158,7 +1158,7 @@ class VideoIgniter {
 	/**
 	 * Registers the plugin's shortcodes.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function register_shortcodes() {
 		add_shortcode( 'vi_playlist', array( $this, 'shortcode_vi_playlist' ) );
@@ -1167,7 +1167,7 @@ class VideoIgniter {
 	/**
 	 * Checks whether passed post object or ID is a VideoIgniter playlist.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param int|WP_Post $post Post ID or post object.
 	 *
@@ -1186,7 +1186,7 @@ class VideoIgniter {
 	/**
 	 * Returns a data attributes array for the given playlist.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param int $post_id Post ID.
 	 *
@@ -1218,7 +1218,7 @@ class VideoIgniter {
 	/**
 	 * Determines whether the URL is a YouTube video.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $url The URL to check.
 	 *
@@ -1233,7 +1233,7 @@ class VideoIgniter {
 	/**
 	 * Determines whether the URL is a Vimeo video.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $url The URL to check.
 	 *
@@ -1248,7 +1248,7 @@ class VideoIgniter {
 	/**
 	 * Determines whether the URL is a streaming video.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $url The URL to check.
 	 *
@@ -1267,7 +1267,7 @@ class VideoIgniter {
 	/**
 	 * Returns the MIME type of the URL.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $url The URL to check.
 	 *
@@ -1316,7 +1316,7 @@ class VideoIgniter {
 	/**
 	 * Returns the extension of the URL, if any.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $url The URL to check.
 	 *
@@ -1333,7 +1333,7 @@ class VideoIgniter {
 	/**
 	 * Returns the JSON string for a specific playlist.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param int $playlist_id Post/playlist ID.
 	 *
@@ -1381,7 +1381,7 @@ class VideoIgniter {
 	/**
 	 * Returns the main track's markup.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param int $playlist_id Post/playlist ID.
 	 *
@@ -1471,7 +1471,7 @@ class VideoIgniter {
 	/**
 	 * Returns the output of the [vi_playlist] shortcode.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array  $atts    The shortcode attributes.
 	 * @param string $content Content, when used with a shortcode closing tag.
@@ -1545,7 +1545,7 @@ class VideoIgniter {
 	/**
 	 * Returns a textual representation of a boolean value.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param bool $value Value to convert to string.
 	 *
@@ -1562,7 +1562,7 @@ class VideoIgniter {
 	/**
 	 * Filters the table columns on the post listing screen.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param array $columns Array of table columns.
 	 *
@@ -1581,7 +1581,7 @@ class VideoIgniter {
 	/**
 	 * Renders the cell value of a custom table column on the post listing screen.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $column  Column slug.
 	 * @param int    $post_id Post ID.
@@ -1597,7 +1597,7 @@ class VideoIgniter {
 	/**
 	 * Returns an array of all playlist post objects.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param string $orderby WP_Query compatible order by clause. Default 'date'.
 	 * @param string $order WP_Query compatible order clause. Default 'DESC'.
@@ -1618,7 +1618,7 @@ class VideoIgniter {
 	/**
 	 * Filters the "real" file type of the given file.
 	 *
-	 * @since NewVersion.
+	 * @since 1.0.0.
 	 *
 	 * @param array         $wp_check_filetype_and_ext {
 	 *     Values for the extension, mime type, and corrected filename.
@@ -1661,7 +1661,7 @@ class VideoIgniter {
 	/**
 	 * Returns a post meta value, or a default one if the meta key doesn't exist.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 *
 	 * @param int    $post_id Post ID.
 	 * @param string $key     Meta key.
@@ -1684,7 +1684,7 @@ class VideoIgniter {
 	/**
 	 * Plugin activation hook.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function plugin_activated() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -1701,7 +1701,7 @@ class VideoIgniter {
 	/**
 	 * Plugin deactivation hook.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function plugin_deactivated() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -1718,7 +1718,7 @@ class VideoIgniter {
 	/**
 	 * Returns the basename of the plugin.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public static function plugin_basename() {
 		return plugin_basename( __FILE__ );
@@ -1727,7 +1727,7 @@ class VideoIgniter {
 	/**
 	 * Returns the plugin's URL.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function plugin_url() {
 		return plugin_dir_url( __FILE__ );
@@ -1736,7 +1736,7 @@ class VideoIgniter {
 	/**
 	 * Returns the plugin's paths.
 	 *
-	 * @since NewVersion
+	 * @since 1.0.0
 	 */
 	public function plugin_path() {
 		return plugin_dir_path( __FILE__ );
@@ -1749,7 +1749,7 @@ class VideoIgniter {
  *
  * Returns the working instance of VideoIgniter. No need for globals.
  *
- * @since NewVersion
+ * @since 1.0.0
  *
  * @return VideoIgniter
  */
