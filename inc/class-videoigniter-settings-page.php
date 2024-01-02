@@ -266,18 +266,20 @@ class VideoIgniter_Settings {
 						<ul class="videoigniter-settings-nav">
 							<?php
 							$links = apply_filters( 'videoigniter_metabox_tracks_footer_links', array(
+								// TODO: Change support link when free is published in wp.org
 								'support'       => array(
 									'title' => __( 'Support', 'videoigniter' ),
-									'url'   => 'https://wordpress.org/support/plugin/videoigniter',
+									'url'   => 'https://www.cssigniter.com/support-hub/',
 								),
 								'documentation' => array(
 									'title' => __( 'Documentation', 'videoigniter' ),
 									'url'   => 'https://www.cssigniter.com/docs/videoigniter/',
 								),
-								'rate_plugin'   => array(
-									'title' => __( 'Rate this plugin', 'videoigniter' ),
-									'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
-								),
+// TODO: Enable rating link when free is published in wp.org
+//								'rate_plugin'   => array(
+//									'title' => __( 'Rate this plugin', 'videoigniter' ),
+//									'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
+//								),
 							) );
 
 							foreach ( $links as $link ) {
