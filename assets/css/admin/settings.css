@@ -106,6 +106,7 @@
   line-height: 0;
   max-width: 196px;
   padding: 5px 0;
+  flex: auto;
 }
 
 .videoigniter-settings-logo img {
