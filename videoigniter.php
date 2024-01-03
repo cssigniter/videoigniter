@@ -5,7 +5,7 @@
  * Description: VideoIgniter lets you create video playlists and embed them in your WordPress posts, pages or custom post types and serve your video content in style!
  * Author: The CSSIgniter Team
  * Author URI: https://www.cssigniter.com
- * Version: 1.0.2dev
+ * Version: 1.0.1dev3
  * Requires at least: 6.4
  * Requires PHP: 7.0
  * Text Domain: videoigniter
@@ -1264,6 +1264,20 @@ class VideoIgniter {
 		return apply_filters( 'videoigniter_url_is_streaming', $result, $url, $file_ext, $streaming_extensions );
 	}
 
+
+	/**
+	 * Determines whether the URL is a self hosted video.
+	 *
+	 * @since 1.0.1
+	 *
+	 * @param string $url The URL to check.
+	 *
+	 * @return bool
+	 */
+	public function is_self_hosted( $url ): bool {
+		return ! $this->is_streaming( $url ) && ! $this->is_youtube( $url ) && ! $this->is_vimeo( $url );
+	}
+
 	/**
 	 * Returns the MIME type of the URL.
 	 *
@@ -1358,11 +1372,12 @@ class VideoIgniter {
 
 			$text_tracks = apply_filters( 'videoigniter_playlist_track_text_tracks', array(), $track );
 			$overlays    = apply_filters( 'videoigniter_playlist_track_overlays', array(), $track );
+			$track_url = $this->is_self_hosted( $track['track_url'] ) ? $track['track_url'] . '#t=0.01' : $track['track_url'];
 
 			$playlist[] = array(
 				'sources'     => array(
 					array(
-						'src'  => $track['track_url'],
+						'src'  => $track_url,
 						'type' => $this->get_video_mime_type_from_url( $track['track_url'] ),
 					),
 				),
@@ -1400,6 +1415,7 @@ class VideoIgniter {
 
 		$main_track       = wp_parse_args( $tracks[0], self::get_default_track_values() );
 		$track_poster_url = (string) wp_get_attachment_image_url( (int) $main_track['cover_id'], 'videoigniter_cover' );
+		$track_url        = $this->is_self_hosted( $main_track['track_url'] ) ? $main_track['track_url'] . '#t=0.01' : $main_track['track_url'];
 
 		$subtitles     = array();
 		$overlay_array = array();
@@ -1439,7 +1455,7 @@ class VideoIgniter {
 			data-description="<?php echo esc_attr( $main_track['description'] ); ?>"
 		>
 			<source
-				src="<?php echo esc_attr( $main_track['track_url'] ); ?>"
+				src="<?php echo esc_attr( $track_url ); ?>"
 				type="<?php echo esc_attr( $this->get_video_mime_type_from_url( $main_track['track_url'] ) ); ?>"
 			/>
 
