@@ -225,18 +225,17 @@ function stickyPlayer() {
         playerSeen = true;
         sentinel.classList.remove('vjs-stuck');
         sentinel.style.height = 'auto';
-        player
-          .el()
-          .classList.remove(
-            'vjs-layout-x-small',
-            'vjs-layout-small',
-            'vjs-layout-tiny',
-          );
+        const playerWidth = player.currentWidth();
+
+        if (playerWidth > 500) {
+          player.el().classList.remove('vjs-layout-x-small');
+        }
       } else {
         // Player is out of view
         if (playerSeen) {
           sentinel.style.height = `${player.el().clientHeight}px`;
           sentinel.classList.add('vjs-stuck');
+          player.el().classList.add('vjs-layout-x-small');
         }
       }
     }, 50),
