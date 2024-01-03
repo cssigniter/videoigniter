@@ -477,6 +477,10 @@
   display: none;
 }
 
+.vjs-youtube .vjs-loading-spinner {
+  display: none;
+}
+
 /* Modals */
 .vi-player .vjs-modal-dialog {
   height: 100%;

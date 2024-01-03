@@ -225,6 +225,13 @@ function stickyPlayer() {
         playerSeen = true;
         sentinel.classList.remove('vjs-stuck');
         sentinel.style.height = 'auto';
+        player
+          .el()
+          .classList.remove(
+            'vjs-layout-x-small',
+            'vjs-layout-small',
+            'vjs-layout-tiny',
+          );
       } else {
         // Player is out of view
         if (playerSeen) {
