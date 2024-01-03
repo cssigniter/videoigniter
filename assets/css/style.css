@@ -255,6 +255,7 @@
 .vi-player .vjs-play-progress .vjs-svg-icon svg {
   fill: var(--vi-player-color-primary);
   transition: opacity 0.18s ease;
+  stroke: none;
 }
 
 .vi-player .vjs-progress-control:hover .vjs-svg-icon svg {
