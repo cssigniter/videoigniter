@@ -150,6 +150,7 @@
   width: 100%;
   height: auto;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .vi-player .vjs-slider {
@@ -452,6 +453,16 @@
 .vi-player .vjs-menu li .vjs-svg-icon {
   width: 20px;
   height: 20px;
+}
+
+/* Captions / subtitles */
+.vi-player.vjs-layout-small video::-webkit-media-text-track-display,
+.vi-player.vjs-layout-x-small video::-webkit-media-text-track-display,
+.vi-player.vjs-layout-tiny video::-webkit-media-text-track-display,
+.vi-player.vjs-layout-small .vjs-text-track-display *,
+.vi-player.vjs-layout-x-small .vjs-text-track-display *,
+.vi-player.vjs-layout-tiny .vjs-text-track-display * {
+  font-size: 16px !important;
 }
 
 /* Loading spinner */
