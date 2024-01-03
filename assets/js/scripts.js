@@ -111,6 +111,21 @@ const videoIgniter = videoElement => {
       });
     }
 
+    // iOS sometimes does not display chapters using the
+    // <track> element, override this behavior programmatically.
+    if (playlist?.length === 1 && videojs.browser.IS_IOS) {
+      const [videoTrack] = playlist;
+      const chaptersTrack = videoTrack.textTracks.find(
+        textTrack => textTrack.kind === 'chapters',
+      );
+
+      if (chaptersTrack) {
+        player.ready(() => {
+          player.addRemoteTextTrack(chaptersTrack);
+        });
+      }
+    }
+
     setTimeout(() => {
       player.volume(initialVolume);
     }, 100);
