@@ -1372,7 +1372,7 @@ class VideoIgniter {
 
 			$text_tracks = apply_filters( 'videoigniter_playlist_track_text_tracks', array(), $track );
 			$overlays    = apply_filters( 'videoigniter_playlist_track_overlays', array(), $track );
-			$track_url = $this->is_self_hosted( $track['track_url'] ) ? $track['track_url'] . '#t=0.01' : $track['track_url'];
+			$track_url   = $this->is_self_hosted( $track['track_url'] ) && empty ( $track_poster_url ) ? $track['track_url'] . '#t=0.01' : $track['track_url'];
 
 			$playlist[] = array(
 				'sources'     => array(
@@ -1415,7 +1415,7 @@ class VideoIgniter {
 
 		$main_track       = wp_parse_args( $tracks[0], self::get_default_track_values() );
 		$track_poster_url = (string) wp_get_attachment_image_url( (int) $main_track['cover_id'], 'videoigniter_cover' );
-		$track_url        = $this->is_self_hosted( $main_track['track_url'] ) ? $main_track['track_url'] . '#t=0.01' : $main_track['track_url'];
+		$track_url        = $this->is_self_hosted( $main_track['track_url'] ) && empty ( $track_poster_url ) ? $main_track['track_url'] . '#t=0.01' : $main_track['track_url'];
 
 		$subtitles     = array();
 		$overlay_array = array();
