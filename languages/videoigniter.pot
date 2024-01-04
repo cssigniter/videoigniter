@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VideoIgniter\n"
-"POT-Creation-Date: 2024-01-02 14:28+0200\n"
+"POT-Creation-Date: 2024-01-04 18:20+0200\n"
 "PO-Revision-Date: 2016-08-29 19:22+0300\n"
 "Last-Translator: CSSIgniter Team <team@cssigniter.com>\n"
 "Language-Team: CSSIgniter Team <team@cssigniter.com>\n"
@@ -182,7 +182,7 @@ msgstr ""
 msgid "Videos"
 msgstr ""
 
-#: videoigniter.php:483 videoigniter.php:1575
+#: videoigniter.php:483 videoigniter.php:1591
 msgid "Shortcode"
 msgstr ""
 
