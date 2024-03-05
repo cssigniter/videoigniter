@@ -1,8 +1,8 @@
-=== VideoIgniter Video Player ===
+=== VideoIgniter ===
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, player, vlog, stream, html5
 Tested up to: 6.4
-Stable tag: 0.1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,17 @@ Join our [Facebook group](https://www.facebook.com/groups/2601788933169108) to d
 3. Advanced player customization
 
 == Changelog ==
+
+= 1.0.1 =
+* Trick iPhone iOS to display a poster image automatically.
+* Increase subtitle font size in small player widths.
+* Better handling of tapping on the player in mobile to reveal controls.
+* Display subtitles, chapters, and volume control when the player is sticky (PRO).
+* Fix ghost poster image on fullscreen when there is no poster set.
+* Fix mute volume button behavior in iPad.
+* Increase menus height (subtitles, chapters) in smaller viewports.
+* Attempt to force inline play on iPhones.
+* Disable hover preview behavior in touch devices.
 
 = 1.0.0 =
 * Initial release.
