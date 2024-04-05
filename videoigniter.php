@@ -1052,10 +1052,9 @@ class VideoIgniter {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return false; }
 		if ( isset( $_POST['post_view'] ) && 'list' === $_POST['post_view'] ) { return false; }
 		if ( ! isset( $_POST['post_type'] ) || $_POST['post_type'] !== $this->post_type ) { return false; }
-		if ( ! isset( $_POST[ $this->post_type . '_nonce' ] ) || ! wp_verify_nonce( $_POST[ $this->post_type . '_nonce' ], basename( __FILE__ ) ) ) { return false; }
+		if ( ! isset( $_POST[ $this->post_type . '_nonce' ] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $this->post_type . '_nonce' ] ) ), basename( __FILE__ ) ) ) { return false; }
 		$post_type_obj = get_post_type_object( $this->post_type );
-		if ( ! current_user_can( $post_type_obj->cap->edit_post, $post_id ) ) { return false; }
-
+		if ( ! $post_type_obj || ! current_user_can( $post_type_obj->cap->edit_post, $post_id ) ) { return false; }
 
 		// phpcs:disable WordPress.Security.ValidatedSanitizedInput
 		if ( isset( $_POST['vi_playlist_tracks'] ) ) {
@@ -1063,7 +1062,7 @@ class VideoIgniter {
 		}
 
 		if ( isset( $_POST['_videoigniter_playlist_layout'] ) ) {
-			update_post_meta( $post_id, '_videoigniter_playlist_layout', $this->sanitizer::playlist_layout( $_POST['_videoigniter_playlist_layout'] ) );
+			update_post_meta( $post_id, '_videoigniter_playlist_layout', sanitize_key( $this->sanitizer::playlist_layout( $_POST['_videoigniter_playlist_layout'] ) ) );
 		}
 
 		if ( isset( $_POST['_videoigniter_volume'] ) ) {
@@ -1073,7 +1072,6 @@ class VideoIgniter {
 		update_post_meta( $post_id, '_videoigniter_show_fullscreen_toggle', isset( $_POST['_videoigniter_show_fullscreen_toggle'] ) );
 		update_post_meta( $post_id, '_videoigniter_show_playback_speed', isset( $_POST['_videoigniter_show_playback_speed'] ) );
 		// phpcs:enable
-
 
 		do_action( 'videoigniter_save_post', $post_id );
 	}
