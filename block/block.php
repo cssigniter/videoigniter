@@ -69,7 +69,7 @@ function videoigniter_player_block_render_callback( $attributes ): string {
 
 	?>
 	<div id="<?php echo esc_attr( $block_id ); ?>" class="<?php echo esc_attr( implode( ' ', $block_classes ) ); ?>">
-		<?php echo do_shortcode( sprintf( '[vi_playlist id="%s"]', esc_attr( $player_id ) ) ); ?>
+		<?php echo wp_kses_post( do_shortcode( sprintf( '[vi_playlist id="%s"]', esc_attr( $player_id ) ) ) ); ?>
 	</div>
 	<?php
 

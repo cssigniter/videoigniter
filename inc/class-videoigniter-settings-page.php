@@ -287,11 +287,11 @@ class VideoIgniter_Settings {
 									continue;
 								}
 
-								printf(
+								echo wp_kses_post( sprintf(
 									'<li><a href="%s" target="_blank">%s</a></li>',
 									esc_url( $link['url'] ),
 									esc_html( $link['title'] )
-								);
+								) );
 							}
 							?>
 						</ul>

@@ -45,24 +45,27 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 
 		$playlist = $instance['playlist'];
 
-		echo $args['before_widget'];
+		echo wp_kses_post( $args['before_widget'] );
 
 		if ( $title ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo wp_kses_post( $args['before_title'] . $title . $args['after_title'] );
 		}
 
 		$playlist = (int) $playlist;
 		$post     = get_post( $playlist );
 
 		if ( ! empty( $post ) && VideoIgniter()->post_type === $post->post_type ) {
-			echo do_shortcode(
-				sprintf( '[vi_playlist id="%s"]',
-					$playlist
+			echo wp_kses_post(
+				do_shortcode(
+					sprintf(
+						'[vi_playlist id="%s"]',
+						$playlist
+					)
 				)
 			);
 		}
 
-		echo $args['after_widget'];
+		echo wp_kses_post( $args['after_widget'] );
 	}
 
 	/**
