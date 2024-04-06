@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VideoIgniter\n"
-"POT-Creation-Date: 2024-03-05 11:39+0200\n"
+"POT-Creation-Date: 2024-04-06 12:51+0300\n"
 "PO-Revision-Date: 2016-08-29 19:22+0300\n"
 "Last-Translator: CSSIgniter Team <team@cssigniter.com>\n"
 "Language-Team: CSSIgniter Team <team@cssigniter.com>\n"
@@ -182,7 +182,7 @@ msgstr ""
 msgid "Videos"
 msgstr ""
 
-#: videoigniter.php:485 videoigniter.php:1593
+#: videoigniter.php:485 videoigniter.php:1591
 msgid "Shortcode"
 msgstr ""
 
@@ -342,11 +342,11 @@ msgstr ""
 msgid "VideoIgniter - Playlist"
 msgstr ""
 
-#: widget/class-videoigniter-playlist-widget.php:102
+#: widget/class-videoigniter-playlist-widget.php:105
 msgid "Title:"
 msgstr ""
 
-#: widget/class-videoigniter-playlist-widget.php:115
+#: widget/class-videoigniter-playlist-widget.php:118
 msgid "Playlist:"
 msgstr ""
 

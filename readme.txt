@@ -1,8 +1,8 @@
 === VideoIgniter ===
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, player, vlog, stream, html5
-Tested up to: 6.4
-Stable tag: 1.0.1
+Tested up to: 6.5
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,9 @@ Join our [Facebook group](https://www.facebook.com/groups/2601788933169108) to d
 3. Advanced player customization
 
 == Changelog ==
+
+= 1.0.2 =
+* Improve escaping and sanitization.
 
 = 1.0.1 =
 * Trick iPhone iOS to display a poster image automatically.
