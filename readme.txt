@@ -2,7 +2,7 @@
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, player, vlog, stream, html5
 Tested up to: 6.5
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
