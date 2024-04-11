@@ -1,6 +1,6 @@
 === VideoIgniter ===
 Contributors: cssigniterteam, silencerius, tsiger, anastis
-Tags: video, player, vlog, stream, html5
+Tags: video, video player, vimeo, youtube, mobile video
 Tested up to: 6.5
 Stable tag: 1.0.3
 License: GPLv2 or later
@@ -9,11 +9,15 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 VideoIgniter lets you create video playlists and embed them in your WordPress posts, pages or custom post types and serve your video content in style!
 
 == Description ==
-VideoIgniter is a powerful and easy-to-use WordPress plugin for managing and displaying video playlists. Ideal for videographers, vloggers, and anyone looking to showcase video content, VideoIgniter offers features like unlimited playlists, easy video uploading, and customizable player settings. Enhance your WordPress site with professional video capabilities!
+Transform your WordPress site with VideoIgniter, the ultimate video player plugin that empowers you to engage your audience like never before. Whether you're looking to showcase tutorials, promote your products, or share your creative content, VideoIgniter is designed to enhance your viewers' experience with advanced features and unmatched flexibility.
+
+**Why Choose VideoIgniter?**
+
+VideoIgniter is not just another video player; it's a comprehensive solution that brings professional video capabilities directly to your WordPress website. With its user-friendly interface and extensive customization options, VideoIgniter stands out as the go-to choice for site owners aiming to captivate their audience with dynamic and interactive video content.
 
 Check out [the demo](https://www.cssigniter.com/demos/videoigniter/) now!
 
-**Features:**
+**Core Features:**
 
 * Supports self-hosted videos, YouTube, Vimeo, and video streams
 * Unlimited playlists
@@ -62,9 +66,9 @@ Visit the [GitHub repository](https://github.com/cssigniter/videoigniter) for fu
 4. Navigate to the "Add New Playlist" menu item and add your tracks!
 
 == Screenshots ==
-1. The VideoIgniter player
-2. Managing your playlists via an intuitive and user friendly interface
-3. Advanced player customization
+1. Managing your playlists via an intuitive and user friendly interface
+2. Customization settings
+3. The VideoIgniter player
 
 == Changelog ==
 
