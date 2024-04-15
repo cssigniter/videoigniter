@@ -72,6 +72,9 @@ Visit the [GitHub repository](https://github.com/cssigniter/videoigniter) for fu
 
 == Changelog ==
 
+= 1.0.3 =
+* Add GitHub link.
+
 = 1.0.2 =
 * Improve escaping and sanitization.
 
