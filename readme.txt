@@ -1,4 +1,4 @@
-=== VideoIgniter ===
+=== VideoIgniter - Video Player ===
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, video player, vimeo, youtube, mobile video
 Tested up to: 6.5
