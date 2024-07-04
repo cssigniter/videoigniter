@@ -2,7 +2,7 @@
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, video player, vimeo, youtube, mobile video
 Tested up to: 6.5
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,9 @@ Visit the [GitHub repository](https://github.com/cssigniter/videoigniter) for fu
 3. The VideoIgniter player
 
 == Changelog ==
+
+= 1.0.4 =
+* Fixed issue where the VideoIgniter block wouldn't render single videos.
 
 = 1.0.3 =
 * Add GitHub link.
