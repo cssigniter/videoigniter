@@ -1,7 +1,7 @@
 === VideoIgniter - Video Player ===
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, video player, vimeo, youtube, mobile video
-Tested up to: 6.5
+Tested up to: 6.6
 Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
