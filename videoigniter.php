@@ -329,6 +329,10 @@ class VideoIgniter {
 	 * @since 1.0.0
 	 */
 	public function add_videoigniter_script_dependencies( int $post_id ) {
+		if ( empty( wp_scripts()->registered['videoigniter'] ) ) {
+			return;
+		}
+
 		$videoigniter = wp_scripts()->registered['videoigniter'];
 
 		if ( ! $this->is_playlist( $post_id ) ) {
