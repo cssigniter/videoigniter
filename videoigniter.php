@@ -121,12 +121,14 @@ class VideoIgniter {
 			if ( ! function_exists( 'get_plugin_data' ) ) {
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}
-			$plugin_data = get_plugin_data( __FILE__ );
+			$plugin_data = get_plugin_data( __FILE__, true, false );
 
 			$this->version = $plugin_data['Version'];
 		}
 
-		load_plugin_textdomain( 'videoigniter', false, dirname( self::plugin_basename() ) . '/languages' );
+		add_action( 'init', function() {
+			load_plugin_textdomain( 'videoigniter', false, dirname( self::plugin_basename() ) . '/languages' );
+		} );
 
 		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-sanitizer.php';
 		$this->sanitizer = new VideoIgniter_Sanitizer();
