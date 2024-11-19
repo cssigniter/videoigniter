@@ -1,8 +1,8 @@
 === VideoIgniter - Video Player ===
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, video player, vimeo, youtube, mobile video
-Tested up to: 6.6
-Stable tag: 1.0.5
+Tested up to: 6.7
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,9 @@ Visit the [GitHub repository](https://github.com/cssigniter/videoigniter) for fu
 3. The VideoIgniter player
 
 == Changelog ==
+
+= 1.0.6 =
+* Fixed notice regarding translations in WP 6.7
 
 = 1.0.5 =
 * Fixed issue where Elementor would throw warnings inside the editor.

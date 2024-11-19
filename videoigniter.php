@@ -5,7 +5,7 @@
  * Description: VideoIgniter lets you create video playlists and embed them in your WordPress posts, pages or custom post types and serve your video content in style!
  * Author: The CSSIgniter Team
  * Author URI: https://www.cssigniter.com
- * Version: 1.0.5
+ * Version: 1.0.6
  * Requires at least: 6.4
  * Requires PHP: 7.0
  * Text Domain: videoigniter
