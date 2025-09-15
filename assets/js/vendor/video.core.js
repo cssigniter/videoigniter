@@ -25384,15 +25384,15 @@
       if (!sourceTech) {
         return true;
       }
-      if (!titleCaseEquals(sourceTech.tech, this.techName_)) {
+      // if (!titleCaseEquals(sourceTech.tech, this.techName_)) {
         this.changingSrc_ = true;
         // load this technology with the chosen source
         this.loadTech_(sourceTech.tech, sourceTech.source);
         this.tech_.ready(() => {
           this.changingSrc_ = false;
         });
-        return false;
-      }
+        // return false;
+      // }
 
       // wait until the tech is ready to set the source
       // and set it synchronously if possible (#2326)
