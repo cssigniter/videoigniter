@@ -126,10 +126,6 @@ class VideoIgniter {
 			$this->version = $plugin_data['Version'];
 		}
 
-		add_action( 'init', function() {
-			load_plugin_textdomain( 'videoigniter', false, dirname( self::plugin_basename() ) . '/languages' );
-		} );
-
 		require_once untrailingslashit( $this->plugin_path() ) . '/inc/class-videoigniter-sanitizer.php';
 		$this->sanitizer = new VideoIgniter_Sanitizer();
 
