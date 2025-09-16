@@ -2,7 +2,7 @@
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, video player, vimeo, youtube, mobile video
 Tested up to: 6.8
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,10 @@ Visit the [GitHub repository](https://github.com/cssigniter/videoigniter) for fu
 3. The VideoIgniter player
 
 == Changelog ==
+
+= 1.0.7 =
+* Fixed issue where Vimeo videos sometimes wouldn't load.
+* Removed call to load_plugin_textdomain()
 
 = 1.0.6 =
 * Fixed notice regarding translations in WP 6.7
