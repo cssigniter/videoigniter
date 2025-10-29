@@ -27,6 +27,8 @@ const videoIgniter = videoElement => {
     const playlist = JSON.parse(main.dataset.playlist);
     const brandingImage = main.dataset.brandingImage;
     const brandingImagePosition = main.dataset.brandingImagePosition;
+    const autoadvanceEnabled = main.dataset.autoadvanceEnabled === 'true';
+    const autoadvanceDelay = parseInt(main.dataset.autoadvanceDelay, 10) ?? 0;
 
     const title = video.dataset.title;
     const description = video.dataset.description;
@@ -94,6 +96,11 @@ const videoIgniter = videoElement => {
     if (playlist?.length > 1) {
       player.playlist(playlist);
       player.playlistUi();
+
+      // Enable auto-advance if the setting is enabled
+      if (autoadvanceEnabled && player.playlist.autoadvance) {
+        player.playlist.autoadvance(autoadvanceDelay);
+      }
 
       player.on('playlistitem', () => {
         const currentItem = playlist[player.playlist.currentItem()];
