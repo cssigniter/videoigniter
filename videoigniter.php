@@ -5,9 +5,9 @@
  * Description: VideoIgniter lets you create video playlists and embed them in your WordPress posts, pages or custom post types and serve your video content in style!
  * Author: The CSSIgniter Team
  * Author URI: https://www.cssigniter.com
- * Version: 1.0.7
+ * Version: 1.1.0
  * Requires at least: 6.4
- * Requires PHP: 7.0
+ * Requires PHP: 7.2
  * Text Domain: videoigniter
  * Domain Path: /languages
  * License: GPLv2 or later
@@ -565,20 +565,18 @@ class VideoIgniter {
 					<ul class="vi-list-inline vi-footer-links">
 						<?php
 						$links = apply_filters( 'videoigniter_metabox_tracks_footer_links', array(
-							// TODO: Change support link when free is published in wp.org
 							'support'       => array(
 								'title' => __( 'Support', 'videoigniter' ),
-								'url'   => 'https://www.cssigniter.com/support-hub/',
+								'url'   => 'https://wordpress.org/support/plugin/videoigniter/',
 							),
 							'documentation' => array(
 								'title' => __( 'Documentation', 'videoigniter' ),
 								'url'   => 'https://www.cssigniter.com/docs/videoigniter/',
 							),
-// TODO: Enable rating link when free is published in wp.org
-//							'rate_plugin'   => array(
-//								'title' => __( 'Rate this plugin', 'videoigniter' ),
-//								'url'   => 'https://wordpress.org/support/view/plugin-reviews/videoigniter',
-//							),
+							'rate_plugin'   => array(
+								'title' => __( 'Rate this plugin', 'videoigniter' ),
+								'url'   => 'https://wordpress.org/support/plugin/videoigniter/reviews/',
+							),
 						) );
 
 						foreach ( $links as $link ) {
