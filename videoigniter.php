@@ -7,7 +7,7 @@
  * Author URI: https://www.cssigniter.com
  * Version: 1.1.0
  * Requires at least: 6.4
- * Requires PHP: 7.2
+ * Requires PHP: 7.4
  * Text Domain: videoigniter
  * Domain Path: /languages
  * License: GPLv2 or later
@@ -183,7 +183,8 @@ class VideoIgniter {
 		add_filter( 'wp_check_filetype_and_ext', array( $this, 'register_file_extensions' ), 10, 5 );
 		add_filter( 'upload_mimes', array( $this, 'register_mime_times' ) );
 
-		add_action( 'enqueue_block_assets', array( $this, 'enqueue_editor_assets' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_assets' ) );
+		add_action( 'enqueue_block_assets', array( $this, 'enqueue_editor_content_assets' ) );
 
 		do_action( 'videoigniter_admin_init' );
 	}
@@ -252,7 +253,7 @@ class VideoIgniter {
 		), $this->version, true );
 
 		wp_register_style( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . "/assets/css/admin/admin-styles{$suffix}.css", array(), $this->version );
-		wp_register_script( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . "/assets/js/admin/videoigniter{$suffix}.js", array(), $this->version, true );
+		wp_register_script( 'videoigniter-admin', untrailingslashit( $this->plugin_url() ) . "/assets/js/admin/videoigniter{$suffix}.js", array( 'jquery' ), $this->version, true );
 
 		wp_localize_script( 'videoigniter-admin', 'vi_scripts', array(
 			'messages' => array(
@@ -409,6 +410,7 @@ class VideoIgniter {
 	 * Enqueues editor scripts and styles.
 	 *
 	 * @since 1.0.0
+	 * @since NewVersion Runs on 'enqueue_block_editor_assets', so that the editor's scripts are not loaded inside the iframed editor canvas.
 	 */
 	public function enqueue_editor_assets() {
 		if ( ! is_admin() ) {
@@ -417,6 +419,30 @@ class VideoIgniter {
 
 		wp_enqueue_script( 'videoigniter-block-editor' );
 		wp_enqueue_style( 'videoigniter-block-editor' );
+	}
+
+	/**
+	 * Enqueues the assets needed by the editor's content, i.e. the player itself.
+	 *
+	 * When the editor canvas is iframed, these get loaded inside the iframe.
+	 *
+	 * @since NewVersion
+	 */
+	public function enqueue_editor_content_assets() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		// The playlist that will be previewed isn't known beforehand, so everything a playlist may need is loaded.
+		wp_enqueue_script( 'videojs-http-streaming' );
+		wp_enqueue_script( 'videojs-playlist' );
+		wp_enqueue_script( 'videojs-playlist-ui' );
+		wp_enqueue_script( 'videojs-vimeo' );
+		wp_enqueue_script( 'videojs-youtube' );
+		wp_enqueue_script( 'videojs-chapters' );
+		wp_enqueue_script( 'videojs-overlays' );
+		wp_enqueue_script( 'videoigniter' );
+		wp_enqueue_style( 'videoigniter' );
 	}
 
 	/**
@@ -1412,7 +1438,8 @@ class VideoIgniter {
 			$tracks = array();
 		}
 
-		$main_track       = wp_parse_args( $tracks[0], self::get_default_track_values() );
+		// A playlist may have no tracks at all.
+		$main_track       = wp_parse_args( ! empty( $tracks[0] ) ? $tracks[0] : array(), self::get_default_track_values() );
 		$track_poster_url = (string) wp_get_attachment_image_url( (int) $main_track['cover_id'], 'videoigniter_cover' );
 
 		$subtitles     = array();
@@ -1550,7 +1577,7 @@ class VideoIgniter {
 				esc_attr( $id ),
 				esc_attr( implode( ' ', $player_classes ) ),
 				$data,
-				$playlist_layout,
+				esc_attr( $playlist_layout ),
 				$track_markup
 			);
 		}
@@ -1635,6 +1662,7 @@ class VideoIgniter {
 	 * Filters the "real" file type of the given file.
 	 *
 	 * @since 1.0.0.
+	 * @since NewVersion Only applies to files whose actual extension is .vtt
 	 *
 	 * @param array         $wp_check_filetype_and_ext {
 	 *     Values for the extension, mime type, and corrected filename.
@@ -1653,7 +1681,8 @@ class VideoIgniter {
 	 * @return array
 	 */
 	public function register_file_extensions( $wp_check_filetype_and_ext, $file, $filename, $mimes, $real_mime ): array {
-		if ( false !== strpos( $filename, '.vtt' ) ) {
+		// Check the actual extension. Matching '.vtt' anywhere in the name would also approve files such as 'file.vtt.php'.
+		if ( 'vtt' === strtolower( pathinfo( (string) $filename, PATHINFO_EXTENSION ) ) ) {
 			$wp_check_filetype_and_ext['ext']  = 'vtt';
 			$wp_check_filetype_and_ext['type'] = 'text/vtt';
 		}

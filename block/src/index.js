@@ -5,6 +5,7 @@ import VideoIgniterPlayerEdit from './edit';
 import PlayerBlockIcon from './block-icon';
 
 registerBlockType('videoigniter/player', {
+  apiVersion: 3,
   title: __('VideoIgniter Player'),
   description: __('Display your VideoIgniter player'),
   icon: PlayerBlockIcon,

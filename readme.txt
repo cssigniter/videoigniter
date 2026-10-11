@@ -1,7 +1,7 @@
 === VideoIgniter - Video Player ===
 Contributors: cssigniterteam, silencerius, tsiger, anastis
 Tags: video, video player, vimeo, youtube, mobile video
-Tested up to: 6.8
+Tested up to: 7.1
 Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -71,6 +71,16 @@ Visit the [GitHub repository](https://github.com/cssigniter/videoigniter) for fu
 3. The VideoIgniter player
 
 == Changelog ==
+
+= NewVersion =
+* VideoIgniter now requires PHP 7.4 or newer.
+* Tested up to WordPress 7.1.
+* Fixed issue where the player's preview wouldn't load inside the block editor in WordPress 7.x.
+* The block now uses block API version 3. The editor's scripts are no longer loaded twice.
+* Fixed issue where the widget wouldn't play playlists that contain a single video.
+* Fixed PHP warning when displaying a playlist that has no videos.
+* Fixed issue where the playlist editing screen's script didn't declare its jQuery dependency.
+* Security hardening: Only files with an actual .vtt extension are now accepted as VTT uploads.
 
 = 1.1.0 =
 * Add support for auto-advance feature (Pro only).

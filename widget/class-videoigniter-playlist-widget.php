@@ -55,11 +55,21 @@ class VideoIgniter_Playlist_Widget extends WP_Widget {
 		$post     = get_post( $playlist );
 
 		if ( ! empty( $post ) && VideoIgniter()->post_type === $post->post_type ) {
-			echo wp_kses_post(
+			// wp_kses_post() would strip the <source> element, leaving single video playlists without a video to play.
+			echo wp_kses(
 				do_shortcode(
 					sprintf(
 						'[vi_playlist id="%s"]',
 						$playlist
+					)
+				),
+				array_merge(
+					wp_kses_allowed_html( 'post' ),
+					array(
+						'source' => array(
+							'src'  => true,
+							'type' => true,
+						),
 					)
 				)
 			);

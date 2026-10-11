@@ -11,6 +11,7 @@ add_action( 'init', 'videoigniter_player_block_init' );
  */
 function videoigniter_player_block_init() {
 	register_block_type( 'videoigniter/player', array(
+		'api_version'     => 3,
 		'attributes'      => array(
 			'uniqueId'  => array(
 				'type' => 'string',
