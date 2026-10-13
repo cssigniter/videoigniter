@@ -410,7 +410,7 @@ class VideoIgniter {
 	 * Enqueues editor scripts and styles.
 	 *
 	 * @since 1.0.0
-	 * @since NewVersion Runs on 'enqueue_block_editor_assets', so that the editor's scripts are not loaded inside the iframed editor canvas.
+	 * @since 1.2.0 Runs on 'enqueue_block_editor_assets', so that the editor's scripts are not loaded inside the iframed editor canvas.
 	 */
 	public function enqueue_editor_assets() {
 		if ( ! is_admin() ) {
@@ -426,7 +426,7 @@ class VideoIgniter {
 	 *
 	 * When the editor canvas is iframed, these get loaded inside the iframe.
 	 *
-	 * @since NewVersion
+	 * @since 1.2.0
 	 */
 	public function enqueue_editor_content_assets() {
 		if ( ! is_admin() ) {
@@ -1662,7 +1662,7 @@ class VideoIgniter {
 	 * Filters the "real" file type of the given file.
 	 *
 	 * @since 1.0.0.
-	 * @since NewVersion Only applies to files whose actual extension is .vtt
+	 * @since 1.2.0 Only applies to files whose actual extension is .vtt
 	 *
 	 * @param array         $wp_check_filetype_and_ext {
 	 *     Values for the extension, mime type, and corrected filename.

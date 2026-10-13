@@ -54,7 +54,7 @@ class VideoIgniter_Sanitizer {
 	/**
 	 * Sanitizes a playlist (repeatable tracks).
 	 *
-	 * @version NewVersion
+	 * @version 1.0.0
 	 * @since 1.0.0
 	 *
 	 * @uses VideoIgniter_Sanitizer::playlist_track()
