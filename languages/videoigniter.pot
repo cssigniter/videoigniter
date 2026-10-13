@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: VideoIgniter\n"
-"POT-Creation-Date: 2025-11-04 13:47+0200\n"
+"POT-Creation-Date: 2026-10-13 14:06+0300\n"
 "PO-Revision-Date: 2016-08-29 19:22+0300\n"
 "Last-Translator: CSSIgniter Team <team@cssigniter.com>\n"
 "Language-Team: CSSIgniter Team <team@cssigniter.com>\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: videoigniter.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: block/block.php:59
+#: block/block.php:60
 msgid "Select a playlist from the block settings."
 msgstr ""
 
@@ -29,7 +29,7 @@ msgstr ""
 msgid "VideoIgniter Settings"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:47 videoigniter.php:486
+#: inc/class-videoigniter-settings-page.php:47 videoigniter.php:512
 msgid "Settings"
 msgstr ""
 
@@ -77,263 +77,263 @@ msgstr ""
 msgid "Bottom Left"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:195 videoigniter.php:1034
+#: inc/class-videoigniter-settings-page.php:195 videoigniter.php:1060
 msgid "Bottom Right"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:241 videoigniter.php:539
+#: inc/class-videoigniter-settings-page.php:241 videoigniter.php:565
 msgid "VideoIgniter Logo"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:249 videoigniter.php:546
+#: inc/class-videoigniter-settings-page.php:249 videoigniter.php:572
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:271 videoigniter.php:569
+#: inc/class-videoigniter-settings-page.php:271 videoigniter.php:595
 msgid "Support"
 msgstr ""
 
-#: inc/class-videoigniter-settings-page.php:275 videoigniter.php:573
+#: inc/class-videoigniter-settings-page.php:275 videoigniter.php:599
 msgid "Documentation"
 msgstr ""
 
-#: videoigniter.php:259
+#: videoigniter.php:260
 msgid ""
 "Do you really want to remove all videos? (This will not delete your video "
 "files)."
 msgstr ""
 
-#: videoigniter.php:260
+#: videoigniter.php:261
 msgid "Select or upload video media"
 msgstr ""
 
-#: videoigniter.php:261
+#: videoigniter.php:262
 msgid "Select a poster image"
 msgstr ""
 
-#: videoigniter.php:262
+#: videoigniter.php:263
 msgid "Select a file"
 msgstr ""
 
-#: videoigniter.php:272
+#: videoigniter.php:273
 msgid "Choose image"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-#: videoigniter.php:435
+#: videoigniter.php:461
 msgid "VideoIgniter"
 msgstr ""
 
-#: videoigniter.php:447
+#: videoigniter.php:473
 msgctxt "post type general name"
 msgid "Playlists"
 msgstr ""
 
-#: videoigniter.php:448 videoigniter.php:464
+#: videoigniter.php:474 videoigniter.php:490
 msgctxt "post type singular name"
 msgid "Playlist"
 msgstr ""
 
-#: videoigniter.php:449
+#: videoigniter.php:475
 msgctxt "admin menu"
 msgid "VideoIgniter"
 msgstr ""
 
-#: videoigniter.php:450
+#: videoigniter.php:476
 msgctxt "admin menu"
 msgid "All Playlists"
 msgstr ""
 
-#: videoigniter.php:451
+#: videoigniter.php:477
 msgctxt "add new on admin bar"
 msgid "Playlist"
 msgstr ""
 
-#: videoigniter.php:452 videoigniter.php:453
+#: videoigniter.php:478 videoigniter.php:479
 msgid "Add New Playlist"
 msgstr ""
 
-#: videoigniter.php:454
+#: videoigniter.php:480
 msgid "Edit Playlist"
 msgstr ""
 
-#: videoigniter.php:455
+#: videoigniter.php:481
 msgid "New Playlist"
 msgstr ""
 
-#: videoigniter.php:456
+#: videoigniter.php:482
 msgid "View Playlist"
 msgstr ""
 
-#: videoigniter.php:457
+#: videoigniter.php:483
 msgid "Search Playlists"
 msgstr ""
 
-#: videoigniter.php:458
+#: videoigniter.php:484
 msgid "No playlists found"
 msgstr ""
 
-#: videoigniter.php:459
+#: videoigniter.php:485
 msgid "No playlists found in the trash"
 msgstr ""
 
-#: videoigniter.php:485
+#: videoigniter.php:511
 msgid "Videos"
 msgstr ""
 
-#: videoigniter.php:487 videoigniter.php:1591
+#: videoigniter.php:513 videoigniter.php:1618
 msgid "Shortcode"
 msgstr ""
 
-#: videoigniter.php:577
+#: videoigniter.php:603
 msgid "Rate this plugin"
 msgstr ""
 
 #. translators: %s is a URL.
-#: videoigniter.php:600
+#: videoigniter.php:626
 #, php-format
 msgid ""
 "Thank you for creating with <a href=\"%s\" target=\"_blank\">VideoIgniter</"
 "a>"
 msgstr ""
 
-#: videoigniter.php:645
+#: videoigniter.php:671
 msgid "Toggle track visibility"
 msgstr ""
 
-#: videoigniter.php:662
+#: videoigniter.php:688
 msgid "Remove Cover Image"
 msgstr ""
 
-#: videoigniter.php:675
+#: videoigniter.php:701
 msgid "Upload Poster"
 msgstr ""
 
-#: videoigniter.php:694 videoigniter.php:701
+#: videoigniter.php:720 videoigniter.php:727
 msgid "Title"
 msgstr ""
 
-#: videoigniter.php:709 videoigniter.php:715
+#: videoigniter.php:735 videoigniter.php:741
 msgid "Description"
 msgstr ""
 
-#: videoigniter.php:727 videoigniter.php:736
+#: videoigniter.php:753 videoigniter.php:762
 msgid "Video file or stream"
 msgstr ""
 
-#: videoigniter.php:740
+#: videoigniter.php:766
 msgid "Upload"
 msgstr ""
 
-#: videoigniter.php:755
+#: videoigniter.php:781
 msgid "Remove Video"
 msgstr ""
 
-#: videoigniter.php:778
+#: videoigniter.php:804
 msgid "Add Video"
 msgstr ""
 
-#: videoigniter.php:785
+#: videoigniter.php:811
 msgid "Clear Playlist"
 msgstr ""
 
-#: videoigniter.php:791
+#: videoigniter.php:817
 msgid "Expand All"
 msgstr ""
 
-#: videoigniter.php:794
+#: videoigniter.php:820
 msgid "Collapse All"
 msgstr ""
 
-#: videoigniter.php:818
+#: videoigniter.php:844
 msgid "Player &amp; Video listing"
 msgstr ""
 
-#: videoigniter.php:823
+#: videoigniter.php:849
 msgid "Playlist layout"
 msgstr ""
 
-#: videoigniter.php:854
+#: videoigniter.php:880
 msgid "Show fullscreen toggle"
 msgstr ""
 
-#: videoigniter.php:868
+#: videoigniter.php:894
 msgid "Show playback speed controls"
 msgstr ""
 
-#: videoigniter.php:874
+#: videoigniter.php:900
 msgid "Starting volume"
 msgstr ""
 
-#: videoigniter.php:885
+#: videoigniter.php:911
 msgid "0-100"
 msgstr ""
 
-#: videoigniter.php:890
+#: videoigniter.php:916
 msgid "Enter a value between 0 and 100 in increments of 10."
 msgstr ""
 
-#: videoigniter.php:912
+#: videoigniter.php:938
 msgid "Grab the shortcode"
 msgstr ""
 
-#: videoigniter.php:943
+#: videoigniter.php:969
 msgid "Right"
 msgstr ""
 
-#: videoigniter.php:948
+#: videoigniter.php:974
 msgid "Left"
 msgstr ""
 
-#: videoigniter.php:953
+#: videoigniter.php:979
 msgid "Bottom"
 msgstr ""
 
-#: videoigniter.php:972
+#: videoigniter.php:998
 msgid "Disabled"
 msgstr ""
 
-#: videoigniter.php:976
+#: videoigniter.php:1002
 msgid "5 seconds"
 msgstr ""
 
-#: videoigniter.php:980
+#: videoigniter.php:1006
 msgid "10 seconds"
 msgstr ""
 
-#: videoigniter.php:984
+#: videoigniter.php:1010
 msgid "30 seconds"
 msgstr ""
 
-#: videoigniter.php:1002
+#: videoigniter.php:1028
 msgid "Top left"
 msgstr ""
 
-#: videoigniter.php:1006
+#: videoigniter.php:1032
 msgid "Top center"
 msgstr ""
 
-#: videoigniter.php:1010
+#: videoigniter.php:1036
 msgid "Top right"
 msgstr ""
 
-#: videoigniter.php:1014
+#: videoigniter.php:1040
 msgid "Middle left"
 msgstr ""
 
-#: videoigniter.php:1018
+#: videoigniter.php:1044
 msgid "Middle center"
 msgstr ""
 
-#: videoigniter.php:1022
+#: videoigniter.php:1048
 msgid "Middle right"
 msgstr ""
 
-#: videoigniter.php:1026
+#: videoigniter.php:1052
 msgid "Bottom left"
 msgstr ""
 
-#: videoigniter.php:1030
+#: videoigniter.php:1056
 msgid "Bottom center"
 msgstr ""
 
@@ -345,11 +345,11 @@ msgstr ""
 msgid "VideoIgniter - Playlist"
 msgstr ""
 
-#: widget/class-videoigniter-playlist-widget.php:105
+#: widget/class-videoigniter-playlist-widget.php:115
 msgid "Title:"
 msgstr ""
 
-#: widget/class-videoigniter-playlist-widget.php:118
+#: widget/class-videoigniter-playlist-widget.php:128
 msgid "Playlist:"
 msgstr ""
 
